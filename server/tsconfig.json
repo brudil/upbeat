@@ -1,0 +1,37 @@
+{
+   "compilerOptions": {
+      "lib": [
+         "es5",
+         "es6",
+         "esnext.asynciterable"
+      ],
+      "target": "es6",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "outDir": "./build",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "sourceMap": true,
+      "strict": true,
+      "noImplicitAny": true,
+      "strictNullChecks": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "strictPropertyInitialization": false,
+      "removeComments": false,
+      "preserveConstEnums": true,
+      "skipLibCheck": true,
+      "allowJs": true
+   },
+  "exclude": [
+    "dist",
+    "build",
+    "comp-dist",
+    "build-falmer",
+    "dist-falmer",
+    "config"
+  ],
+  "include": [
+    "./src/**/*"
+  ]
+}

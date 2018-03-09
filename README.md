@@ -1,4 +1,4 @@
-![CUE](https://raw.githubusercontent.com/brudil/cue/master/web/src/images/logo@2x.png)
+<img src="web/src/images/logo@2x.png" width="156" alt="CUE" />
 
 Cue is a show production system, allowing you to colabirtly write scripts, organise sound effects and create rundowns.
 

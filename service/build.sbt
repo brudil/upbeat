@@ -36,8 +36,6 @@ libraryDependencies ++= Seq(
 )
 
 enablePlugins(FlywayPlugin)
-version := "0.0.1"
-name := "cue-service"
 
 
 flywayUrl := "jdbc:postgresql://localhost/cueDev"

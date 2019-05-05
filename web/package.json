@@ -167,12 +167,12 @@
       "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "testMatch": [
-      "**/__tests__/*.(ts|tsx|js)"
+      "**/__tests__/*.(ts|tsx)"
     ],
     "testEnvironment": "node",
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
-      "{generator,src}/**/*.{js,jsx}"
+      "src/**/*.{ts,tsx}"
     ]
   }
 }

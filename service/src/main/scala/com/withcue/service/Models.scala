@@ -15,7 +15,12 @@ trait Repo {
 object AccountRepo extends Repo {
   import ctx._
 
-  case class Account(id: Long, createdAt: String, updatedAt: String, name: String, emailAddress: String) extends Model
+  case class Account(id: Long,
+                     createdAt: String,
+                     updatedAt: String,
+                     name: String,
+                     emailAddress: String)
+      extends Model
 
   val accounts: ctx.Quoted[ctx.EntityQuery[Account]] = quote {
     querySchema[Account]("accounts")
@@ -33,7 +38,8 @@ object AccountRepo extends Repo {
     transaction {
       val q = quote {
         accounts
-          .insert(_.name -> lift("Hello there"), _.emailAddress -> "james@brudil.com")
+          .insert(_.name -> lift("Hello there"),
+                  _.emailAddress -> "james@brudil.com")
           .returning(_.id)
       }
       val id = ctx.run(q)

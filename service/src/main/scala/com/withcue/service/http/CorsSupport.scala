@@ -11,16 +11,18 @@ trait CorsSupport {
     respondWithHeaders(
       `Access-Control-Allow-Origin`.*,
       `Access-Control-Allow-Credentials`(true),
-      `Access-Control-Allow-Headers`("Authorization", "Content-Type", "X-Requested-With")
+      `Access-Control-Allow-Headers`("Authorization",
+                                     "Content-Type",
+                                     "X-Requested-With")
     )
   }
 
   private def preflightRequestHandler: Route = options {
-    complete(HttpResponse(StatusCodes.OK)
-      .withHeaders(
-        `Access-Control-Allow-Methods`(OPTIONS, POST, GET)
-      )
-    )
+    complete(
+      HttpResponse(StatusCodes.OK)
+        .withHeaders(
+          `Access-Control-Allow-Methods`(OPTIONS, POST, GET)
+        ))
   }
 
   def corsHandler(r: Route) = addAccessControlHeaders {

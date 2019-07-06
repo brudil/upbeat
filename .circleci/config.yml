@@ -5,7 +5,7 @@ jobs:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
         environment:
-          DB_USER: postgres
+          DB_USER: cue_user
           DB_PASSWORD: ""
           DB_URL: "jdbc:postgresql://cue_user@localhost/cue_test"
       - image: circleci/postgres:9.6.2-alpine

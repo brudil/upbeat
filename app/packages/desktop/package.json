@@ -1,0 +1,8 @@
+{
+  "name": "@withcue/desktop",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "author": "James Canning <james@jamescanning.com> (http://brudil.com)",
+  "license": "ISC"
+}

@@ -7,10 +7,10 @@ jobs:
         environment:
           DB_USER: root
           DB_PASSWORD: ""
-          DB_URL: "jdbc:postgresql://root@localhost/cue_test"
+          DB_URL: "jdbc:postgresql://postgres@localhost/cue_test"
       - image: circleci/postgres:9.6.2-alpine
         environment:
-          POSTGRES_USER: root
+          POSTGRES_USER: postgres
           POSTGRES_DB: cue_test
 
     working_directory: ~/repo/service

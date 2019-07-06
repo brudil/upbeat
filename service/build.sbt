@@ -38,10 +38,8 @@ libraryDependencies ++= Seq(
 enablePlugins(FlywayPlugin)
 
 
-flywayUrl := "jdbc:postgresql://localhost/cueDev"
-flywayUser := "brudil"
-flywayPassword := ""
+flywayUrl := sys.env("DB_URL")
+flywayUser := sys.env("DB_USER")
+flywayPassword := sys.env("DB_PASSWORD")
 flywayLocations += "db/migration"
-flywayUrl := "jdbc:postgresql://localhost/cueDev"
-flywayUser in Test := ""
-flywayPassword in Test := ""
+

@@ -4,11 +4,14 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+        environment:
+          DB_USER: root
+          DB_PASSWORD: ""
+          DB_URL: "jdbc:postgresql://root@localhost/cue_test"
+      - image: circleci/postgres:9.6.2-alpine
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: cue_test
 
     working_directory: ~/repo/service
 
@@ -36,4 +39,4 @@ jobs:
           key: v1-dependencies--{{ checksum "build.sbt" }}
 
       # run tests!
-      - run: cat /dev/null | sbt test:test
+      - run: cat /dev/null | sbt flywayMigrate && sbt test:test

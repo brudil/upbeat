@@ -1,0 +1,14 @@
+{
+  "name": "@withcue/rush",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "author": "James Canning <james@jamescanning.com> (http://brudil.com)",
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/uuid": "^3.4.5"
+  }
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import Logotype from '../vectors/logotype.svg';
 import { NavLink } from 'react-router-dom';
 
 const MenuSection: React.FC<{ heading: string }> = ({ children, heading }) => {
@@ -16,7 +17,7 @@ const MenuItem: React.FC<{ to: string }> = ({ to, children }) => {
   return (
     <li css={{ display: 'block'}}>
       <NavLink to={to} activeClassName="active" css={{ position: 'relative', textDecoration: 'none', padding: '0.3rem 1rem', display: 'block', color: '#333333', '&:after': {
-          content: '""',
+        content: '""',
           // width: 0,
           display: 'block',
           position: 'absolute',
@@ -25,11 +26,13 @@ const MenuItem: React.FC<{ to: string }> = ({ to, children }) => {
           bottom: 4,
           backgroundImage: 'linear-gradient(90deg, #5600D5 0%, #3000A3 100%)',
           transition: 'width 200ms ease',
-        }, '&.active:after, &.active:hover:after': {
+        },
+        '&.active:after, &.active:hover:after': {
           width: 3,
-        },'&:hover:after': {
+        },
+        '&:hover:after': {
           width: 1,
-        } }}>{children}</NavLink>
+        }}}>{children}</NavLink>
     </li>
   );
 };
@@ -37,7 +40,9 @@ const MenuItem: React.FC<{ to: string }> = ({ to, children }) => {
 export const ProjectSidebar = () => {
   return (
     <aside css={{ background: '#F7F7F7', minWidth: 110, minHeight: '100vh', boxShadow: '-2px 0 4px rgba(0, 0, 0, 0.5)' }}>
-      <h1>CUE</h1>
+      <h1 css={{ width: 80, marginLeft: '1rem', marginTop: '1rem', display: 'block', '& svg': { width: '100%', display: 'block' } }}>
+        <Logotype />
+      </h1>
       <MenuSection heading="Episode">
         <MenuItem to={`/project/overview`}>Overview</MenuItem>
         <MenuItem to={`/project/scripts`}>Scripts</MenuItem>

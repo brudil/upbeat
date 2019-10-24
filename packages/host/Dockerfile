@@ -9,13 +9,16 @@ WORKDIR /pack
 #COPY services/services1 services/services1
 
 # The global package.json only contains build dependencies
+RUN ls
 COPY package.json .
 
 COPY yarn.lock .
+RUN ls
 
-COPY . .
+COPY packages/host .
+RUN ls
 
-RUN yarn install --production --pure-lockfile --non-interactive --cache-folder ./ycache; rm -rf ./ycache
+RUN yarn install --pure-lockfile --non-interactive --cache-folder ./ycache; rm -rf ./ycache
 
 EXPOSE 3000
 

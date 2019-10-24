@@ -1,7 +1,9 @@
 version: '3'
 services:
-  web:
-    build: packages/host
+  host:
+    build:
+      dockerfile: packages/host/Dockerfile
+      context: .
     depends_on:
       - postgres
     environment:
@@ -14,13 +16,33 @@ services:
     volumes:
       - .:/app/
       - /app/node_modules
+    networks:
+      - web
+  proxy:
+    build: conf/haproxy
+    depends_on:
+      - host
+    environment:
+      - BALANCE=leastconn
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
+    networks:
+      - web
+    deploy:
+      placement:
+        constraints: [node.role == manager]
   redis:
     image: "redis:alpine"
   postgres:
-    image: "12-alpine"
+    image: "postgres:12-alpine"
     ports:
       - "35432:5432"
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: db
+networks:
+  web:
+    driver: overlay

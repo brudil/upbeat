@@ -2,7 +2,7 @@
 import WebSocket from 'ws';
 import http from 'http';
 import {pool} from './db';
-console.log(`@withcue/host`);
+console.log(`@withcue/host - WS Server`);
 console.log(pool);
 const server = http.createServer({});
 const wss = new WebSocket.Server({ server });
@@ -19,4 +19,3 @@ wss.on('connection', (ws) => {
 });
 
 server.listen(8080);
-

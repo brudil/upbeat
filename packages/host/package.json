@@ -24,10 +24,12 @@
     "@types/slonik": "^19.0.1",
     "@types/ws": "^6.0.3",
     "backpack-core": "^0.8.4",
+    "nodemon": "^1.19.4",
     "ws": "^7.2.0"
   },
   "scripts": {
     "dev": "tsc -w",
-    "migrate": "node-pg-migrate"
+    "migrate": "node-pg-migrate",
+    "docker-dev": "cd ./app & yarn dev & nodemon lib/app.js"
   }
 }

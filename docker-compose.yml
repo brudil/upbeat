@@ -12,7 +12,9 @@ services:
       PORT: 3000
     ports:
       - "3000:3000"
-    command: npm run dev
+    expose:
+      - 3000
+    command: yarn docker-dev
     volumes:
       - .:/app/
       - /app/node_modules

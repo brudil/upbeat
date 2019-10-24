@@ -1,7 +1,7 @@
 type Cb = (data: Object) => void;
 
 const createClientRush = () => {
-  const ws = new WebSocket('ws://localhost:8080');
+  const ws = new WebSocket('ws://localhost:3000');
   const subscriptions: {
     [key: string]: Cb[];
   } = {};

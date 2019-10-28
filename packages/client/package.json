@@ -6,7 +6,8 @@
   "scripts": {
     "test": "NODE_ENV=test && jest",
     "dev": "parcel src/index.html",
-    "serve": "webpack-dev-server"
+    "serve": "webpack-dev-server",
+    "storybook": "start-storybook"
   },
   "author": "James Canning <james@jamescanning.com> (http://brudil.com)",
   "license": "ISC",
@@ -14,6 +15,7 @@
     "@babel/core": "^7.6.4",
     "@babel/preset-react": "^7.6.3",
     "@emotion/babel-preset-css-prop": "^10.0.17",
+    "@storybook/react": "^5.2.5",
     "@svgr/webpack": "^4.3.3",
     "@types/node": "^12.11.1",
     "@types/prosemirror-commands": "^1.0.1",

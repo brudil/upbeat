@@ -15,6 +15,17 @@ SET row_security = off;
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
+
+CREATE FUNCTION public.update_modified_column() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    NEW.modified = now();
+    RETURN NEW;   
+END;
+$$;
+
+
 SET default_with_oids = false;
 
 
@@ -28,7 +39,7 @@ CREATE TABLE public.episodes (
 
 CREATE TABLE public.organisations (
     name text NOT NULL,
-    created_at timestamp without time zone NOT NULL,
+    created timestamp without time zone NOT NULL,
     id uuid DEFAULT public.gen_random_uuid() NOT NULL
 );
 
@@ -48,8 +59,8 @@ CREATE TABLE public.users (
     last_name text NOT NULL,
     password_hash text NOT NULL,
     email_address text NOT NULL,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    created timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    modified timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -71,6 +82,10 @@ ALTER TABLE ONLY public.shows
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+
+CREATE TRIGGER update_user_modified BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE PROCEDURE public.update_modified_column();
 
 
 

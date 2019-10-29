@@ -16,18 +16,21 @@ export const useRush = (): RushInstance => {
   return rush;
 };
 
-export const useRushOperation = (createdOperation) => {
+export const useRushOperation = (createdOperation: any) => {
+  // todo
   const rush = useRush();
   const symbol = Symbol('rush op');
 
   return {
     data: null,
     perform(variables: any) {
+      // @ts-ignore
       rush.operation(createdOperation, variables, symbol);
     },
   };
 };
 
+// @ts-ignore
 export const useRushState = <A>(query: (store) => A): A => {
   const rush = useRush();
 

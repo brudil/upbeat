@@ -1,36 +1,47 @@
-import React, {useCallback, useState} from 'react';
-import {EditorState} from "prosemirror-state"
-import {EditorView} from "prosemirror-view"
-import {useEffect, useRef} from "react";
-import {schema} from "./schema";
-import {baseKeymap} from "prosemirror-commands"
-import {keymap} from "prosemirror-keymap";
-import {redo, undo, history} from "prosemirror-history";
-import {Global} from "@emotion/core";
-import {proseMirrorStyles} from "./styles";
-import { rush } from '../../rush';
+import React, { useCallback, useState } from 'react';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import { useEffect, useRef } from 'react';
+import { schema } from './schema';
+import { baseKeymap } from 'prosemirror-commands';
+import { keymap } from 'prosemirror-keymap';
+import { redo, undo, history } from 'prosemirror-history';
+import { Global } from '@emotion/core';
+import { proseMirrorStyles } from './styles';
+import { useRush } from '../../../../rush/src/context';
 
 export const Editor = () => {
   const ref = useRef<null | HTMLDivElement>(null);
   const stateRef = useRef<null | EditorState>(null);
   const viewRef = useRef<null | EditorView>(null);
+  const rush = useRush();
 
   useEffect(() => {
     if (ref.current !== null) {
-      stateRef.current = EditorState.create({ schema,   plugins: [
+      stateRef.current = EditorState.create({
+        schema,
+        plugins: [
           history(),
-          keymap({"Mod-z": undo, "Mod-y": redo}),
-          keymap(baseKeymap)
-        ] });
-      viewRef.current = new EditorView(ref.current, {state: stateRef.current, dispatchTransaction(transaction) {
-          console.log("Document size went from", transaction.before.content.size,
-            "to", transaction.doc.content.size);
+          keymap({ 'Mod-z': undo, 'Mod-y': redo }),
+          keymap(baseKeymap),
+        ],
+      });
+      viewRef.current = new EditorView(ref.current, {
+        state: stateRef.current,
+        dispatchTransaction(transaction) {
+          console.log(
+            'Document size went from',
+            transaction.before.content.size,
+            'to',
+            transaction.doc.content.size,
+          );
           if (viewRef.current !== null) {
             const view = viewRef.current;
             const newState = view.state.apply(transaction);
-            view.updateState(newState)
+            view.updateState(newState);
           }
-        }})
+        },
+      });
     }
   }, [ref]);
   const [text, setText] = useState('example');
@@ -39,29 +50,34 @@ export const Editor = () => {
     rush.subscribe('edit', (event: any) => {
       setText(event.content);
     });
-}, []);
+  }, []);
 
   const handleEdit = useCallback((e: any) => {
     const content = e.target.value;
-    rush.send({ type: 'edit', content });
+    rush.operation({ type: 'edit', content });
     setText(content);
   }, []);
 
   return (
-    <div css={{
-      padding: '0 2rem'
-    }}>
+    <div
+      css={{
+        padding: '0 2rem',
+      }}
+    >
       <textarea value={text} onChange={handleEdit} />
       <Global styles={proseMirrorStyles} />
-      <div ref={ref} css={{
-        padding: '1rem',
-        fontFamily: 'Courier',
-        minHeight: 400,
-        maxWidth: 880,
-        margin: 'auto',
-        borderRadius: 6,
-        boxShadow: '0 3px 16px rgba(40, 40, 40, 0.2)'
-      }} />
+      <div
+        ref={ref}
+        css={{
+          padding: '1rem',
+          fontFamily: 'Courier',
+          minHeight: 400,
+          maxWidth: 880,
+          margin: 'auto',
+          borderRadius: 6,
+          boxShadow: '0 3px 16px rgba(40, 40, 40, 0.2)',
+        }}
+      />
     </div>
-  )
-}
+  );
+};

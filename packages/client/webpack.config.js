@@ -54,6 +54,9 @@ module.exports = {
     },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.svg'],
+    alias: {
+      react: require.resolve('react'),
+    }
   },
   output: {
     path: path.join(__dirname, 'build'),

@@ -90,10 +90,10 @@ export const ProjectSidebar = () => {
         <Logotype />
       </h1>
       <MenuSection heading="Episode">
-        <MenuItem to={`/project/overview`}>Overview</MenuItem>
-        <MenuItem to={`/project/scripts`}>Scripts</MenuItem>
-        <MenuItem to={`/project/rundown`}>Rundown</MenuItem>
-        <MenuItem to={`/project/objects`}>Objects</MenuItem>
+        <MenuItem to={`/show/episode/overview`}>Overview</MenuItem>
+        <MenuItem to={`/show/episode/scripts`}>Scripts</MenuItem>
+        <MenuItem to={`/show/episode/rundown`}>Rundown</MenuItem>
+        <MenuItem to={`/show/episode/objects`}>Objects</MenuItem>
       </MenuSection>
       <MenuSection heading="Show">
         <MenuItem to={`/show/overview`}>Overview</MenuItem>

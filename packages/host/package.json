@@ -6,6 +6,7 @@
   "author": "James Canning <james@jamescanning.com> (http://brudil.com)",
   "license": "ISC",
   "dependencies": {
+    "@hapi/cookie": "^10.1.2",
     "@hapi/hapi": "^18.4.0",
     "node-pg-migrate": "^3.23.3",
     "pg": "^7.12.1",
@@ -21,6 +22,10 @@
     "utf-8-validate": "^5.0.2"
   },
   "devDependencies": {
+    "@types/hapi__cookie": "^10.1.0",
+    "@types/hapi__hapi": "^18.2.5",
+    "@types/node": "^12.11.7",
+    "@types/redis": "^2.8.14",
     "@types/slonik": "^19.0.1",
     "@types/ws": "^6.0.3",
     "backpack-core": "^0.8.4",

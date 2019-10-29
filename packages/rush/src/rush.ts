@@ -1,23 +1,22 @@
-import uuid = require("uuid");
+export interface RushInstance {}
 
+const createRushStore = () => {
+  const store = {
+    entities: {},
+    transactions: [],
+  };
+};
 
-function createRushText(initial: string) {
+export const createRush = (): RushInstance => {
+  const store = createRushStore();
 
-}
+  // manages auth; transport layer; subscriptions.
 
-const text = createRushText("hello there");
-
-
-class Char {
-  readonly actorId: string;
-  readonly value: string;
-}
-
-class RushActor {
-  readonly actorId: string = uuid.v4();
-  private data = [];
-
-  public insert(value: string, index: number) {
-
-  }
-}
+  return {
+    operation() {},
+    read() {},
+    subscribe() {
+      // returns unsubscribe
+    },
+  };
+};

@@ -4,7 +4,7 @@ import { UserDropdown } from '../UserDropdown';
 
 export const StatusBar = () => {
   return (
-    <div css={{ display: 'flex' }}>
+    <div css={{ display: 'flex', padding: '0.5rem 1rem 1rem 0' }}>
       <ProjectBreadcrumb />
       <UserDropdown />
     </div>

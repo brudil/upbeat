@@ -1,15 +1,21 @@
 import Hapi from '@hapi/hapi';
 import hapiCookie from '@hapi/cookie';
 import { pool } from '../setup/db';
-import { getUserById } from '../data/user';
+import { authenticateUser, getUserById } from '../data/user';
+import { redisClient } from '../setup/redis';
+import uuid from 'uuid';
 
 const init = async () => {
+  console.log(`@withcue/host api - API Server`);
+  console.log(`listening at `, process.env.PORT);
+  console.log(process.env.DATABASE_URL);
   const app = new Hapi.Server({
     port: process.env.PORT,
     host: process.env.HOST,
     state: {
       strictHeader: false,
     },
+    routes: { cors: true },
   });
 
   await app.register(hapiCookie);
@@ -23,10 +29,7 @@ const init = async () => {
     redirectTo: false,
     validateFunc: async (_request: unknown, session: any) => {
       try {
-        const account = await pool.anyFirst(getUserById(session.id));
-        if (!account) {
-          return { valid: false };
-        }
+        const account = await getUserById(pool, session.id);
 
         return { valid: true, credentials: account };
       } catch (e) {
@@ -37,6 +40,74 @@ const init = async () => {
   });
 
   app.auth.default({ strategy: 'session', mode: 'try' });
+
+  interface Credentials extends Hapi.AuthCredentials {
+    id: string;
+  }
+
+  interface RequestAuth extends Hapi.RequestAuth {
+    credentials: Credentials;
+  }
+
+  interface Request extends Hapi.Request {
+    auth: RequestAuth;
+  }
+
+  interface LoginRequest extends Request {
+    payload: {
+      emailAddress: string;
+      password: string;
+    };
+  }
+
+  app.route({
+    method: 'post',
+    path: '/auth',
+    handler: async (request: LoginRequest) => {
+      const { emailAddress, password } = request.payload;
+
+      const [success, user] = await authenticateUser(pool, {
+        emailAddress,
+        password,
+      });
+      if (success && user) {
+        request.cookieAuth.set({ id: user.id });
+      }
+
+      return { success, user };
+    },
+  });
+
+  app.route({
+    method: 'get',
+    path: '/session',
+    handler: async (request: LoginRequest) => {
+      return {
+        payload: {
+          authenticated: request.auth.isAuthenticated,
+          credentials: request.auth.credentials,
+        },
+      };
+    },
+  });
+
+  app.route({
+    method: 'post',
+    path: '/live',
+    handler: async (request: LoginRequest) => {
+      const token = uuid(); // todo: secure token
+      await redisClient.set(
+        `live:token:${token}`,
+        request.auth.credentials.id,
+        'EX',
+        60,
+      );
+
+      return {
+        payload: { token },
+      };
+    },
+  });
 
   await app.start();
 };

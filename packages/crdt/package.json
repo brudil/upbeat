@@ -1,0 +1,10 @@
+{
+  "name": "@withcue/crdt",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "parcel": "^1.12.4",
+    "typescript": "^3.6.4"
+  }
+}

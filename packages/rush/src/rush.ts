@@ -28,8 +28,8 @@ const createRushStore = () => {
     entities: {},
     transactions: [],
     auth: {
-      isAuthenticated: false,
-      loading: true,
+      isAuthenticated: true,
+      loading: false,
       credentials: null,
     },
   };

@@ -9,15 +9,22 @@ interface LiveManagerOptions {
 export const createLiveManager = (options: LiveManagerOptions) => {
   const server = http.createServer({});
   const wss = new WebSocket.Server({ server, clientTracking: false });
-  const connections: { [key: string]: WebSocket } = {};
+  const connections: {
+    [key: string]: { socket: WebSocket; userId: string };
+  } = {};
 
   const handleNewConnection = (socket: WebSocket, request: any) => {
-    connections[uuid()] = socket;
+    connections[uuid()] = {
+      userId: request.auth,
+      socket,
+    };
 
     console.log(request.auth);
 
-    socket.on('message', () => {
-      // user message ingress.
+    socket.on('message', (msg) => {
+      Object.values(connections).forEach((connection) =>
+        connection.socket.send(msg),
+      );
     });
   };
 
@@ -30,7 +37,6 @@ export const createLiveManager = (options: LiveManagerOptions) => {
           wss.emit('connection', ws, request);
         });
       } else {
-        console.log('destr');
         socket.destroy();
       }
       return;

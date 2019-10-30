@@ -1,15 +1,21 @@
 import React from 'react';
-import Logo from '../images/logo.svg';
+import Logotype from '../vectors/logotype.svg';
 
-interface StonewallProps {
-
-}
+interface StonewallProps {}
 
 export const Stonewall: React.FC<StonewallProps> = (props) => {
   return (
-    <div>
-      <Logo />
+    <div
+      css={{
+        margin: '0 auto',
+        maxWidth: 400,
+        padding: '1rem',
+      }}
+    >
+      <div css={{ margin: '0 auto', maxWidth: 200 }}>
+        <Logotype />
+      </div>
       {props.children}
     </div>
-  )
-}
+  );
+};

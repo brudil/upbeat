@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { RushInstance } from './rush';
 
 const RushContext = React.createContext<RushInstance | null>(null);
@@ -33,6 +33,12 @@ export const useRushOperation = (createdOperation: any) => {
 // @ts-ignore
 export const useRushState = <A>(query: (store) => A): A => {
   const rush = useRush();
+  const [, forceUpdate] = useState(0);
+  useEffect(() => {
+    const unsubscribe = rush.storeSubscribe(() => forceUpdate(1));
 
-  return rush.read();
+    return unsubscribe;
+  }, []);
+
+  return rush.getState();
 };

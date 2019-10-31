@@ -31,29 +31,35 @@ export class HLC {
 
     this.timestamp.count += 1;
 
-    return this.timestamp;
+    return Object.freeze({ ...this.timestamp });
   }
 
-  public update(incoming: Timestamp) {
-    const currentTimestamp = { ...this.timestamp };
+  public update(incomingTimestamp: Timestamp) {
+    const prevTimestamp = { ...this.timestamp };
 
     this.timestamp.time = this.max(
-      currentTimestamp.time,
-      incoming.time,
+      prevTimestamp.time,
+      incomingTimestamp.time,
       this.clock(),
     );
 
     if (
-      this.timestamp.time === currentTimestamp.time &&
-      incoming.time === currentTimestamp.time
+      this.timestamp.time === prevTimestamp.time &&
+      incomingTimestamp.time === prevTimestamp.time
     ) {
-      this.timestamp.count = this.max(currentTimestamp.count, incoming.count);
-    } else if (currentTimestamp.time === this.timestamp.time) {
-      this.timestamp.count += 1;
-    } else if (this.timestamp.time === incoming.time) {
-      this.timestamp.count = incoming.count + 1;
+      this.timestamp = {
+        ...this.timestamp,
+        count: this.max(prevTimestamp.count, incomingTimestamp.count),
+      };
+    } else if (prevTimestamp.time === this.timestamp.time) {
+      this.timestamp = { ...this.timestamp, count: this.timestamp.count += 1 };
+    } else if (this.timestamp.time === incomingTimestamp.time) {
+      this.timestamp = {
+        ...this.timestamp,
+        count: incomingTimestamp.count + 1,
+      };
     } else {
-      this.timestamp.count = 0;
+      this.timestamp = { ...this.timestamp, count: 0 };
     }
   }
 

@@ -52,25 +52,39 @@ export const createPipelineType = <O extends Operation<any>>(
       },
     },
   };
+
+  const operations: Operation<any>[] = [];
+
   const idMap = new Map<Id, Atom>();
   idMap.set(null, operationTree);
+
+  const failedOperations: Operation<any>[] = [];
 
   const getSize = () => sizeof({ operationTree, idMap });
 
   return {
     ingress(operation: O) {
-      const atom = {
-        operation,
-        children: [],
-      };
+      operations.push(operation);
 
-      idMap.set(operation.id, atom);
-      idMap.get(operation.locationId).children.push(atom);
-      // sort children
+      if (idMap.has(operation.locationId)) {
+        const atom = {
+          operation,
+          children: [],
+        };
 
-      console.log(Math.round(getSize() / 1024), 'KB');
+        idMap.set(operation.id, atom);
+        idMap.get(operation.locationId).children.push(atom);
+        idMap.get(operation.locationId).children.sort(operationSort);
+      } else {
+        console.log(`failed operation! requires`, operation.locationId);
+        failedOperations.push(operation);
+      }
     },
-    getLocationIdAtIndex: (index: number) => null,
+    getLocationIdAtIndex: (index: number) => {
+      return operations.length > 0
+        ? operations[operations.length - 1].id
+        : null;
+    },
     operationTree,
   };
 };

@@ -2,7 +2,7 @@ interface Clock {
   (): number;
 }
 
-interface Timestamp {
+export interface Timestamp {
   time: number;
   count: number;
 }

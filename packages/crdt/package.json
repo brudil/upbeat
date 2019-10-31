@@ -4,7 +4,12 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "nanoevents": "^2.0.0",
+    "object-sizeof": "^1.5.2",
     "parcel": "^1.12.4",
     "typescript": "^3.6.4"
+  },
+  "devDependencies": {
+    "@types/nanoevents": "^1.0.0"
   }
 }

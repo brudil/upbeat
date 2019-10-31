@@ -1,12 +1,19 @@
-import { HLC } from './timestamp';
+import { createClient } from './client';
+import { createClientManager } from './clientManager';
 
-const bob = new HLC(Date.now);
-const al = new HLC(Date.now);
+const manager = createClientManager();
+const james = createClient();
+const al = createClient();
+const fran = createClient();
+const andy = createClient();
 
-console.log(bob);
+manager.addClient(james);
+manager.addClient(al);
+manager.addClient(fran);
+manager.addClient(andy);
 
-console.log(bob.now());
-console.log(bob.update(al.now()));
-console.log(bob.now());
-console.log(bob.now());
-console.log(bob.now());
+james.insertCharAt(0, 'j');
+james.insertCharAt(0, 'a');
+james.insertCharAt(0, 'm');
+james.insertCharAt(0, 'e');
+james.insertCharAt(0, 's');

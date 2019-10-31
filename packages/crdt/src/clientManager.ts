@@ -6,7 +6,7 @@ export enum ClientStatus {
   OFFLINE,
 }
 
-interface ClientContainer {
+export interface ClientContainer {
   client: Client;
   status: ClientStatus;
   operationQueue: Operation<any>[];
@@ -14,12 +14,13 @@ interface ClientContainer {
 
 export function createClientManager() {
   const clients = new Map<UUID, ClientContainer>();
+  const operationLog: Operation<any>[] = [];
 
   const networkOperation = (client: Client, operation: any) => {
     clients.forEach((clientContainer) => {
-      if (clientContainer.client.siteId !== client.siteId) {
-        clientContainer.operationQueue.push(operation);
-      }
+      // if (clientContainer.client.siteId !== client.siteId) {
+      clientContainer.operationQueue.push(operation);
+      // }
     });
   };
 
@@ -41,8 +42,11 @@ export function createClientManager() {
         operationQueue: [],
       });
       client.on('send', (operation) => {
+        operationLog.push(operation);
         networkOperation(client, operation);
       });
     },
+    clients,
+    operationLog,
   };
 }

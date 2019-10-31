@@ -1,19 +1,25 @@
 import { createClient } from './client';
 import { createClientManager } from './clientManager';
+import ReactDOM from 'react-dom';
+import React from 'react';
+import { Application } from './playgroundui/Application';
+// import './main.css';
 
-const manager = createClientManager();
-const james = createClient();
-const al = createClient();
-const fran = createClient();
-const andy = createClient();
+// Our local networking manager.
+// const manager = createClientManager();
+//
+// const james = createClient({ debugSiteId: 'james' });
+// const al = createClient({ debugSiteId: 'al' });
+// const fran = createClient({ debugSiteId: 'fran' });
+// const andy = createClient({ debugSiteId: 'andy' });
+//
+// manager.addClient(james);
+// manager.addClient(al);
+// manager.addClient(fran);
+// manager.addClient(andy);
+//
 
-manager.addClient(james);
-manager.addClient(al);
-manager.addClient(fran);
-manager.addClient(andy);
-
-james.insertCharAt(0, 'j');
-james.insertCharAt(0, 'a');
-james.insertCharAt(0, 'm');
-james.insertCharAt(0, 'e');
-james.insertCharAt(0, 's');
+ReactDOM.render(
+  React.createElement(Application),
+  document.querySelector('#app'),
+);

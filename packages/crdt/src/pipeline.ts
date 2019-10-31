@@ -4,12 +4,34 @@ import { Atom, Id, Operation } from './types';
 type PipelineReducer = () => any;
 type PipelineMapper = () => any;
 
-const operationSort = (a: Operation<any>, b: Operation<any>) => {
-  return a.id.timestamp.time > b.id.timestamp.time ||
-    (a.id.timestamp.time === b.id.timestamp.time &&
-      a.id.timestamp.count > b.id.timestamp.count)
-    ? 1
-    : 0;
+const operationSort = (aAtom: Atom, bAtom: Atom): number => {
+  const a = aAtom.operation;
+  const b = bAtom.operation;
+
+  // if time is bigger, we're sorted lads
+  if (a.id.timestamp.time > b.id.timestamp.time) {
+    return -1;
+  }
+
+  // if we're matched on time, let's see if the counts differ.
+  if (
+    a.id.timestamp.time === b.id.timestamp.time &&
+    a.id.timestamp.count > b.id.timestamp.count
+  ) {
+    return -1;
+  }
+
+  // if time and counters are matched, we fall to site id.
+  if (
+    a.id.timestamp.time === b.id.timestamp.time &&
+    a.id.timestamp.count === b.id.timestamp.count &&
+    a.id.siteId > b.id.siteId
+  ) {
+    return -1;
+  }
+
+  // if none of these are bigger, it's probs time to admit that b is bigger.
+  return 1;
 };
 
 export const createPipelineType = <O extends Operation<any>>(

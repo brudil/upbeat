@@ -1,4 +1,4 @@
-import { Id, Operation, UUID } from './types';
+import { Atom, Id, Operation, UUID } from './types';
 import { HLC } from './timestamp';
 import {
   CharOperationTypes,
@@ -17,10 +17,11 @@ export interface Client {
   insertCharAt(index: number, char: string);
   removeCharAt(index: number);
   text: any;
+  assembleString(): string;
 }
 
-export function createClient(): Client {
-  const siteId: UUID = uuid();
+export function createClient(options: { debugSiteId?: string } = {}): Client {
+  const siteId: UUID = options.debugSiteId || uuid();
   const clock = new HLC(Date.now);
   const emitter = new NanoEvents<{
     send: Operation<any>;
@@ -31,10 +32,30 @@ export function createClient(): Client {
   };
 
   const createId = (): Id => {
-    return {
+    return Object.freeze({
       siteId,
       timestamp: clock.now(),
+    });
+  };
+
+  const assembleString = () => {
+    let chars = [];
+
+    const tree = (atoms: Atom[]) => {
+      atoms.forEach((atom) => {
+        if (atom.operation.value.type === CharOperationTypes.DELETE) {
+          chars.pop();
+        } else {
+          chars = chars.concat(atom.operation.value.contents);
+        }
+
+        tree(atom.children);
+      });
     };
+
+    tree(data.text.operationTree.children);
+
+    return chars.join('');
   };
 
   return {
@@ -42,7 +63,9 @@ export function createClient(): Client {
     siteId,
     createId,
     on: emitter.on.bind(emitter),
+    assembleString,
     receive(operation: Operation<any>) {
+      clock.update(operation.id.timestamp);
       data.text.ingress(operation);
     },
     insertCharAt(index, char) {
@@ -55,7 +78,7 @@ export function createClient(): Client {
         },
       };
 
-      data.text.ingress(operation);
+      // data.text.ingress(operation);
       emitter.emit('send', operation);
     },
     removeCharAt(index) {},

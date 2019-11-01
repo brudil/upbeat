@@ -1,5 +1,5 @@
 import { Atom, Id, Operation, UUID } from './types';
-import { HLC } from './timestamp';
+import { createHLCClock } from './timestamp';
 import {
   CharOperationTypes,
   createStringPipeline,
@@ -22,7 +22,7 @@ export interface Client {
 
 export function createClient(options: { debugSiteId?: string } = {}): Client {
   const siteId: UUID = options.debugSiteId || uuid();
-  const clock = new HLC(Date.now);
+  const clock = createHLCClock(Date.now);
   const emitter = new NanoEvents<{
     send: Operation<any>;
   }>();

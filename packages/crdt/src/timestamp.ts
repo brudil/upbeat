@@ -7,66 +7,59 @@ export interface Timestamp {
   count: number;
 }
 
-export class HLC {
-  public static global = new HLC(Date.now);
-  clock: Clock;
-  timestamp: Timestamp;
+const max = (...numbers: number[]) => {
+  return numbers.reduce(
+    (prev, current) => (prev > current ? prev : current),
+    0,
+  );
+};
 
-  constructor(clock: Clock) {
-    this.clock = clock;
-    this.timestamp = {
-      time: 0,
-      count: 0,
-    };
-  }
+export const createHLCClock = (clock: Clock) => {
+  let timestamp: Timestamp = {
+    time: 0,
+    count: 0,
+  };
 
-  public now() {
-    const currentTimestamp = { ...this.timestamp };
-    this.timestamp.time = this.max(this.timestamp.time, this.clock());
+  return {
+    now() {
+      const currentTimestamp = { ...timestamp };
+      timestamp = { ...timestamp, time: max(timestamp.time, clock()) };
 
-    if (this.timestamp.time !== currentTimestamp.time) {
-      this.timestamp.count = 0;
-      return this.timestamp;
-    }
+      if (timestamp.time !== currentTimestamp.time) {
+        timestamp = { ...timestamp, count: 0 };
+        return Object.freeze(timestamp);
+      }
 
-    this.timestamp.count += 1;
+      timestamp = { ...timestamp, count: timestamp.count + 1 };
 
-    return Object.freeze({ ...this.timestamp });
-  }
+      return Object.freeze({ ...timestamp });
+    },
+    update(incomingTimestamp: Timestamp) {
+      const prevTimestamp = { ...timestamp };
 
-  public update(incomingTimestamp: Timestamp) {
-    const prevTimestamp = { ...this.timestamp };
-
-    this.timestamp.time = this.max(
-      prevTimestamp.time,
-      incomingTimestamp.time,
-      this.clock(),
-    );
-
-    if (
-      this.timestamp.time === prevTimestamp.time &&
-      incomingTimestamp.time === prevTimestamp.time
-    ) {
-      this.timestamp = {
-        ...this.timestamp,
-        count: this.max(prevTimestamp.count, incomingTimestamp.count),
+      timestamp = {
+        ...timestamp,
+        time: max(prevTimestamp.time, incomingTimestamp.time, clock()),
       };
-    } else if (prevTimestamp.time === this.timestamp.time) {
-      this.timestamp = { ...this.timestamp, count: this.timestamp.count += 1 };
-    } else if (this.timestamp.time === incomingTimestamp.time) {
-      this.timestamp = {
-        ...this.timestamp,
-        count: incomingTimestamp.count + 1,
-      };
-    } else {
-      this.timestamp = { ...this.timestamp, count: 0 };
-    }
-  }
 
-  private max(...numbers: number[]) {
-    return numbers.reduce(
-      (prev, current) => (prev > current ? prev : current),
-      0,
-    );
-  }
-}
+      if (
+        timestamp.time === prevTimestamp.time &&
+        incomingTimestamp.time === prevTimestamp.time
+      ) {
+        timestamp = {
+          ...timestamp,
+          count: max(prevTimestamp.count, incomingTimestamp.count),
+        };
+      } else if (prevTimestamp.time === timestamp.time) {
+        timestamp = { ...timestamp, count: timestamp.count += 1 };
+      } else if (timestamp.time === incomingTimestamp.time) {
+        timestamp = {
+          ...timestamp,
+          count: incomingTimestamp.count + 1,
+        };
+      } else {
+        timestamp = { ...timestamp, count: 0 };
+      }
+    },
+  };
+};

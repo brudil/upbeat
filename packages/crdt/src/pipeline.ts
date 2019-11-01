@@ -86,5 +86,6 @@ export const createPipelineType = <O extends Operation<any>>(
         : null;
     },
     operationTree,
+    getSize,
   };
 };

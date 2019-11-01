@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ClientContainer } from '../clientManager';
+import { ClientContainer, ClientStatus } from '../clientManager';
 import { Atom } from '../types';
 import { OperationTreeVisualisation } from './OperationTreeVisualisation';
 import { Heading } from './Heading';
@@ -29,10 +29,24 @@ export const Client: React.FC<{ clientContainer: ClientContainer }> = ({
 }) => {
   // const transform = useMemo(() => , [clientContainer.client.text.operationTree]);
 
+  const online = clientContainer.status === ClientStatus.ONLINE;
   return (
     <div className="p-3 bg-blue-100 my-2">
-      <Heading>{clientContainer.client.siteId}</Heading>
-      <div>{clientContainer.client.assembleString()}</div>
+      <Heading>
+        <span className="mr-2">{clientContainer.client.siteId}</span>
+        <span className={online ? 'text-green-700 mr-2' : 'text-red-700 mr-2'}>
+          {online ? 'Online' : 'Offline'}
+        </span>
+        <span className="text-orange-700 mr-2">
+          {clientContainer.operationQueue.length > 0
+            ? `${clientContainer.operationQueue.length} in queue`
+            : ''}
+        </span>
+        <span className="float-right">
+          {(clientContainer.client.text.getSize() / 1024).toPrecision(2)}KB
+        </span>
+      </Heading>
+      <textarea value={clientContainer.client.assembleString()} />
       <div className="h-64">
         <OperationTreeVisualisation
           tree={opTreeTransform(clientContainer.client.text.operationTree)}

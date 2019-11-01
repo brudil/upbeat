@@ -55,7 +55,7 @@ export const createPipelineType = <O extends Operation<any>>(
 
   const operations: Operation<any>[] = [];
 
-  const idMap = new Map<Id, Atom>();
+  const idMap = new Map<Id | null, Atom>();
   idMap.set(null, operationTree);
 
   const failedOperations: Operation<any>[] = [];
@@ -64,8 +64,12 @@ export const createPipelineType = <O extends Operation<any>>(
 
   return {
     ingress(operation: O) {
-      operations.push(operation);
+      if (idMap.has(operation.id)) {
+        console.log('received duplicate operation, skipping');
+        return;
+      }
 
+      operations.push(operation);
       if (idMap.has(operation.locationId)) {
         const atom = {
           operation,

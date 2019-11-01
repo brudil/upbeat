@@ -36,8 +36,15 @@ export function createNetworkSimulator() {
 
   emitter.on('tick', () => {
     clients.forEach((clientContainer) => {
-      if (clientContainer.operationQueue.length > 0) {
-        clientContainer.client.receive(clientContainer.operationQueue.shift());
+      if (
+        clientContainer.operationQueue.length > 0 &&
+        clientContainer.status === ClientStatus.ONLINE
+      ) {
+        const op = clientContainer.operationQueue.shift();
+        setTimeout(
+          () => clientContainer.client.receive(op),
+          Math.round(Math.random() * 10) * 10,
+        );
       }
     });
   });
@@ -56,5 +63,6 @@ export function createNetworkSimulator() {
     },
     clients,
     operationLog,
+    on: emitter.on.bind(emitter),
   };
 }

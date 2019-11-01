@@ -29,14 +29,27 @@ export const Application = () => {
   const [tick, forceUpdate] = useState(0);
 
   useEffect(() => {
-    setInterval(() => {
-      forceUpdate((number) => number + 1);
-    }, 100);
+    manager.on('tick', (tickCount) => forceUpdate(tickCount));
   }, []);
+
+  const consistent = Array.from(manager.clients.values()).every(
+    (clientContainer, _i, arr) =>
+      clientContainer.client.assembleString() ===
+      arr[0].client.assembleString(),
+  );
 
   return (
     <div>
-      <h1 className="text-2xl">CRDT Playground</h1>
+      <h1 className="text-2xl">
+        CRDT Playground{' '}
+        <span
+          className={`float-right uppercase font-bold text-base text-${
+            consistent ? 'green' : 'red'
+          }-600`}
+        >
+          {consistent ? 'Consistent' : 'Inconsistent'}
+        </span>
+      </h1>
       <div className="flex flex-row">
         <div className="p-2 m-2 bg-gray-100 w-1/6 ">
           <Heading>Settings</Heading>

@@ -1,3 +1,4 @@
+import NanoEvents from 'nanoevents';
 import { Client } from './client';
 import { Operation, UUID } from './types';
 
@@ -12,9 +13,13 @@ export interface ClientContainer {
   operationQueue: Operation<any>[];
 }
 
-export function createClientManager() {
+export function createNetworkSimulator() {
   const clients = new Map<UUID, ClientContainer>();
   const operationLog: Operation<any>[] = [];
+  const emitter = new NanoEvents<{
+    tick: number;
+  }>();
+  let tickCount = 0;
 
   const networkOperation = (client: Client, operation: any) => {
     clients.forEach((clientContainer) => {
@@ -25,17 +30,20 @@ export function createClientManager() {
   };
 
   setInterval(() => {
+    tickCount = tickCount + 1;
+    emitter.emit('tick', tickCount);
+  }, 100);
+
+  emitter.on('tick', () => {
     clients.forEach((clientContainer) => {
       if (clientContainer.operationQueue.length > 0) {
         clientContainer.client.receive(clientContainer.operationQueue.shift());
       }
     });
-  }, 100);
+  });
 
   return {
-    addClient(client: Client) {
-      console.log(`client ${client.siteId} registered, they are ONLINE`);
-      console.log(client);
+    attachClient(client: Client) {
       clients.set(client.siteId, {
         client,
         status: ClientStatus.ONLINE,

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ClientContainer, ClientStatus } from '../clientManager';
+import { ClientContainer, ClientStatus } from '../networkSimulator';
 import { Atom } from '../types';
 import { OperationTreeVisualisation } from './OperationTreeVisualisation';
 import { Heading } from './Heading';

@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Heading } from './Heading';
 
-import { createClientManager } from '../clientManager';
+import { createNetworkSimulator } from '../networkSimulator';
 import { createClient } from '../client';
 import { Client } from './Client';
 
-const manager = createClientManager();
+const manager = createNetworkSimulator();
 
 const james = createClient({ debugSiteId: 'james' });
 const al = createClient({ debugSiteId: 'al' });
 const fran = createClient({ debugSiteId: 'fran' });
 const andy = createClient({ debugSiteId: 'andy' });
 
-manager.addClient(james);
-manager.addClient(al);
-manager.addClient(fran);
-manager.addClient(andy);
+manager.attachClient(james);
+manager.attachClient(al);
+manager.attachClient(fran);
+manager.attachClient(andy);
 
 setTimeout(() => james.insertCharAt(0, 'j'), 200);
 setTimeout(() => james.insertCharAt(0, 'a'), 201);

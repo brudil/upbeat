@@ -14,8 +14,8 @@ export interface Client {
   on: NanoEvents<any>['on'];
   receive(operation: Operation<any>): void;
 
-  insertCharAt(index: number, char: string);
-  removeCharAt(index: number);
+  insertCharAt(index: number, char: string): void;
+  removeCharAt(index: number): void;
   text: any;
   assembleString(): string;
 }
@@ -39,7 +39,7 @@ export function createClient(options: { debugSiteId?: string } = {}): Client {
   };
 
   const assembleString = () => {
-    let chars = [];
+    let chars: string[] = [];
 
     const tree = (atoms: Atom[]) => {
       atoms.forEach((atom) => {
@@ -78,7 +78,7 @@ export function createClient(options: { debugSiteId?: string } = {}): Client {
         },
       };
 
-      // data.text.ingress(operation);
+      data.text.ingress(operation);
       emitter.emit('send', operation);
     },
     removeCharAt(index) {},

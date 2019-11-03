@@ -1,8 +1,18 @@
 {
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "react", "react-hooks"],
-  "extends": ["plugin:@typescript-eslint/recommended", "plugin:react/recommended"],
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "prettier",
+    "prettier/@typescript-eslint"
+  ],
   "rules": {
+    "react/prop-types": "off",
+    "@typescript-eslint/explicit-function-return-type": ["warn", {
+      "allowExpressions": true,
+      "allowTypedFunctionExpressions": true
+    }],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
   }

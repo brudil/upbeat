@@ -1,8 +1,9 @@
-import { Atom, Id, Operation, UUID } from './types';
+import { Id, Operation, UUID } from './types';
 import { createHLCClock } from './timestamp';
 import {
   CharOperationTypes,
   createStringPipeline,
+  DeleteCharOperation,
   InsertCharOperation,
 } from './structures/string';
 import NanoEvents from 'nanoevents';
@@ -38,32 +39,12 @@ export function createClient(options: { debugSiteId?: string } = {}): Client {
     });
   };
 
-  const assembleString = () => {
-    let chars: string[] = [];
-
-    const tree = (atoms: Atom[]) => {
-      atoms.forEach((atom) => {
-        if (atom.operation.value.type === CharOperationTypes.DELETE) {
-          chars.pop();
-        } else {
-          chars = chars.concat(atom.operation.value.contents);
-        }
-
-        tree(atom.children);
-      });
-    };
-
-    tree(data.text.operationTree.children);
-
-    return chars.join('');
-  };
-
   return {
     text: data.text,
     siteId,
     createId,
     on: emitter.on.bind(emitter),
-    assembleString,
+    assembleString: data.text.getString,
     receive(operation: Operation<any>) {
       clock.update(operation.id.timestamp);
       data.text.ingress(operation);
@@ -81,6 +62,17 @@ export function createClient(options: { debugSiteId?: string } = {}): Client {
       data.text.ingress(operation);
       emitter.emit('send', operation);
     },
-    removeCharAt(index) {},
+    removeCharAt(index) {
+      const operation: DeleteCharOperation = {
+        id: createId(),
+        locationId: data.text.getLocationIdAtIndex(index),
+        value: {
+          type: CharOperationTypes.DELETE,
+        },
+      };
+
+      data.text.ingress(operation);
+      emitter.emit('send', operation);
+    },
   };
 }

@@ -1,5 +1,6 @@
 import sizeof from 'object-sizeof';
 import { Atom, Id, Operation } from './types';
+import { CharOperationTypes } from './structures/string';
 
 type PipelineReducer = () => any;
 type PipelineMapper = () => any;
@@ -62,6 +63,37 @@ export const createPipelineType = <O extends Operation<any>>(
 
   const getSize = () => sizeof({ operationTree, idMap });
 
+  let data: string = '';
+  let idCache: Id[] = [];
+
+  const assembleCache = () => {
+    let chars: string[] = [];
+    let ids: Id[] = [];
+
+    ids.push(operationTree.operation.id);
+
+    const tree = (atoms: Atom[]) => {
+      atoms.forEach((atom) => {
+        if (atom.operation.value.type === CharOperationTypes.DELETE) {
+          chars.pop();
+          ids.pop();
+        } else {
+          chars = chars.concat(atom.operation.value.contents);
+          ids.push(atom.operation.id);
+        }
+
+        tree(atom.children);
+      });
+    };
+
+    tree(operationTree.children);
+
+    data = chars.join('');
+    idCache = ids;
+  };
+  console.log(idMap);
+  assembleCache();
+
   return {
     ingress(operation: O) {
       if (idMap.has(operation.id)) {
@@ -79,17 +111,24 @@ export const createPipelineType = <O extends Operation<any>>(
         idMap.set(operation.id, atom);
         idMap.get(operation.locationId).children.push(atom);
         idMap.get(operation.locationId).children.sort(operationSort);
+
+        assembleCache();
       } else {
         console.log(`failed operation! requires`, operation.locationId);
         failedOperations.push(operation);
       }
     },
     getLocationIdAtIndex: (index: number) => {
-      return operations.length > 0
-        ? operations[operations.length - 1].id
-        : null;
+      if (index > idCache.length) {
+        return idCache[idCache.length - 1];
+      }
+
+      return idCache[index];
     },
     operationTree,
     getSize,
+    getString() {
+      return data;
+    },
   };
 };

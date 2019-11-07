@@ -1,8 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { ClientContainer, ClientStatus } from '../networkSimulator';
 import { Atom } from '../types';
 import { OperationTreeVisualisation } from './OperationTreeVisualisation';
 import { Heading } from './Heading';
+import { Simulate } from 'react-dom/test-utils';
+import change = Simulate.change;
+import { Editor } from '@withcue/client/src/components/Editor';
 
 const opTreeTransform = (op: Atom) => {
   return {
@@ -24,10 +27,48 @@ const opTreeTransform = (op: Atom) => {
   };
 };
 
+const getInsertAndIndex = (
+  current: string,
+  changeStr: string,
+): null | [string, number] => {
+  const currentArr = current.split('');
+  const changeArr = changeStr.split('');
+
+  if (currentArr.length > changeArr.length) {
+    // handle delete
+  } else {
+    //handle insert
+    let change: undefined | null | [string, number] = undefined;
+    changeArr.forEach((char, index) => {
+      if (change === null) return;
+      if (char !== currentArr[index]) {
+        change = [char, index];
+      }
+    });
+
+    return change || null;
+  }
+
+  return null;
+};
+
 export const Client: React.FC<{ clientContainer: ClientContainer }> = ({
   clientContainer,
 }) => {
   // const transform = useMemo(() => , [clientContainer.client.text.operationTree]);
+
+  const handleType = useCallback((event) => {
+    const nextText = event.target.value;
+    const change = getInsertAndIndex(
+      clientContainer.client.assembleString(),
+      nextText,
+    );
+    console.log(change);
+
+    if (change !== null) {
+      clientContainer.client.insertCharAt(change[1], change[0]);
+    }
+  }, []);
 
   const online = clientContainer.status === ClientStatus.ONLINE;
   return (
@@ -56,7 +97,10 @@ export const Client: React.FC<{ clientContainer: ClientContainer }> = ({
           {(clientContainer.client.text.getSize() / 1024).toPrecision(2)}KB
         </span>
       </Heading>
-      <textarea value={clientContainer.client.assembleString()} />
+      <textarea
+        value={clientContainer.client.assembleString()}
+        onChange={handleType}
+      />
       <div className="h-64">
         <OperationTreeVisualisation
           tree={opTreeTransform(clientContainer.client.text.operationTree)}

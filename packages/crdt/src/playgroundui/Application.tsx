@@ -18,12 +18,14 @@ manager.attachClient(fran);
 manager.attachClient(andy);
 
 setTimeout(() => james.insertCharAt(0, 'j'), 200);
-setTimeout(() => james.insertCharAt(0, 'a'), 201);
-setTimeout(() => james.insertCharAt(0, 'm'), 202);
-setTimeout(() => fran.insertCharAt(0, 'e'), 200);
-setTimeout(() => andy.insertCharAt(0, 'z'), 600);
-setTimeout(() => james.removeCharAt(6), 666);
-setTimeout(() => james.insertCharAt(0, 's'), 10000);
+setTimeout(() => james.insertCharAt(1, 'a'), 201);
+setTimeout(() => james.insertCharAt(2, 'm'), 202);
+setTimeout(() => fran.insertCharAt(2, 'f'), 300);
+setTimeout(() => andy.insertCharAt(3, 'z'), 400);
+setTimeout(() => james.removeCharAt(4), 666);
+setTimeout(() => james.insertCharAt(4, 's'), 10000);
+
+// setInterval(() => james.insertCharAt(0, 'x'), 20)
 
 export const Application = () => {
   const [tick, forceUpdate] = useState(0);

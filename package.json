@@ -6,7 +6,9 @@
   "scripts": {
     "format": "prettier \"packages/*/src/**/*.{ts,tsx,js,css,graphql}\" --write",
     "lint": "eslint \"packages/*/src/**/*.{ts,tsx}\"",
-    "test": "jest"
+    "test-ci": "yarn test-coverage --color -i --config jest.config.ci.js",
+    "test": "jest",
+    "test-coverage": "yarn test --coverage"
   },
   "devDependencies": {
     "@types/jest": "^24.0.22",
@@ -18,6 +20,8 @@
     "eslint-plugin-react-hooks": "^2.2.0",
     "husky": "^3.0.9",
     "jest": "^24.9.0",
+    "jest-junit": "^9.0.0",
+    "jest-silent-reporter": "^0.1.2",
     "lint-staged": "^9.4.2",
     "prettier": "^1.18.2",
     "ts-jest": "^24.1.0"

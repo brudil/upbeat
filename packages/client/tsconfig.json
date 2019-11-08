@@ -2,7 +2,7 @@
     "compileOnSave": false,
     "compilerOptions": {
       "allowSyntheticDefaultImports": true,
-      "types": ["@emotion/core"],
+      "types": ["@emotion/core", "@types/jest"],
       "lib": [
         "dom",
         "es2015",

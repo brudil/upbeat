@@ -4,6 +4,7 @@ import {
   isLaterTimestamp,
   max,
 } from '../timestamp';
+import { sleep } from '@withcue/rush-testing/src/sleep';
 
 it('should create a clock', function() {
   const clock = createHLCClock(Date.now);
@@ -11,7 +12,7 @@ it('should create a clock', function() {
   expect(clock).toBeDefined();
 });
 
-it('should create a timestamp', function() {
+it('should create a timestamp', async function() {
   const clock = createHLCClock(Date.now);
 
   const timeA = clock.now();
@@ -24,6 +25,12 @@ it('should create a timestamp', function() {
 
   expect(isEqualTimestamp(timeB, timeB)).toBeTruthy();
   expect(isEqualTimestamp(timeB, timeA)).toBeFalsy();
+
+  await sleep(30);
+
+  const timeC = clock.now();
+
+  expect(isLaterTimestamp(timeC, timeB)).toBeTruthy();
 });
 
 it('should update with remote timestamp', function() {

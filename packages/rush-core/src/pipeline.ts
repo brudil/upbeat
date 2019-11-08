@@ -27,8 +27,8 @@ const operationSort = (aAtom: Atom, bAtom: Atom): number => {
 };
 
 export const createPipelineType = <O extends Operation<any>>(
-  reducer: PipelineReducer,
-  mapper: PipelineMapper,
+  _reducer: PipelineReducer,
+  _mapper: PipelineMapper,
 ) => () => {
   const operationTree: Atom = {
     children: [],
@@ -54,12 +54,12 @@ export const createPipelineType = <O extends Operation<any>>(
 
   const getSize = () => sizeof({ operationTree, idMap });
 
-  let data: string = '';
+  let data = '';
   let idCache: Id[] = [];
 
   const assembleCache = () => {
     let chars: string[] = [];
-    let ids: Id[] = [];
+    const ids: Id[] = [];
 
     ids.push(operationTree.operation.id);
 
@@ -94,14 +94,15 @@ export const createPipelineType = <O extends Operation<any>>(
 
       operations.push(operation);
       if (idMap.has(operation.locationId)) {
+        const locId = (idMap.get(operation.locationId) as unknown) as Atom;
         const atom = {
           operation,
           children: [],
         };
 
         idMap.set(operation.id, atom);
-        idMap.get(operation.locationId).children.push(atom);
-        idMap.get(operation.locationId).children.sort(operationSort);
+        locId.children.push(atom);
+        locId.children.sort(operationSort);
 
         assembleCache();
       } else {

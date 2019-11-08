@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Heading } from './Heading';
 
-import { createNetworkSimulator } from '../networkSimulator';
-import { createClient } from '../client';
+import { createNetworkSimulator } from '@withcue/rush-core/src/networkSimulator';
+import { createClient } from '@withcue/rush-core/src/client';
 import { Client } from './Client';
 
 const manager = createNetworkSimulator();

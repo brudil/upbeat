@@ -7,11 +7,26 @@ export interface Timestamp {
   count: number;
 }
 
-const max = (...numbers: number[]) => {
+export const max = (...numbers: number[]) => {
   return numbers.reduce(
     (prev, current) => (prev > current ? prev : current),
     0,
   );
+};
+
+export const isLaterTimestamp = (timeA: Timestamp, timeB: Timestamp) => {
+  // if time is bigger, we're sorted lads
+  if (timeA.time > timeB.time) {
+    return true;
+  }
+
+  // if we're matched on time, let's see if the counts differ.
+  return timeA.time === timeB.time && timeA.count > timeB.count;
+};
+
+export const isEqualTimestamp = (timeA: Timestamp, timeB: Timestamp) => {
+  // if time is bigger, we're sorted lads
+  return timeA.time === timeB.time && timeA.count === timeB.count;
 };
 
 export const createHLCClock = (clock: Clock) => {

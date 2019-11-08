@@ -21,7 +21,7 @@ export function createNetworkSimulator() {
   }>();
   let tickCount = 0;
 
-  const networkOperation = (client: Client, operation: any) => {
+  const networkOperation = (_client: Client, operation: any) => {
     clients.forEach((clientContainer) => {
       // if (clientContainer.client.siteId !== client.siteId) {
       clientContainer.operationQueue.push(operation);
@@ -41,10 +41,12 @@ export function createNetworkSimulator() {
         clientContainer.status === ClientStatus.ONLINE
       ) {
         const op = clientContainer.operationQueue.shift();
-        setTimeout(
-          () => clientContainer.client.receive(op),
-          Math.round(Math.random() * 10) * 10,
-        );
+        if (op) {
+          setTimeout(
+            () => clientContainer.client.receive(op),
+            Math.round(Math.random() * 10) * 10,
+          );
+        }
       }
     });
   });

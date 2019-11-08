@@ -1,0 +1,18 @@
+{
+  "name": "@withcue/rush-core",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "author": "James Canning <james@jamescanning.com> (http://brudil.com)",
+  "license": "ISC",
+  "dependencies": {
+    "nanoevents": "^2.0.0",
+    "object-sizeof": "^1.5.2",
+    "typescript": "^3.7.2"
+  },
+  "devDependencies": {
+    "@types/nanoevents": "^1.0.0",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.4"
+  }
+}

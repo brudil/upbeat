@@ -1,6 +1,7 @@
 import sizeof from 'object-sizeof';
 import { Atom, Id, Operation } from './types';
 import { CharOperationTypes } from './structures/string';
+import { isEqualTimestamp, isLaterTimestamp } from './timestamp';
 
 type PipelineReducer = () => any;
 type PipelineMapper = () => any;
@@ -9,23 +10,13 @@ const operationSort = (aAtom: Atom, bAtom: Atom): number => {
   const a = aAtom.operation;
   const b = bAtom.operation;
 
-  // if time is bigger, we're sorted lads
-  if (a.id.timestamp.time > b.id.timestamp.time) {
-    return -1;
-  }
-
-  // if we're matched on time, let's see if the counts differ.
-  if (
-    a.id.timestamp.time === b.id.timestamp.time &&
-    a.id.timestamp.count > b.id.timestamp.count
-  ) {
+  if (isLaterTimestamp(a.id.timestamp, b.id.timestamp)) {
     return -1;
   }
 
   // if time and counters are matched, we fall to site id.
   if (
-    a.id.timestamp.time === b.id.timestamp.time &&
-    a.id.timestamp.count === b.id.timestamp.count &&
+    isEqualTimestamp(a.id.timestamp, b.id.timestamp) &&
     a.id.siteId > b.id.siteId
   ) {
     return -1;

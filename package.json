@@ -7,7 +7,7 @@
     "format": "prettier \"packages/*/src/**/*.{ts,tsx,js,css,graphql}\" --write",
     "lint": "eslint \"packages/*/src/**/*.{ts,tsx}\"",
     "test-ci": "yarn test-coverage --color -i --config jest.config.ci.js",
-    "test": "jest",
+    "test": "yarn jest",
     "test-coverage": "yarn test --coverage"
   },
   "devDependencies": {

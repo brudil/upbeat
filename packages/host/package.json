@@ -8,13 +8,13 @@
   "dependencies": {
     "@hapi/cookie": "^10.1.2",
     "@hapi/hapi": "^18.4.0",
-    "argon2": "0.24.1",
+    "argon2": "0.25.1",
     "node-pg-migrate": "^3.23.3",
     "pg": "^7.12.1",
     "redis": "^2.8.0",
-    "slonik": "^19.2.1",
-    "slonik-interceptor-preset": "^1.2.6",
-    "typescript": "^3.6.4",
+    "slonik": "^20.1.1",
+    "slonik-interceptor-preset": "^1.2.7",
+    "typescript": "^3.7.2",
     "uuid": "^3.3.3",
     "uws": "^100.0.1",
     "ws": "^7.2.0"
@@ -26,8 +26,8 @@
   "devDependencies": {
     "@types/argon2": "^0.15.0",
     "@types/hapi__cookie": "^10.1.0",
-    "@types/hapi__hapi": "^18.2.5",
-    "@types/node": "^12.12.3",
+    "@types/hapi__hapi": "^18.2.6",
+    "@types/node": "^12.12.6",
     "@types/redis": "^2.8.14",
     "@types/slonik": "^19.0.1",
     "@types/uuid": "^3.4.6",

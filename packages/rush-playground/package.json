@@ -11,12 +11,12 @@
     "react-d3-tree": "^1.15.3",
     "react-dom": "^16.11.0",
     "tailwindcss": "^1.1.3",
-    "typescript": "^3.6.4"
+    "typescript": "^3.7.2"
   },
   "devDependencies": {
     "@types/nanoevents": "^1.0.0",
     "@types/react": "^16.9.11",
-    "@types/react-dom": "^16.9.3",
+    "@types/react-dom": "^16.9.4",
     "postcss-import": "^12.0.1"
   }
 }

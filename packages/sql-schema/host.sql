@@ -45,6 +45,29 @@ CREATE TABLE public.organisations (
 
 
 
+CREATE TABLE public.rush_document (
+    id uuid NOT NULL,
+    type text NOT NULL
+);
+
+
+
+CREATE TABLE public.rush_operation (
+    id uuid NOT NULL,
+    document_id uuid,
+    data json DEFAULT '{}'::json
+);
+
+
+
+CREATE TABLE public.rush_snapshot (
+    id uuid NOT NULL,
+    document_id uuid,
+    snapshot_of timestamp without time zone
+);
+
+
+
 CREATE TABLE public.shows (
     name text DEFAULT public.gen_random_uuid() NOT NULL,
     id uuid NOT NULL,
@@ -75,6 +98,21 @@ ALTER TABLE ONLY public.organisations
 
 
 
+ALTER TABLE ONLY public.rush_document
+    ADD CONSTRAINT rush_doc_pkey PRIMARY KEY (id);
+
+
+
+ALTER TABLE ONLY public.rush_operation
+    ADD CONSTRAINT rush_operation_pkey PRIMARY KEY (id);
+
+
+
+ALTER TABLE ONLY public.rush_snapshot
+    ADD CONSTRAINT rush_snapshot_pkey PRIMARY KEY (id);
+
+
+
 ALTER TABLE ONLY public.shows
     ADD CONSTRAINT shows_pkey PRIMARY KEY (id);
 
@@ -91,6 +129,16 @@ CREATE TRIGGER update_user_modified BEFORE UPDATE ON public.users FOR EACH ROW E
 
 ALTER TABLE ONLY public.episodes
     ADD CONSTRAINT episodes_show_id_fkey FOREIGN KEY (show_id) REFERENCES public.shows(id);
+
+
+
+ALTER TABLE ONLY public.rush_operation
+    ADD CONSTRAINT rush_operation_document_id_fkey FOREIGN KEY (document_id) REFERENCES public.rush_document(id);
+
+
+
+ALTER TABLE ONLY public.rush_snapshot
+    ADD CONSTRAINT rush_snapshot_document_id_fkey FOREIGN KEY (document_id) REFERENCES public.rush_document(id);
 
 
 

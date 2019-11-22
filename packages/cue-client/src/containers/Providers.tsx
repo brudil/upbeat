@@ -1,8 +1,8 @@
 import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
-import { RushProvider } from '../../../rush/src/context';
+import { RushProvider } from '@rush/client/src/context';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { createRush } from '../../../rush/src/rush';
+import { createRush } from '@rush/client/src/rush';
 
 const rush = createRush();
 

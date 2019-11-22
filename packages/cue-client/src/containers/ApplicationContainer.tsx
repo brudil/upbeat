@@ -5,7 +5,7 @@ import { Global } from '@emotion/core';
 import { Helmet } from 'react-helmet-async';
 import { Episode } from './Episode';
 import { Providers } from './Providers';
-import { useRushState } from '../../../rush/src/context';
+import { useRushState } from '@rush/client/src/context';
 import { AuthLogin } from './AuthLogin';
 import { MarketingHomepage } from './MarketingHomepage';
 

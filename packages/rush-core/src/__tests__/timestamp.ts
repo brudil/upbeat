@@ -4,7 +4,7 @@ import {
   isLaterTimestamp,
   max,
 } from '../timestamp';
-import { sleep } from '@withcue/rush-testing/src/sleep';
+import { sleep } from '@rush/testing/src/sleep';
 
 it('should create a clock', function() {
   const clock = createHLCClock(Date.now);

@@ -8,7 +8,7 @@ import { keymap } from 'prosemirror-keymap';
 import { redo, undo, history } from 'prosemirror-history';
 import { Global } from '@emotion/core';
 import { proseMirrorStyles } from './styles';
-import { useRush } from '../../../../rush/src/context';
+import { useRush } from '@rush/client/src/context';
 
 export const Editor = () => {
   const ref = useRef<null | HTMLDivElement>(null);

@@ -45,7 +45,6 @@ const MenuItem: React.FC<{ to: string }> = ({ to, children }) => {
           color: '#333333',
           '&:after': {
             content: '""',
-            // width: 0,
             display: 'block',
             position: 'absolute',
             right: 0,

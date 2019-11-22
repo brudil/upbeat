@@ -1,13 +1,10 @@
 import React, { useCallback } from 'react';
-import {
-  ClientContainer,
-  ClientStatus,
-} from '@withcue/rush-core/src/networkSimulator';
-import { Atom } from '@withcue/rush-core/src/types';
+import { ClientContainer, ClientStatus } from '@rush/core/src/networkSimulator';
+import { Atom } from '@rush/core/src/types';
 import { OperationTreeVisualisation } from './OperationTreeVisualisation';
 import { Heading } from './Heading';
 
-const opTreeTransform = (op: Atom) => {
+const opTreeTransform = (op: Atom): any => {
   return {
     name: '',
     attributes: {

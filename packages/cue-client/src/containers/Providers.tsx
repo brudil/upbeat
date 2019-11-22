@@ -1,19 +1,19 @@
 import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
-import { RushProvider } from '@rush/client/src/context';
+import { UpbeatProvider } from '@upbeat/client/src/context';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { createRush } from '@rush/client/src/rush';
+import { createUpbeat } from '@upbeat/client/src/upbeat';
 
-const rush = createRush();
+const upbeat = createUpbeat();
 
-(window as any).rush = rush;
+(window as any).upbeat = upbeat;
 
 export const Providers: React.FC = ({ children }) => {
   return (
     <HelmetProvider>
-      <RushProvider value={rush}>
+      <UpbeatProvider value={upbeat}>
         <Router>{children}</Router>
-      </RushProvider>
+      </UpbeatProvider>
     </HelmetProvider>
   );
 };

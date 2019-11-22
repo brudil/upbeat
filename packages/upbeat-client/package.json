@@ -1,18 +1,19 @@
 {
-  "name": "@rush/core",
+  "name": "@upbeat/client",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "author": "James Canning <james@jamescanning.com> (http://brudil.com)",
   "license": "ISC",
   "dependencies": {
-    "nanoevents": "^2.0.0",
-    "object-sizeof": "^1.5.2",
-    "typescript": "^3.7.2"
+    "immer": "^5.0.0",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "@types/nanoevents": "^1.0.0",
+    "@types/uuid": "^3.4.6"
+  },
+  "peerDependencies": {
     "@types/react": "^16.9.11",
-    "@types/react-dom": "^16.9.4"
+    "react": "^16.11.0"
   }
 }

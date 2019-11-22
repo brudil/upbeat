@@ -1,15 +1,15 @@
 // import uuid = require('uuid');
 //
-// function createRushText(initial: string) {}
+// function createUpbeatText(initial: string) {}
 //
-// const text = createRushText('hello there');
+// const text = createUpbeatText('hello there');
 //
 // class Char {
 //   readonly actorId: string;
 //   readonly value: string;
 // }
 //
-// class RushActor {
+// class UpbeatActor {
 //   readonly actorId: string = uuid.v4();
 //   private data = [];
 //
@@ -23,4 +23,4 @@
 // // server
 //
 // // client
-// useRushDocument(script);
+// useUpbeatDocument(script);

@@ -8,13 +8,13 @@ import { keymap } from 'prosemirror-keymap';
 import { redo, undo, history } from 'prosemirror-history';
 import { Global } from '@emotion/core';
 import { proseMirrorStyles } from './styles';
-import { useRush } from '@rush/client/src/context';
+import { useUpbeat } from '@upbeat/client/src/context';
 
 export const Editor = () => {
   const ref = useRef<null | HTMLDivElement>(null);
   const stateRef = useRef<null | EditorState>(null);
   const viewRef = useRef<null | EditorView>(null);
-  const rush = useRush();
+  const upbeat = useUpbeat();
 
   useEffect(() => {
     if (ref.current !== null) {
@@ -47,14 +47,14 @@ export const Editor = () => {
   const [text, setText] = useState('example');
 
   useEffect(() => {
-    rush.subscribe('edit', (event: any) => {
+    upbeat.subscribe('edit', (event: any) => {
       setText(event.content);
     });
   }, []);
 
   const handleEdit = useCallback((e: any) => {
     const content = e.target.value;
-    rush.operation({ type: 'edit', content });
+    upbeat.operation({ type: 'edit', content });
     setText(content);
   }, []);
 

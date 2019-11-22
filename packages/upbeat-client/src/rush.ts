@@ -2,7 +2,7 @@ import { Patch, produceWithPatches } from 'immer';
 
 type Cb = (data: any) => void;
 
-export interface RushInstance {
+export interface UpbeatInstance {
   operation(event: object): void;
   getState(): any;
   subscribe(eventType: string, cb: Cb): void;
@@ -19,7 +19,7 @@ export interface Store {
   };
 }
 
-const createRushStore = () => {
+const createUpbeatStore = () => {
   const subscriptions = new Map();
   const patches: Patch[] = [];
   const inversePatches: Patch[] = [];
@@ -57,8 +57,8 @@ const createRushStore = () => {
   };
 };
 
-export const createRush = (): RushInstance => {
-  const store = createRushStore();
+export const createUpbeat = (): UpbeatInstance => {
+  const store = createUpbeatStore();
 
   const subscriptions: {
     [key: string]: Cb[];

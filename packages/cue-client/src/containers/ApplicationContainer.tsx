@@ -5,12 +5,12 @@ import { Global } from '@emotion/core';
 import { Helmet } from 'react-helmet-async';
 import { Episode } from './Episode';
 import { Providers } from './Providers';
-import { useRushState } from '@rush/client/src/context';
+import { useUpbeatState } from '@upbeat/client/src/context';
 import { AuthLogin } from './AuthLogin';
 import { MarketingHomepage } from './MarketingHomepage';
 
 export const ApplicationContainerComponent: React.FC = () => {
-  const state = useRushState((store) => store.auth.isAuthenticated);
+  const state = useUpbeatState((store) => store.auth.isAuthenticated);
 
   console.log(state);
   return (

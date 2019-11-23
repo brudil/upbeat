@@ -2,6 +2,29 @@
 
 Cue is a show production system, allowing you to collaboratively write scripts, organise sound effects and create rundowns.
 
+## Packages and libraries
+
+### @upbeat
+
+#### @upbeat/core
+
+#### @upbeat/server
+
+#### @upbeat/client
+
+#### @upbeat/types
+
+#### @upbeat/testing
+
+#### @upbeat/playground
+
+### @withcue
+
+#### @withcue/shared
+#### @withcue/client
+#### @withcue/server
+#### @withcue/desktop
+
 
 ## Work on scripts
 

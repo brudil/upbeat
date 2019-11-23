@@ -1,13 +1,14 @@
 const base = require('../../jest.config.base');
 
-const packageName = require('./package.json').name.split('@withcue/').pop()
+const packageName = require('./package.json').name;
+const dirName = packageName.replace('@withcue/', 'cue-').replace('@upbeat/', 'upbeat-');
 
 module.exports = {
   ...base,
-  name: packageName,
+  name: dirName,
   displayName: packageName,
   roots: [
-    `<rootDir>/packages/${packageName}`,
+    `<rootDir>/packages/${dirName}`,
   ],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',

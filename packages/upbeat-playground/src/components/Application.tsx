@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Heading } from './Heading';
 
-import { createNetworkSimulator } from '@upbeat/core/src/networkSimulator';
-import { createPeer } from '@upbeat/core/src/client';
+import { createNetworkSimulator } from '@upbeat/testing/src/networkSimulator';
+import { createPeer } from '@upbeat/core/src/peer';
 import { Client } from './Client';
 
 const manager = createNetworkSimulator();

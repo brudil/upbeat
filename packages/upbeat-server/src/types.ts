@@ -1,6 +1,12 @@
 import { UpbeatApp } from '@upbeat/types/src';
+import { ClientRequest } from 'http';
 
-export interface UpbeatServerConfig {}
+type validateConnection = (request: ClientRequest) => Promise<false | string>;
+
+export interface UpbeatServerConfig {
+  validateConnection;
+  app: UpbeatApp;
+}
 
 export interface UpbeatResolvers<C extends UpbeatApp, CM = C['modules']> {
   modules: {

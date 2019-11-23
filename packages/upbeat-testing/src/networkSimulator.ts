@@ -1,6 +1,6 @@
 import NanoEvents from 'nanoevents';
-import { Peer } from './peer';
-import { Operation, UUID } from './types';
+import { Peer } from '@upbeat/core/src/peer';
+import { Operation, UUID } from '@upbeat/core/src/types';
 
 export enum ClientStatus {
   ONLINE,

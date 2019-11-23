@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Heading } from './Heading';
 
 import { createNetworkSimulator } from '@upbeat/core/src/networkSimulator';
-import { createClient } from '@upbeat/core/src/client';
+import { createPeer } from '@upbeat/core/src/client';
 import { Client } from './Client';
 
 const manager = createNetworkSimulator();
 
-const james = createClient({ debugSiteId: 'james' });
-const al = createClient({ debugSiteId: 'al' });
-const fran = createClient({ debugSiteId: 'fran' });
-const andy = createClient({ debugSiteId: 'andy' });
+const james = createPeer({ debugSiteId: 'james' });
+const al = createPeer({ debugSiteId: 'al' });
+const fran = createPeer({ debugSiteId: 'fran' });
+const andy = createPeer({ debugSiteId: 'andy' });
 
 manager.attachClient(james);
 manager.attachClient(al);

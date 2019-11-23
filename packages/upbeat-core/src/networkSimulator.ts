@@ -1,5 +1,5 @@
 import NanoEvents from 'nanoevents';
-import { Client } from './client';
+import { Peer } from './peer';
 import { Operation, UUID } from './types';
 
 export enum ClientStatus {
@@ -8,7 +8,7 @@ export enum ClientStatus {
 }
 
 export interface ClientContainer {
-  client: Client;
+  client: Peer;
   status: ClientStatus;
   operationQueue: Operation<any>[];
 }
@@ -21,7 +21,7 @@ export function createNetworkSimulator() {
   }>();
   let tickCount = 0;
 
-  const networkOperation = (_client: Client, operation: any) => {
+  const networkOperation = (_client: Peer, operation: any) => {
     clients.forEach((clientContainer) => {
       // if (clientContainer.client.siteId !== client.siteId) {
       clientContainer.operationQueue.push(operation);
@@ -52,7 +52,7 @@ export function createNetworkSimulator() {
   });
 
   return {
-    attachClient(client: Client) {
+    attachClient(client: Peer) {
       clients.set(client.siteId, {
         client,
         status: ClientStatus.ONLINE,

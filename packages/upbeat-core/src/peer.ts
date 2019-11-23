@@ -9,7 +9,7 @@ import {
 import NanoEvents from 'nanoevents';
 import uuid from 'uuid';
 
-export interface Client {
+export interface Peer {
   createId(): Id;
   siteId: UUID;
   on: NanoEvents<any>['on'];
@@ -21,7 +21,7 @@ export interface Client {
   assembleString(): string;
 }
 
-export function createClient(options: { debugSiteId?: string } = {}): Client {
+export function createPeer(options: { debugSiteId?: string } = {}): Peer {
   const siteId: UUID = options.debugSiteId || uuid();
   const clock = createHLCClock(Date.now);
   const emitter = new NanoEvents<{

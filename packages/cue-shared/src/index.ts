@@ -6,10 +6,14 @@ interface User {
   lastName: string;
 }
 
+export type LoginOperation = (username: string, password: string) => User;
+export type EditOperation = (content: string) => string;
+
+export interface CueAppOperations {
+  loginAuth: LoginOperation;
+  edit: EditOperation;
+}
+
 export interface CueApp extends UpbeatApp {
-  modules: {
-    auth: {
-      login: [{ username: string; password: string }, User];
-    };
-  };
+  operations: CueAppOperations;
 }

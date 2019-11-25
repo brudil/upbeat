@@ -1,18 +1,23 @@
-import { UpbeatApp } from '@upbeat/types/src';
+import { UpbeatApp, UpbeatOp } from '@upbeat/types/src';
 import { ClientRequest } from 'http';
 
-type validateConnection = (request: ClientRequest) => Promise<false | string>;
+type ValidateConnection = (request: ClientRequest) => Promise<false | string>;
 
 export interface UpbeatServerConfig {
-  validateConnection;
+  validateConnection: ValidateConnection;
   app: UpbeatApp;
 }
 
-export interface UpbeatResolvers<C extends UpbeatApp, CM = C['modules']> {
-  modules: {
-    [M in keyof CM]: {
-      // @ts-ignore
-      [P in keyof CM[M]]: (i: CM[M][P][0]) => CM[M][P][1];
-    };
+type Resolver<O extends UpbeatOp> = (
+  args: Parameters<O>,
+  toolkit: any,
+) => Promise<ReturnType<O>>;
+
+export interface UpbeatOperationResolvers<
+  C extends UpbeatApp,
+  OM extends any = C['operations']
+> {
+  operations: {
+    [P in keyof OM]: Resolver<OM[P]>;
   };
 }

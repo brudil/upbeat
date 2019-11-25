@@ -2,7 +2,7 @@ import { UpbeatServerConfig } from './types';
 import http from 'http';
 import WebSocket from 'ws';
 import uuid from 'uuid/v4';
-import { UpbeatApp } from '../../upbeat-types/src';
+import { UpbeatApp } from '@upbeat/types/src';
 
 class UpbeatServer {
   private server: http.Server;
@@ -11,9 +11,11 @@ class UpbeatServer {
     [key: string]: { socket: WebSocket; userId: string };
   } = {};
   private app: UpbeatApp;
+  private conf: UpbeatServerConfig;
 
   constructor(conf: UpbeatServerConfig) {
     this.app = conf.app;
+    this.conf = conf;
   }
 
   private handleNewConnection(socket: WebSocket, request: any): void {
@@ -32,7 +34,7 @@ class UpbeatServer {
   }
 
   private handleUpgrade(request: any, socket: any, head: any): void {
-    options.validateConnection(request).then((res) => {
+    this.conf.validateConnection(request).then((res) => {
       if (res !== false) {
         request.auth = res;
 
@@ -53,10 +55,11 @@ class UpbeatServer {
       server: this.server,
       clientTracking: false,
     });
-    this.server.listen(port);
 
     this.server.on('upgrade', this.handleUpgrade);
     this.wss.on('connection', this.handleNewConnection);
+
+    this.server.listen(port);
   }
 }
 

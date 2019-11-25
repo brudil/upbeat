@@ -1,3 +1,5 @@
+export type UpbeatOp = (...args: unknown[]) => unknown;
+
 export interface UpbeatApp {
-  modules: {};
+  operations: {};
 }

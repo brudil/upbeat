@@ -8,13 +8,14 @@ import { keymap } from 'prosemirror-keymap';
 import { redo, undo, history } from 'prosemirror-history';
 import { Global } from '@emotion/core';
 import { proseMirrorStyles } from './styles';
-import { useUpbeat } from '@upbeat/client/src/context';
+import { useUpbeat } from '@upbeat/client/src/react';
+import { CueApp } from '@withcue/shared/src';
 
 export const Editor = () => {
   const ref = useRef<null | HTMLDivElement>(null);
   const stateRef = useRef<null | EditorState>(null);
   const viewRef = useRef<null | EditorView>(null);
-  const upbeat = useUpbeat();
+  const upbeat = useUpbeat<CueApp>();
 
   useEffect(() => {
     if (ref.current !== null) {
@@ -54,7 +55,7 @@ export const Editor = () => {
 
   const handleEdit = useCallback((e: any) => {
     const content = e.target.value;
-    upbeat.operation({ type: 'edit', content });
+    upbeat.operation.loginAuth('james', 'pass');
     setText(content);
   }, []);
 

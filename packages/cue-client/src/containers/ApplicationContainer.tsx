@@ -5,7 +5,7 @@ import { Global } from '@emotion/core';
 import { Helmet } from 'react-helmet-async';
 import { Episode } from './Episode';
 import { Providers } from './Providers';
-import { useUpbeatState } from '@upbeat/client/src/context';
+import { useUpbeatState } from '@upbeat/client/src/react';
 import { AuthLogin } from './AuthLogin';
 import { MarketingHomepage } from './MarketingHomepage';
 

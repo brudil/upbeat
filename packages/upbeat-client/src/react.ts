@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { UpbeatInstance } from './upbeat';
+import { UpbeatApp } from '@upbeat/types/src';
 
-const UpbeatContext = React.createContext<UpbeatInstance | null>(null);
+const UpbeatContext = React.createContext<UpbeatInstance<any> | null>(null);
 
 const { Provider: UpbeatProvider, Consumer } = UpbeatContext;
 export { UpbeatProvider, Consumer };
 
-export const useUpbeat = (): UpbeatInstance => {
+export const useUpbeat = <A extends UpbeatApp>(): UpbeatInstance<A> => {
   const upbeat = useContext(UpbeatContext);
 
   if (upbeat === null) {

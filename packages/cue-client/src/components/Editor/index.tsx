@@ -55,7 +55,7 @@ export const Editor = () => {
 
   const handleEdit = useCallback((e: any) => {
     const content = e.target.value;
-    upbeat.operation.loginAuth('james', 'pass');
+    upbeat.operation.edit(content);
     setText(content);
   }, []);
 

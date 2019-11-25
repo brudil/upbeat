@@ -1,2 +1,2 @@
-export { UpbeatResolvers } from './types';
+export { UpbeatOperationResolvers } from './types';
 export { createUpbeatServer } from './server';

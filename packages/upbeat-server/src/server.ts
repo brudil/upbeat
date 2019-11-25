@@ -2,19 +2,16 @@ import { UpbeatServerConfig } from './types';
 import http from 'http';
 import WebSocket from 'ws';
 import uuid from 'uuid/v4';
-import { UpbeatApp } from '@upbeat/types/src';
 
 class UpbeatServer {
   private server: http.Server;
-  private wss;
+  private wss: WebSocket.Server;
   private connections: {
     [key: string]: { socket: WebSocket; userId: string };
   } = {};
-  private app: UpbeatApp;
   private conf: UpbeatServerConfig;
 
   constructor(conf: UpbeatServerConfig) {
-    this.app = conf.app;
     this.conf = conf;
   }
 
@@ -24,7 +21,7 @@ class UpbeatServer {
       socket,
     };
 
-    console.log(request.auth);
+    console.log('socket registered');
 
     socket.on('message', (msg) => {
       Object.values(this.connections).forEach((connection) =>
@@ -34,14 +31,16 @@ class UpbeatServer {
   }
 
   private handleUpgrade(request: any, socket: any, head: any): void {
+    const { wss } = this;
     this.conf.validateConnection(request).then((res) => {
       if (res !== false) {
         request.auth = res;
 
-        this.wss.handleUpgrade(request, socket, head, function(ws) {
-          this.wss.emit('connection', ws, request);
+        wss.handleUpgrade(request, socket, head, function(ws) {
+          wss.emit('connection', ws, request);
         });
       } else {
+        console.log('destorying socket, validation failed');
         socket.destroy();
       }
 
@@ -49,15 +48,15 @@ class UpbeatServer {
     });
   }
 
-  async listen(port: number): Promise<void> {
+  async listen(port: number | string): Promise<void> {
     this.server = http.createServer({});
     this.wss = new WebSocket.Server({
-      server: this.server,
+      noServer: true,
       clientTracking: false,
     });
 
-    this.server.on('upgrade', this.handleUpgrade);
-    this.wss.on('connection', this.handleNewConnection);
+    this.server.on('upgrade', this.handleUpgrade.bind(this));
+    this.wss.on('connection', this.handleNewConnection.bind(this));
 
     this.server.listen(port);
   }

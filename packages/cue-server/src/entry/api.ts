@@ -10,12 +10,18 @@ const init = async () => {
   console.log(`listening at `, process.env.PORT);
   console.log(process.env.DATABASE_URL);
   const app = new Hapi.Server({
+    debug: { request: ['error'] },
     port: process.env.PORT,
     host: process.env.HOST,
     state: {
       strictHeader: false,
     },
-    routes: { cors: true },
+    routes: {
+      cors: {
+        origin: ['*'],
+        credentials: true,
+      },
+    },
   });
 
   await app.register(hapiCookie);
@@ -30,7 +36,6 @@ const init = async () => {
     validateFunc: async (_request: unknown, session: any) => {
       try {
         const account = await getUserById(pool, session.id);
-
         return { valid: true, credentials: account };
       } catch (e) {
         console.error(e);
@@ -79,9 +84,12 @@ const init = async () => {
   });
 
   app.route({
-    method: 'get',
+    method: 'post',
     path: '/session',
     handler: async (request: LoginRequest) => {
+      // const user = await getUserById(pool, "4753b14f-9499-4516-913b-bcf23a4ab371");
+      // request.cookieAuth.set({ id: user.id });
+
       return {
         payload: {
           authenticated: request.auth.isAuthenticated,
@@ -99,8 +107,7 @@ const init = async () => {
       await redisClient.set(
         `live:token:${token}`,
         request.auth.credentials.id,
-        'EX',
-        60,
+        ['EX', 60],
       );
 
       return {
@@ -111,10 +118,5 @@ const init = async () => {
 
   await app.start();
 };
-
-process.on('unhandledRejection', (err) => {
-  console.error(err);
-  process.exit(1);
-});
 
 init();

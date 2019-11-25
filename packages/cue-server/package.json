@@ -9,6 +9,7 @@
     "@hapi/cookie": "^10.1.2",
     "@hapi/hapi": "^18.4.0",
     "argon2": "0.25.1",
+    "handy-redis": "^1.6.2",
     "node-pg-migrate": "^3.23.3",
     "pg": "^7.14.0",
     "redis": "^2.8.0",
@@ -38,6 +39,9 @@
   },
   "scripts": {
     "dev": "tsc -w",
+    "b": "backpack",
+    "dev-api": "PORT=8010 CST=api yarn b",
+    "dev-ub": "PORT=8011 CST=ub yarn b",
     "migrate": "node-pg-migrate"
   }
 }

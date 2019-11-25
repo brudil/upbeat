@@ -6,7 +6,7 @@ import { createUpbeat } from '@upbeat/client/src/upbeat';
 import { CueApp } from '@withcue/shared/src';
 
 const upbeat = createUpbeat<CueApp>({
-  uri: 'ws://localhost:8008',
+  uri: 'ws://localhost:8011',
 });
 
 (window as any).upbeat = upbeat;

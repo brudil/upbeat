@@ -24,7 +24,7 @@ export const createUpbeatStore = () => {
     entities: {},
     transactions: [],
     auth: {
-      isAuthenticated: true,
+      isAuthenticated: false,
       loading: false,
       credentials: null,
     },

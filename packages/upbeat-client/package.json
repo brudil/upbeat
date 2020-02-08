@@ -6,12 +6,12 @@
   "author": "James Canning <james@jamescanning.com> (http://brudil.com)",
   "license": "ISC",
   "dependencies": {
-    "immer": "^5.0.0",
-    "uuid": "^3.3.3",
-    "xstate": "^4.6.7"
+    "immer": "^5.3.4",
+    "uuid": "^3.4.0",
+    "xstate": "^4.7.8"
   },
   "devDependencies": {
-    "@types/uuid": "^3.4.6"
+    "@types/uuid": "^3.4.7"
   },
   "peerDependencies": {
     "@types/react": "^16.9.11",

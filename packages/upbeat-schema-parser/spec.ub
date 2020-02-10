@@ -1,0 +1,17 @@
+resource Todo {
+  String name;
+  Boolean complete;
+  CreatedDate createdAt;
+  User user;
+  Tag tags;
+  Int order;
+}
+
+resource Tag {
+  String name;
+  String color;
+}
+
+space Project {
+  Todo todos;
+}

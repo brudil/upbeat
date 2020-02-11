@@ -42,7 +42,7 @@ describe('spec', () => {
   it('has found resources and spaces', () => {
     const ast = parseInput(SPEC);
 
-    expect(ast.spaces.length).toBe(1);
-    expect(ast.resources.length).toBe(2);
+    expect(Object.keys(ast.spaces).length).toBe(1);
+    expect(Object.keys(ast.resources).length).toBe(2);
   });
 });

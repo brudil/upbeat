@@ -8,7 +8,7 @@ module.exports = {
   name: dirName,
   displayName: packageName,
   roots: [
-    `<rootDir>/packages/${dirName}/src`,
+    `<rootDir>/packages/${dirName}`,
   ],
   collectCoverageFrom: [
     'src/**/*.{ts}',

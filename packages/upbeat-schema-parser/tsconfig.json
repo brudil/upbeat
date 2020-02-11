@@ -24,5 +24,6 @@
       "allowJs": true,
       "baseUrl": ".",
       "outDir": "./dist"
-     }
+     },
+  "include": ["./src/**/*"]
   }

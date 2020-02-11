@@ -10,15 +10,19 @@ export interface Property {
 
 export interface Resource {
   identifier: string;
-  properties: Property[];
+  properties: { [propName: string]: Property };
 }
 
 export interface Space {
   identifier: string;
-  properties: Property[];
+  properties: { [propName: string]: Property };
 }
 
 export interface Schema {
-  resources: Resource[];
-  spaces: Space[];
+  resources: { [resourceName: string]: Resource };
+  spaces: { [spaceName: string]: Space };
 }
+
+export type Scope =
+  | { type: 'RESOURCE'; value: Resource }
+  | { type: 'SPACE'; value: Space };

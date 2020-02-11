@@ -9,7 +9,7 @@ import {
   tokens,
   upbeatLexer,
 } from './lexer';
-import { Property, Resource, Schema, Space } from './types';
+import { Property, Resource, Schema, Space, Scope } from './types';
 
 class UpbeatSchemaParser extends CstParser {
   constructor() {
@@ -28,7 +28,7 @@ class UpbeatSchemaParser extends CstParser {
     this.CONSUME(ResourceKeyword);
     this.CONSUME4(Identifier);
     this.CONSUME2(OpenBrace);
-    this.MANY(() => this.SUBRULE(this.propertyDef));
+    this.AT_LEAST_ONE(() => this.SUBRULE(this.propertyDef));
     this.CONSUME3(CloseBrace);
   });
 
@@ -36,7 +36,7 @@ class UpbeatSchemaParser extends CstParser {
     this.CONSUME(SpaceKeyword);
     this.CONSUME4(Identifier);
     this.CONSUME2(OpenBrace);
-    this.MANY(() => this.SUBRULE(this.propertyDef));
+    this.AT_LEAST_ONE(() => this.SUBRULE(this.propertyDef));
     this.CONSUME3(CloseBrace);
   });
 
@@ -57,6 +57,14 @@ class UpbeatSchemaParser extends CstParser {
 const parser = new UpbeatSchemaParser();
 const BaseVisitor = parser.getBaseCstVisitorConstructor();
 
+const mapToIdentifier = (a: { identifier: string }[]) => {
+  return a.reduce(
+    (obj: any, prop) => ({ ...obj, [prop.identifier]: prop }),
+    {},
+  );
+};
+
+// TODO: see how best to remove any from the context argument
 class AstVisitor extends BaseVisitor {
   constructor() {
     super();
@@ -64,20 +72,22 @@ class AstVisitor extends BaseVisitor {
   }
 
   schemaDef(ctx: any): Schema {
-    const scopes: any[] = ctx.scopeDef.map((scope: any) => this.visit(scope));
+    const scopes: Scope[] = ctx.scopeDef.map((scope: any) => this.visit(scope));
     return {
-      resources: scopes
-        .filter((scope) => scope.type === 'RESOURCE')
-        .map((scope) => scope.value),
-      spaces: scopes
-        .filter((scope) => scope.type === 'SPACE')
-        .map((scope) => scope.value),
+      resources: mapToIdentifier(
+        scopes
+          .filter((scope) => scope.type === 'RESOURCE')
+          .map((scope) => scope.value),
+      ),
+      spaces: mapToIdentifier(
+        scopes
+          .filter((scope) => scope.type === 'SPACE')
+          .map((scope) => scope.value),
+      ),
     };
   }
 
-  scopeDef(
-    ctx: any,
-  ): { type: 'RESOURCE'; value: Resource } | { type: 'SPACE'; value: Space } {
+  scopeDef(ctx: any): Scope {
     if (ctx.resourceDef) {
       return { type: 'RESOURCE', value: this.visit(ctx.resourceDef) };
     }
@@ -90,7 +100,9 @@ class AstVisitor extends BaseVisitor {
 
     return {
       identifier: Ident,
-      properties: this.visit(ctx.propertyDef),
+      properties: mapToIdentifier(
+        ctx.propertyDef.map((prop: any) => this.visit(prop)),
+      ),
     };
   }
 
@@ -99,7 +111,9 @@ class AstVisitor extends BaseVisitor {
 
     return {
       identifier: Ident,
-      properties: ctx.propertyDef.map((prop: any) => this.visit(prop)),
+      properties: mapToIdentifier(
+        ctx.propertyDef.map((prop: any) => this.visit(prop)),
+      ),
     };
   }
 
@@ -113,7 +127,7 @@ class AstVisitor extends BaseVisitor {
 
 const toAstVisitorInstance = new AstVisitor();
 
-export function parseInput(text: string) {
+export function parseInput(text: string): Schema {
   const lexingResult = upbeatLexer.tokenize(text);
 
   parser.input = lexingResult.tokens;

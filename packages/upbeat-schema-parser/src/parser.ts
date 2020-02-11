@@ -9,6 +9,7 @@ import {
   tokens,
   upbeatLexer,
 } from './lexer';
+import { Property, Resource, Schema, Space } from './types';
 
 class UpbeatSchemaParser extends CstParser {
   constructor() {
@@ -62,8 +63,7 @@ class AstVisitor extends BaseVisitor {
     this.validateVisitor();
   }
 
-  schemaDef(ctx: any) {
-    console.log(ctx);
+  schemaDef(ctx: any): Schema {
     const scopes: any[] = ctx.scopeDef.map((scope: any) => this.visit(scope));
     return {
       resources: scopes
@@ -75,40 +75,38 @@ class AstVisitor extends BaseVisitor {
     };
   }
 
-  scopeDef(ctx: any) {
+  scopeDef(
+    ctx: any,
+  ): { type: 'RESOURCE'; value: Resource } | { type: 'SPACE'; value: Space } {
     if (ctx.resourceDef) {
       return { type: 'RESOURCE', value: this.visit(ctx.resourceDef) };
     }
 
-    if (ctx.spaceDef) {
-      return { type: 'SPACE', value: this.visit(ctx.spaceDef) };
-    }
-
-    return { type: 'MISSING' };
+    return { type: 'SPACE', value: this.visit(ctx.spaceDef) };
   }
 
-  spaceDef(ctx: any) {
+  spaceDef(ctx: any): Space {
     const Ident = ctx.Identifier.map((identToken: any) => identToken.image);
 
     return {
-      name: Ident,
+      identifier: Ident,
       properties: this.visit(ctx.propertyDef),
     };
   }
 
-  resourceDef(ctx: any) {
+  resourceDef(ctx: any): Resource {
     const Ident = ctx.Identifier[0].image;
 
     return {
-      name: Ident,
+      identifier: Ident,
       properties: ctx.propertyDef.map((prop: any) => this.visit(prop)),
     };
   }
 
-  propertyDef(ctx: any) {
+  propertyDef(ctx: any): Property {
     return {
-      name: ctx.name[0].image,
-      type: ctx.type[0].image,
+      identifier: ctx.name[0].image,
+      type: { identifier: ctx.type[0].image, subtype: null },
     };
   }
 }
@@ -117,13 +115,12 @@ const toAstVisitorInstance = new AstVisitor();
 
 export function parseInput(text: string) {
   const lexingResult = upbeatLexer.tokenize(text);
-  console.log(lexingResult);
-  // "input" is a setter which will reset the parser's state.
+
   parser.input = lexingResult.tokens;
   const cst = parser.schemaDef();
 
   if (parser.errors.length > 0) {
-    throw new Error('sad sad panda, Parsing errors detected');
+    throw new Error('Parsing error!' + parser.errors);
   }
 
   return toAstVisitorInstance.visit(cst);

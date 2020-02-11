@@ -1,0 +1,9 @@
+resource Todo {
+  String name;
+  Boolean complete;
+  Orderable order;
+}
+
+space Project {
+  Set(Todo) todos;
+}

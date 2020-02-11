@@ -2,14 +2,18 @@ import { Timestamp } from './timestamp';
 
 export type UUID = string;
 
-export interface Id {
+export interface GivenId {
   siteId: UUID;
   timestamp: Timestamp;
 }
 
+export const RootId = 'ROOT_ID';
+
+export type Id = GivenId | 'ROOT_ID';
+
 export interface Operation<V> {
   id: Id;
-  locationId: Id | null;
+  locationId: Id;
   value: V;
 }
 

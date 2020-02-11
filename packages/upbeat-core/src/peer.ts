@@ -1,4 +1,4 @@
-import { Id, Operation, UUID } from './types';
+import { GivenId, Operation, UUID } from './types';
 import { createHLCClock } from './timestamp';
 import {
   CharOperationTypes,
@@ -10,7 +10,7 @@ import NanoEvents from 'nanoevents';
 import uuid from 'uuid';
 
 export interface Peer {
-  createId(): Id;
+  createId(): GivenId;
   siteId: UUID;
   on: NanoEvents<any>['on'];
   receive(operation: Operation<any>): void;
@@ -19,6 +19,12 @@ export interface Peer {
   removeCharAt(index: number): void;
   text: any;
   assembleString(): string;
+}
+
+function assertValidOp(op: Operation<any>) {
+  if (op.locationId === undefined) {
+    throw new Error('invalid operation created');
+  }
 }
 
 export function createPeer(options: { debugSiteId?: string } = {}): Peer {
@@ -32,7 +38,7 @@ export function createPeer(options: { debugSiteId?: string } = {}): Peer {
     text: createStringPipeline(),
   };
 
-  const createId = (): Id => {
+  const createId = (): GivenId => {
     return Object.freeze({
       siteId,
       timestamp: clock.now(),
@@ -59,6 +65,8 @@ export function createPeer(options: { debugSiteId?: string } = {}): Peer {
         },
       };
 
+      assertValidOp(operation);
+
       data.text.ingress(operation);
       emitter.emit('send', operation);
     },
@@ -70,6 +78,8 @@ export function createPeer(options: { debugSiteId?: string } = {}): Peer {
           type: CharOperationTypes.DELETE,
         },
       };
+
+      assertValidOp(operation);
 
       data.text.ingress(operation);
       emitter.emit('send', operation);

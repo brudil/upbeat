@@ -1,5 +1,5 @@
 import sizeof from 'object-sizeof';
-import { Atom, Id, Operation } from './types';
+import { Atom, Id, Operation, RootId } from './types';
 import { CharOperationTypes } from './structures/string';
 import { isEqualTimestamp, isLaterTimestamp } from './timestamp';
 
@@ -9,6 +9,14 @@ type PipelineMapper = () => any;
 const operationSort = (aAtom: Atom, bAtom: Atom): number => {
   const a = aAtom.operation;
   const b = bAtom.operation;
+
+  if (a.id === RootId) {
+    return -1;
+  }
+
+  if (b.id === RootId) {
+    return 1;
+  }
 
   if (isLaterTimestamp(a.id.timestamp, b.id.timestamp)) {
     return -1;
@@ -34,21 +42,15 @@ export const createPipelineType = <O extends Operation<any>>(
     children: [],
     operation: {
       value: null,
-      locationId: null,
-      id: {
-        siteId: '0',
-        timestamp: {
-          time: 0,
-          count: 0,
-        },
-      },
+      locationId: RootId,
+      id: RootId,
     },
   };
 
   const operations: Operation<any>[] = [];
 
   const idMap = new Map<Id | null, Atom>();
-  idMap.set(null, operationTree);
+  idMap.set(RootId, operationTree);
 
   const failedOperations: Operation<any>[] = [];
 
@@ -106,16 +108,14 @@ export const createPipelineType = <O extends Operation<any>>(
 
         assembleCache();
       } else {
-        console.log(`failed operation! requires`, operation.locationId);
+        console.log(operation.locationId);
+        console.log(idMap);
+        console.log(`failed operationx! requires`, operation);
         failedOperations.push(operation);
       }
     },
-    getLocationIdAtIndex: (index: number) => {
-      if (index > idCache.length) {
-        return idCache[idCache.length - 1];
-      }
-
-      return idCache[index];
+    getLocationIdAtIndex: (index: number): Id => {
+      return idCache[index] ?? idCache[idCache.length - 1] ?? RootId;
     },
     operationTree,
     getSize,

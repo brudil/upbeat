@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
-import {
-  ClientContainer,
-  ClientStatus,
-} from '@upbeat/core/src/networkSimulator';
 import { Atom } from '@upbeat/core/src/types';
 import { OperationTreeVisualisation } from './OperationTreeVisualisation';
 import { Heading } from './Heading';
+import {
+  ClientContainer,
+  ClientStatus,
+} from '@upbeat/testing/src/networkSimulator';
 
 const opTreeTransform = (op: Atom): any => {
   return {

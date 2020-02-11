@@ -25,6 +25,6 @@
       "experimentalDecorators": true,
       "esModuleInterop": true,
       "allowJs": true,
-      "baseUrl": ".",
+      "baseUrl": "."
      }
   }

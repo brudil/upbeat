@@ -13,7 +13,7 @@ resource Todo {
 
 resource Tag {
   String name;
-  String color;
+  String? color;
 }
 
 space Project {

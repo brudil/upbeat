@@ -4,6 +4,7 @@ export const OpenBrace = createToken({ name: 'OpenBrace', pattern: '{' });
 export const CloseBrace = createToken({ name: 'CloseBrace', pattern: '}' });
 export const OpenParen = createToken({ name: 'OpenParen', pattern: '(' });
 export const CloseParen = createToken({ name: 'CloseParen', pattern: ')' });
+export const QuestionMark = createToken({ name: 'QuestionMark', pattern: '?' });
 export const ResourceKeyword = createToken({
   name: 'ResourceKeyword',
   pattern: 'resource',
@@ -29,6 +30,7 @@ export const tokens = [
   CloseBrace,
   OpenParen,
   CloseParen,
+  QuestionMark,
   ResourceKeyword,
   SpaceKeyword,
   WhiteSpace,

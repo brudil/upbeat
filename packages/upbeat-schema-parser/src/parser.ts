@@ -5,6 +5,7 @@ import {
   Identifier,
   OpenBrace,
   OpenParen,
+  QuestionMark,
   ResourceKeyword,
   Semi,
   SpaceKeyword,
@@ -29,9 +30,13 @@ class UpbeatSchemaParser extends CstParser {
   private typeDef = this.RULE('typeDef', () => {
     this.CONSUME(Identifier);
     this.OPTION(() => {
-      this.CONSUME1(OpenParen);
+      this.CONSUME1(QuestionMark);
+    });
+
+    this.OPTION1(() => {
+      this.CONSUME2(OpenParen);
       this.SUBRULE(this.typeDef);
-      this.CONSUME2(CloseParen);
+      this.CONSUME3(CloseParen);
     });
   });
 
@@ -109,6 +114,7 @@ class AstVisitor extends BaseVisitor {
   typeDef(ctx: any) {
     return {
       type: ctx.Identifier[0].image,
+      nullable: !!ctx.QuestionMark,
       subtype: ctx.typeDef ? this.visit(ctx.typeDef) : null,
     };
   }

@@ -6,8 +6,8 @@ resource Todo {
   String name;
   Boolean complete;
   CreatedDate createdAt;
-  User user;
-  Tag tags;
+  ExternalReference(User) user;
+  Set(Reference(Tag)) tags;
   Int order;
 }
 

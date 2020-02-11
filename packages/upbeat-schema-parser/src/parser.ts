@@ -1,8 +1,10 @@
 import { CstParser } from 'chevrotain';
 import {
   CloseBrace,
+  CloseParen,
   Identifier,
   OpenBrace,
+  OpenParen,
   ResourceKeyword,
   Semi,
   SpaceKeyword,
@@ -19,9 +21,18 @@ class UpbeatSchemaParser extends CstParser {
   }
 
   private propertyDef = this.RULE('propertyDef', () => {
-    this.CONSUME(Identifier, { LABEL: 'type' });
-    this.CONSUME1(Identifier, { LABEL: 'name' });
-    this.CONSUME2(Semi);
+    this.SUBRULE(this.typeDef);
+    this.CONSUME(Identifier);
+    this.CONSUME1(Semi);
+  });
+
+  private typeDef = this.RULE('typeDef', () => {
+    this.CONSUME(Identifier);
+    this.OPTION(() => {
+      this.CONSUME1(OpenParen);
+      this.SUBRULE(this.typeDef);
+      this.CONSUME2(CloseParen);
+    });
   });
 
   public resourceDef = this.RULE('resourceDef', () => {
@@ -95,11 +106,16 @@ class AstVisitor extends BaseVisitor {
     return { type: 'SPACE', value: this.visit(ctx.spaceDef) };
   }
 
-  spaceDef(ctx: any): Space {
-    const Ident = ctx.Identifier.map((identToken: any) => identToken.image);
-
+  typeDef(ctx: any) {
     return {
-      identifier: Ident,
+      type: ctx.Identifier[0].image,
+      subtype: ctx.typeDef ? this.visit(ctx.typeDef) : null,
+    };
+  }
+
+  spaceDef(ctx: any): Space {
+    return {
+      identifier: ctx.Identifier[0].image,
       properties: mapToIdentifier(
         ctx.propertyDef.map((prop: any) => this.visit(prop)),
       ),
@@ -119,8 +135,8 @@ class AstVisitor extends BaseVisitor {
 
   propertyDef(ctx: any): Property {
     return {
-      identifier: ctx.name[0].image,
-      type: { identifier: ctx.type[0].image, subtype: null },
+      identifier: ctx.Identifier[0].image,
+      type: this.visit(ctx.typeDef),
     };
   }
 }

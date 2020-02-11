@@ -6,7 +6,7 @@
   "author": "James Canning <james@jamescanning.com> (http://brudil.com)",
   "license": "ISC",
   "dependencies": {
-    "immer": "^5.3.4",
+    "immer": "^5.3.5",
     "uuid": "^3.4.0",
     "xstate": "^4.7.8"
   },

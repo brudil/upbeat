@@ -2,6 +2,12 @@ resource Todo {
   String name;
   Boolean complete;
   Orderable order;
+  Set(Reference(TodoTag)) tags;
+}
+
+resource TodoTag {
+  String name;
+  String color;
 }
 
 space Project {

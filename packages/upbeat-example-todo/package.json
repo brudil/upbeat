@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "parcel": "^1.12.4",
+    "parcel": "2.0.0-alpha.3.2",
     "react": "^16.12.0",
     "react-d3-tree": "^1.16.1",
     "react-dom": "^16.12.0",
@@ -15,5 +15,9 @@
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
     "postcss-import": "^12.0.1"
-  }
+  },
+  "scripts": {
+    "gen": "node ../upbeat-codegen/dist/entry.js > src/schema.generated.ts"
+  },
+  "browserslist": ["last 1 Chrome versions"]
 }

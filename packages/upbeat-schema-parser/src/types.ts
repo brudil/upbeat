@@ -23,6 +23,12 @@ export interface Schema {
   spaces: { [spaceName: string]: Space };
 }
 
+export interface Type {
+  identifier: string;
+  nullable: boolean;
+  subtype: null | Type;
+}
+
 export type Scope =
   | { type: 'RESOURCE'; value: Resource }
   | { type: 'SPACE'; value: Space };

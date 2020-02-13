@@ -113,7 +113,7 @@ class AstVisitor extends BaseVisitor {
 
   typeDef(ctx: any) {
     return {
-      type: ctx.Identifier[0].image,
+      identifier: ctx.Identifier[0].image,
       nullable: !!ctx.QuestionMark,
       subtype: ctx.typeDef ? this.visit(ctx.typeDef) : null,
     };

@@ -4,6 +4,17 @@ export interface UpbeatApp {
   operations: {};
 }
 
+export type UpbeatId = string;
+
+export type UpbeatString = string;
+export type UpbeatBoolean = boolean;
+export type UpbeatReference<R> = R;
+export type UpbeatOrderable = number;
+export type UpbeatSet<S> = S[];
+export interface UpbeatResource {
+  _type: string;
+}
+
 // interface UpbeatType {
 //   _type: "UpbeatType"
 // }

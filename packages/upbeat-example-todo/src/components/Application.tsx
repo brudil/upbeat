@@ -1,26 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { client } from '../client';
-import { create, Query, update } from '../../../upbeat-client/src/upbeat2';
+import React, { useCallback, useState } from 'react';
 import { Todo } from '../schema.generated';
-
-const useUpbeatState = (query: Query) => {
-  const [data, setData] = useState(undefined);
-
-  useEffect(() => {
-    const unregister = client.createLiveQuery(query, setData);
-    return () => {
-      unregister();
-    };
-  }, [client]);
-
-  return {
-    loading: !data,
-    data,
-  };
-};
+import { useUpbeat, useUpbeatState } from '../../../upbeat-react/src/react';
+import { create, update } from '../../../upbeat-client/src/changeset';
 
 export const Application = () => {
   const { loading, data } = useUpbeatState((db) => db.getAll('TodoResource'));
+  const client = useUpbeat();
   // const todos = [{ id: '1', name: 'buy milk', completed: false }, { id: '2', name: 'finish cue', completed: false }, { id: '3', name: 'build todo example', completed: true }];
 
   const [newTodo, setNewTodo] = useState('');

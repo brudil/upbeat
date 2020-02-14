@@ -18,8 +18,8 @@ manager.attachClient(fran);
 manager.attachClient(andy);
 
 setTimeout(() => james.insertCharAt(0, 'j'), 200);
-setTimeout(() => james.insertCharAt(1, 'a'), 201);
-setTimeout(() => james.insertCharAt(2, 'm'), 202);
+setTimeout(() => james.insertCharAt(1, 'a'), 205);
+setTimeout(() => james.insertCharAt(2, 'm'), 210);
 setTimeout(() => fran.insertCharAt(2, 'f'), 300);
 setTimeout(() => andy.insertCharAt(3, 'z'), 400);
 setTimeout(() => james.removeCharAt(4), 666);
@@ -73,7 +73,13 @@ export const Application = () => {
                     <div>time: {op.id.timestamp.time}</div>
                     <div>count: {op.id.timestamp.count}</div>
                     <pre className="text-xs">
-                      value: {JSON.stringify(op, undefined, 2)}
+                      id: {JSON.stringify(op.id, undefined, 2)}
+                    </pre>
+                    <pre className="text-xs">
+                      locationId: {JSON.stringify(op.locationId, undefined, 2)}
+                    </pre>
+                    <pre className="text-xs">
+                      value: {JSON.stringify(op.value, undefined, 2)}
                     </pre>
                   </li>
                 );

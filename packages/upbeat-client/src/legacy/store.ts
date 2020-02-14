@@ -1,6 +1,6 @@
 import { Patch, produceWithPatches } from 'immer';
 import NanoEvents from 'nanoevents';
-import { Cb } from './types';
+import { Cb } from '../types';
 
 export interface Store {
   entities: {};

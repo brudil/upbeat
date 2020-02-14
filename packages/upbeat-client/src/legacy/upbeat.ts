@@ -1,4 +1,4 @@
-import { Cb } from './types';
+import { Cb } from '../types';
 import { createUpbeatStore } from './store';
 import NanoEvents from 'nanoevents';
 import { UpbeatApp, UpbeatOp } from '@upbeat/types/src';

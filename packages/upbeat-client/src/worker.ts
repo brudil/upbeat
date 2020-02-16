@@ -1,19 +1,12 @@
-import { Resource, Schema } from '@upbeat/schema-parser/dist/src/types';
+import { Schema } from '@upbeat/schema-parser/dist/src/types';
 import { startDatabase } from './persistance';
-import {
-  createHLCClock,
-  isLaterTimestamp,
-} from '../../upbeat-core/src/timestamp';
+import { createHLCClock } from '../../upbeat-core/src/timestamp';
 import NanoEvents from 'nanoevents';
-import { UpbeatResource } from '../../upbeat-types/src';
 import uuid from 'uuid/v4';
-import {
-  Query,
-  ResourceCache,
-  ResourceCacheMap,
-  TypedOperation,
-} from './types';
+import { Query } from './types';
 import { Changeset } from './changeset';
+import { normaliseResourceCacheMap } from './resourceCache';
+import { constructObjectFromOperations } from './materialiser';
 
 const bc = new BroadcastChannel('UPBEAT');
 
@@ -23,47 +16,6 @@ export async function createUpbeatWorker(schema: Schema) {
   const emitter = new NanoEvents<any>();
 
   const liveIds = {};
-
-  async function constructObjectFromOperations<R extends UpbeatResource>(
-    resourceSchema: Resource,
-    operations: TypedOperation<R['_type'], Extract<keyof R, string>>[],
-  ): Promise<ResourceCacheMap<R>> {
-    const resources: ResourceCacheMap<R> = {};
-
-    operations.forEach((op) => {
-      if (!resources.hasOwnProperty(op.resourceId)) {
-        resources[op.resourceId] = {};
-      }
-
-      const resource = resources[op.resourceId];
-      const timestamp = resource[op.property]?.timestamp;
-      if (
-        !timestamp ||
-        (timestamp && isLaterTimestamp(op.timestamp, timestamp))
-      ) {
-        resource[op.property] = op;
-      }
-    });
-
-    return resources;
-  }
-
-  function normaliseResourceCache<R>(resourceCache: ResourceCache<R>) {
-    return Object.keys(resourceCache).reduce(
-      (obj, key) => ({ ...obj, [key]: resourceCache[key].value }),
-      {},
-    );
-  }
-
-  function normaliseResourceCacheMap<R>(map: ResourceCacheMap<R>) {
-    return Object.keys(map).reduce(
-      (obj, key) => ({
-        ...obj,
-        [key]: { id: key, ...normaliseResourceCache(map[key]) },
-      }),
-      {},
-    );
-  }
 
   async function construct() {
     const ops = await db.getAll('UpbeatOperations');

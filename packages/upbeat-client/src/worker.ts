@@ -1,6 +1,6 @@
 import { Schema } from '@upbeat/schema-parser/src/types';
 import { createIndexedDBPersistence } from './persistance';
-import { createHLCClock } from '../../upbeat-core/src/timestamp';
+import { createHLCClock } from '@upbeat/core/src/timestamp';
 import NanoEvents from 'nanoevents';
 import uuid from 'uuid/v4';
 import { Changeset } from './changeset';

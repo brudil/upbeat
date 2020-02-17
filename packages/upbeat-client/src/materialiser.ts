@@ -1,6 +1,6 @@
-import { UpbeatResource } from '../../upbeat-types/src';
+import { UpbeatResource } from '@upbeat/types/src';
 import { ResourceCacheMap, TypedOperation } from './types';
-import { isLaterTimestamp } from '../../upbeat-core/src/timestamp';
+import { isLaterTimestamp } from '@upbeat/core/src/timestamp';
 import { Resource } from '@upbeat/schema-parser/src/types';
 
 export async function constructObjectFromOperations<R extends UpbeatResource>(

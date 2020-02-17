@@ -96,10 +96,6 @@ export function createResourceCache(persistence: UpbeatPersistence) {
         nextResource,
       );
       if (hasChanged) {
-        console.log(
-          operation.resource + 'Resource',
-          realiseIntermediateResource(nextResource),
-        );
         try {
           await persistence._UNSAFEDB.put(
             operation.resource + 'Resource',

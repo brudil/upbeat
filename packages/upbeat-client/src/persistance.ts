@@ -1,11 +1,17 @@
-import { IDBPDatabase, openDB } from 'idb';
+import { IDBPCursor, IDBPDatabase, openDB } from 'idb';
 import { Schema } from '@upbeat/schema-parser/src/types';
 import { Query } from './query';
+import { Operation } from './types';
+import { UpbeatId } from '../../upbeat-types/src';
 const DB_NAME = 'UPBEAT-DEV';
 
-interface UpbeatPersistence {
+export interface UpbeatPersistence {
   runQuery(query: Query): Promise<any>;
   _UNSAFEDB: IDBPDatabase;
+  getOperationsByResourceKey: (
+    resourceName: string,
+    id: UpbeatId,
+  ) => Promise<Operation[]>;
 }
 
 function queryRunner(query: Query, db: IDBPDatabase): Promise<any> {
@@ -26,6 +32,7 @@ export async function createIndexedDBPersistence(
       logDb.createIndex('resourceId', 'resourceId');
       logDb.createIndex('property', 'property');
       logDb.createIndex('timestamp', 'timestamp');
+      logDb.createIndex('resourceKey', ['resource', 'resourceId']);
 
       Object.values(schema.resources).forEach((resource) => {
         const resourceDb = db.createObjectStore(
@@ -58,10 +65,30 @@ export async function createIndexedDBPersistence(
     },
   });
 
+  const all = async (c: IDBPCursor) => {
+    let cursor = c;
+    const arr: Operation[] = [];
+    while (cursor) {
+      arr.push(cursor.value);
+      cursor = await cursor.continue();
+    }
+
+    return arr;
+  };
+
   return {
     runQuery(query): Promise<any> {
       return queryRunner(query, db);
     },
     _UNSAFEDB: db,
+    getOperationsByResourceKey: async (resourceName, id) => {
+      const range = IDBKeyRange.bound([resourceName, id], [resourceName, id]);
+      const trx = db.transaction('UpbeatOperations', 'readonly');
+      const index = trx.store.index('resourceKey');
+      const cursor = await index.openCursor(range);
+      const ops = await all(cursor);
+      await trx.done;
+      return ops;
+    },
   };
 }

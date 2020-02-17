@@ -8,6 +8,11 @@ export const Application = () => {
   const { loading, data } = useUpbeatState(
     createQuery('TodoResource', ({ where }) => where('*', '*')),
   );
+
+  const { loading: tagsLoading, data: tagsData } = useUpbeatState(
+    createQuery('TodoTagResource', ({ where }) => where('*', '*')),
+  );
+
   const client = useUpbeat();
 
   const [newTodo, setNewTodo] = useState('');
@@ -62,6 +67,25 @@ export const Application = () => {
             onChange={(e) => setNewTodo(e.target.value)}
           />
           <button onClick={handleAddToDo}>Add Todo</button>
+        </div>
+
+        <div className="p-2 m-2 bg-gray-100 w-1/6 ">
+          <h2 className="text-xl font-bold mb-4">Tags</h2>
+          {!tagsLoading && tagsData !== undefined ? (
+            <ul>
+              {tagsData.map((tag) => (
+                <li key={tag.id}>{tag.name}</li>
+              ))}
+            </ul>
+          ) : null}
+          <h2 className="text-xl font-bold mb-4">Create tag</h2>
+          <input
+            type="text"
+            placeholder="todo name"
+            value={newTodo}
+            onChange={(e) => setNewTodo(e.target.value)}
+          />
+          <button onClick={handleAddToDo}>Add Tag</button>
         </div>
       </div>
     </div>

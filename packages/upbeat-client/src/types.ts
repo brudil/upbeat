@@ -1,4 +1,5 @@
 import { Timestamp } from '../../upbeat-core/src/timestamp';
+import { UpbeatId } from '../../upbeat-types/src';
 
 export type Cb = (data: any) => void;
 
@@ -17,5 +18,8 @@ export interface TypedOperation<RN extends string, P extends string>
   property: P;
 }
 
-export type ResourceCache<R> = Partial<{ [K in keyof R]: Operation }>;
-export type ResourceCacheMap<R> = { [id: string]: ResourceCache<R> };
+export interface IntermediateResource {
+  id: UpbeatId;
+  properties: { [property: string]: Operation };
+}
+export type IntermediateResourceMap = { [id: string]: IntermediateResource };

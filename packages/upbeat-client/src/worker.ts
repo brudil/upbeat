@@ -4,7 +4,10 @@ import { createHLCClock } from '@upbeat/core/src/timestamp';
 import NanoEvents from 'nanoevents';
 import uuid from 'uuid/v4';
 import { Changeset } from './changeset';
-import { normaliseResourceCacheMap } from './resourceCache';
+import {
+  createResourceCache,
+  realiseIntermediateResourceMap,
+} from './resourceCache';
 import { constructObjectFromOperations } from './materialiser';
 import { Query } from './query';
 
@@ -13,11 +16,24 @@ const bc = new BroadcastChannel('UPBEAT');
 export async function createUpbeatWorker(schema: Schema) {
   const persistence = await createIndexedDBPersistence(schema);
   const clock = createHLCClock(Date.now);
+  const cache = createResourceCache(persistence);
   const emitter = new NanoEvents<any>();
 
   const liveIds: {
     [id: string]: Query;
   } = {};
+
+  /*
+   * Dataflow.
+   *
+   * Live Query -> Query DB -> get ids of query -> if IDs in resourceCache
+   *
+   *
+   * For the time being. NEW == re-query, UPDATE = resourceCache
+   * */
+
+  // const x = await cache.getById('Todo', '005e72c7-66bf-494c-a168-8000b09ea6d4');
+  // console.log(x);
 
   async function construct() {
     const ops = await persistence._UNSAFEDB.getAll('UpbeatOperations');
@@ -26,7 +42,7 @@ export async function createUpbeatWorker(schema: Schema) {
       ops,
     );
 
-    return Object.values(normaliseResourceCacheMap(resourcesMap));
+    return Object.values(realiseIntermediateResourceMap(resourcesMap));
   }
 
   function quickUpdateAll() {
@@ -39,18 +55,27 @@ export async function createUpbeatWorker(schema: Schema) {
     );
   }
 
-  function addOperation(changeset: Changeset<unknown>) {
+  async function addOperation(changeset: Changeset<unknown>) {
     const id = changeset.action === 'CREATE' ? uuid() : changeset.id;
-    Object.entries(changeset.properties).forEach(([prop, value]) => {
-      persistence._UNSAFEDB.add('UpbeatOperations', {
+
+    for (const [prop, value] of Object.entries(changeset.properties)) {
+      const operation = {
         id: uuid(),
         resourceId: id,
         resource: changeset.resource,
         property: prop,
         value: value,
         timestamp: clock.now(),
-      });
-    });
+      };
+
+      try {
+        await cache.applyOperation(operation);
+        await persistence._UNSAFEDB.add('UpbeatOperations', operation);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
     quickUpdateAll();
   }
 

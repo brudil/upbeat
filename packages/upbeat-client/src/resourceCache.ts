@@ -1,4 +1,4 @@
-import { ResourceCache, ResourceCacheMap } from './types';
+import { Operation, ResourceCache, ResourceCacheMap } from './types';
 
 /*
  * ResourceCache
@@ -12,7 +12,7 @@ import { ResourceCache, ResourceCacheMap } from './types';
 
 export function normaliseResourceCache<R>(resourceCache: ResourceCache<R>) {
   return Object.entries(resourceCache).reduce(
-    (obj, [key, value]) => ({ ...obj, [key]: value }),
+    (obj, [key, value]) => ({ ...obj, [key]: (value as Operation).value }),
     {},
   );
 }

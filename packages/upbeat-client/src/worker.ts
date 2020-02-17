@@ -45,12 +45,15 @@ export async function createUpbeatWorker(schema: Schema) {
     return Object.values(realiseIntermediateResourceMap(resourcesMap));
   }
 
-  function quickUpdateAll() {
+  function quickUpdateAll(localUpdate = true) {
     // Object.entries(liveIds).forEach(([id, query]) => query(db).then(result => emitter.emit('liveChange', [id, result])))
     Object.entries(liveIds).forEach(([id]) =>
       construct().then((result) => {
         emitter.emit('liveChange', [id, result]);
-        bc.postMessage('change');
+
+        if (localUpdate) {
+          bc.postMessage('change');
+        }
       }),
     );
   }
@@ -79,7 +82,7 @@ export async function createUpbeatWorker(schema: Schema) {
     quickUpdateAll();
   }
 
-  bc.onmessage = () => quickUpdateAll();
+  bc.onmessage = () => quickUpdateAll(false);
 
   /*
    * Our client <-> workerAPI.

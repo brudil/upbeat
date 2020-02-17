@@ -9,7 +9,6 @@ export const Application = () => {
     createQuery('TodoResource', ({ where }) => where('*', '*')),
   );
   const client = useUpbeat();
-  // const todos = [{ id: '1', name: 'buy milk', completed: false }, { id: '2', name: 'finish cue', completed: false }, { id: '3', name: 'build todo example', completed: true }];
 
   const [newTodo, setNewTodo] = useState('');
   const handleAddToDo = useCallback(() => {

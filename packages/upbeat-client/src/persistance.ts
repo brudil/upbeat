@@ -6,8 +6,15 @@ import { UpbeatId } from '../../upbeat-types/src';
 const DB_NAME = 'UPBEAT-DEV';
 
 export interface UpbeatPersistence {
+  /**
+   * Performs the serialisable query on the backing persistance store.
+   */
   runQuery(query: Query): Promise<any>;
   _UNSAFEDB: IDBPDatabase;
+
+  /**
+   * Fetches all operations for a single resource instance
+   */
   getOperationsByResourceKey: (
     resourceName: string,
     id: UpbeatId,
@@ -18,10 +25,9 @@ function queryRunner(query: Query, db: IDBPDatabase): Promise<any> {
   return db.getAll(query.resourceName);
 }
 
-/*
- * Persistence.
- * */
-
+/**
+ * Persistence via IndexedDB.
+ */
 export async function createIndexedDBPersistence(
   schema: Schema,
 ): Promise<UpbeatPersistence> {

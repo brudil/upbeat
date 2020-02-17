@@ -10,6 +10,15 @@ import { Resource } from '@upbeat/schema-parser/src/types';
 
 type OperationApplicationResponse = [boolean, IntermediateResource];
 
+/**
+ * Takes an operation and the intermediate resource to see if the resource
+ * will change having been applied. Returns if it has changed, the
+ * next intermediate representation.
+ *
+ * TODO: Is this the right place for the hasChanged?
+ *  Sometimes ops will be non-ops, but unique - think two adds in a set
+ *
+ */
 export function applyOperationToIntermediateResource(
   resource: IntermediateResource,
   operation: Operation,
@@ -33,7 +42,13 @@ export function applyOperationToIntermediateResource(
   return [false, resource];
 }
 
-export async function constructObjectFromOperations<R extends UpbeatResource>(
+/**
+ * From a list of operations, a intermediate representation is constructed and
+ * returned
+ */
+export async function buildIntermediateResourceFromOperations<
+  R extends UpbeatResource
+>(
   _resourceSchema: Resource,
   operations: TypedOperation<R['_type'], Extract<keyof R, string>>[],
 ): Promise<IntermediateResourceMap> {

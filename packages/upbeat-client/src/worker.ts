@@ -42,7 +42,7 @@ export async function createUpbeatWorker(schema: Schema) {
   function addOperation(changeset: Changeset<unknown>) {
     const id = changeset.action === 'CREATE' ? uuid() : changeset.id;
     Object.entries(changeset.properties).forEach(([prop, value]) => {
-      persistence.add('UpbeatOperations', {
+      persistence._UNSAFEDB.add('UpbeatOperations', {
         id: uuid(),
         resourceId: id,
         resource: changeset.resource,

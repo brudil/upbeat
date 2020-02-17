@@ -42,7 +42,7 @@ export const Application = () => {
           {!loading && data !== undefined && (
             <ul>
               {data.map((todo) => (
-                <li>
+                <li key={todo.id}>
                   <input
                     type="checkbox"
                     checked={todo.complete}

@@ -81,6 +81,7 @@ const mapToIdentifier = (a: { identifier: string }[]) => {
 };
 
 // TODO: see how best to remove any from the context argument
+/* eslint-disable @typescript-eslint/no-explicit-any */
 class AstVisitor extends BaseVisitor {
   constructor() {
     super();
@@ -146,6 +147,7 @@ class AstVisitor extends BaseVisitor {
     };
   }
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 const toAstVisitorInstance = new AstVisitor();
 

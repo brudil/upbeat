@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Todo } from '../schema.generated';
 import { useUpbeat, useUpbeatState } from '../../../upbeat-react/src/react';
-import { create, update } from '../../../upbeat-client/src/changeset';
+import { create, update } from '@upbeat/client/src/changeset';
 import { createQuery } from '@upbeat/client/src/query';
 
 export const Application = () => {

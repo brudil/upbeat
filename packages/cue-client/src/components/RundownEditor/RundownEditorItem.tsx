@@ -1,9 +1,7 @@
 import React, { useContext } from 'react';
 import { rundownEditorContext } from './RundownEditorContext';
 
-interface RundownEditorItemProps {}
-
-export const RundownEditorItem: React.FC<RundownEditorItemProps> = ({}) => {
+export const RundownEditorItem: React.FC = ({}) => {
   const [config] = useContext(rundownEditorContext);
 
   console.log(config);

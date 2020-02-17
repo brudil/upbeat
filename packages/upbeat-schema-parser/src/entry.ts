@@ -10,4 +10,4 @@ async function run() {
   console.log(JSON.stringify(parseInput(file), undefined, 2));
 }
 
-run();
+run().catch((e) => console.error(e));

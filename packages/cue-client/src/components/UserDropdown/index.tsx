@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const UserDropdown = () => {
+export const UserDropdown: React.FC = () => {
   return (
     <div css={{ flex: '1 0 auto' }}>
       <div css={{ fontSize: '0.9rem' }}>Alison Collins</div>

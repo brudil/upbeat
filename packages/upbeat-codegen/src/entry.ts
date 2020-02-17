@@ -26,7 +26,7 @@ const typeGen = (type: Type): string => {
   );
 };
 
-const _terfaceTemplate = (name: string, properties: Property[]) =>
+const _terfaceTemplate = (name: string, properties: Property[]): string =>
   `export interface ${name} extends UpbeatResource {
   _type: '${name}';
   id: UpbeatId;
@@ -35,7 +35,7 @@ ${properties
   .join('\n')}
 }`;
 
-export function generateTs(schema: Schema) {
+export function generateTs(schema: Schema): string {
   const file = [
     ...Object.values(schema.resources).map((res) =>
       _terfaceTemplate(res.identifier, Object.values(res.properties)),

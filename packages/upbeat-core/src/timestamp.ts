@@ -7,14 +7,17 @@ export interface Timestamp {
   count: number;
 }
 
-export const max = (...numbers: number[]) => {
+export const max = (...numbers: number[]): number => {
   return numbers.reduce(
     (prev, current) => (prev > current ? prev : current),
     0,
   );
 };
 
-export const isLaterTimestamp = (timeA: Timestamp, timeB: Timestamp) => {
+export const isLaterTimestamp = (
+  timeA: Timestamp,
+  timeB: Timestamp,
+): boolean => {
   // if time is bigger, we're sorted lads
   if (timeA.time > timeB.time) {
     return true;
@@ -24,7 +27,10 @@ export const isLaterTimestamp = (timeA: Timestamp, timeB: Timestamp) => {
   return timeA.time === timeB.time && timeA.count > timeB.count;
 };
 
-export const isEqualTimestamp = (timeA: Timestamp, timeB: Timestamp) => {
+export const isEqualTimestamp = (
+  timeA: Timestamp,
+  timeB: Timestamp,
+): boolean => {
   // if time is bigger, we're sorted lads
   return timeA.time === timeB.time && timeA.count === timeB.count;
 };

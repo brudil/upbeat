@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export const MarketingHomepage = () => {
+export const MarketingHomepage: React.FC = () => {
   return (
     <div>
       <div css={{ margin: '0 auto', padding: '0 2rem', maxWidth: 1280 }}>

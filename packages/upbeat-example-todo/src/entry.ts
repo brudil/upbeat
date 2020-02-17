@@ -4,7 +4,7 @@ import { Application } from './components/Application';
 import { startClient } from './client';
 import { UpbeatProvider } from '../../upbeat-react/src/react';
 
-async function start() {
+async function start(): Promise<void> {
   const client = await startClient();
 
   ReactDOM.render(
@@ -17,4 +17,4 @@ async function start() {
   );
 }
 
-start();
+start().catch((e) => console.error(e));

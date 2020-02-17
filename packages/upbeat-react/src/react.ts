@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { UpbeatClient } from '../../upbeat-client/src/client';
+import { UpbeatClient } from '@upbeat/client/src/client';
 import { Query } from '../../upbeat-client/src/types';
 
 const UpbeatContext = React.createContext<UpbeatClient | null>(null);

@@ -27,7 +27,7 @@ res Do_C {
 }
 `;
 
-describe('spec', () => {
+describe('spec', (): void => {
   it('does not fail to lex', () => {
     const lexingResult = upbeatLexer.tokenize(SPEC);
     expect(lexingResult.errors.length).toBe(0);

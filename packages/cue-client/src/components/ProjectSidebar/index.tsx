@@ -67,7 +67,7 @@ const MenuItem: React.FC<{ to: string }> = ({ to, children }) => {
   );
 };
 
-export const ProjectSidebar = () => {
+export const ProjectSidebar: React.FC = () => {
   return (
     <aside
       css={{

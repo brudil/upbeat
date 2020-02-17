@@ -24,7 +24,7 @@ export const ProjectBreadcrumbSegment: React.FC<{ to: string }> = ({
   );
 };
 
-export const ProjectBreadcrumb = () => {
+export const ProjectBreadcrumb: React.FC = () => {
   return (
     <ul
       css={{

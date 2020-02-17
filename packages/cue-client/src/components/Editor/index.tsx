@@ -11,7 +11,7 @@ import { proseMirrorStyles } from './styles';
 import { useUpbeat } from '@upbeat/client/src/react';
 import { CueApp } from '@withcue/shared/src';
 
-export const Editor = () => {
+export const Editor: React.FC = () => {
   const ref = useRef<null | HTMLDivElement>(null);
   const stateRef = useRef<null | EditorState>(null);
   const viewRef = useRef<null | EditorView>(null);

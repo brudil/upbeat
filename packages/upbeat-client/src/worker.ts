@@ -1,12 +1,12 @@
-import { Schema } from '@upbeat/schema-parser/dist/src/types';
+import { Schema } from '@upbeat/schema-parser/src/types';
 import { createIndexedDBPersistence } from './persistance';
 import { createHLCClock } from '../../upbeat-core/src/timestamp';
 import NanoEvents from 'nanoevents';
 import uuid from 'uuid/v4';
-import { Query } from './types';
 import { Changeset } from './changeset';
 import { normaliseResourceCacheMap } from './resourceCache';
 import { constructObjectFromOperations } from './materialiser';
+import { Query } from './query';
 
 const bc = new BroadcastChannel('UPBEAT');
 

@@ -3,9 +3,7 @@ import { RundownEditorHeader } from './RundownEditorHeader';
 import { RundownEditorItem } from './RundownEditorItem';
 import { RundownEditorProvider } from './RundownEditorContext';
 
-interface RundownEditorProps {}
-
-export const RundownEditor: React.FC<RundownEditorProps> = ({}) => {
+export const RundownEditor: React.FC = ({}) => {
   return (
     <RundownEditorProvider>
       <div>

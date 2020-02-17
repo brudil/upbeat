@@ -1,9 +1,7 @@
 import React from 'react';
 import Logotype from '../vectors/logotype.svg';
 
-interface StonewallProps {}
-
-export const Stonewall: React.FC<StonewallProps> = (props) => {
+export const Stonewall: React.FC = (props) => {
   return (
     <div
       css={{

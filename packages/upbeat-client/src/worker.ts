@@ -4,11 +4,7 @@ import { createHLCClock } from '@upbeat/core/src/timestamp';
 import NanoEvents from 'nanoevents';
 import uuid from 'uuid/v4';
 import { Changeset } from './changeset';
-import {
-  createResourceCache,
-  realiseIntermediateResourceMap,
-} from './resourceCache';
-import { constructObjectFromOperations } from './materialiser';
+import { createResourceCache } from './resourceCache';
 import { Query } from './query';
 
 const bc = new BroadcastChannel('UPBEAT');
@@ -32,23 +28,10 @@ export async function createUpbeatWorker(schema: Schema) {
    * For the time being. NEW == re-query, UPDATE = resourceCache
    * */
 
-  // const x = await cache.getById('Todo', '005e72c7-66bf-494c-a168-8000b09ea6d4');
-  // console.log(x);
-
-  async function construct() {
-    const ops = await persistence._UNSAFEDB.getAll('UpbeatOperations');
-    const resourcesMap = await constructObjectFromOperations(
-      schema.resources.Todo,
-      ops,
-    );
-
-    return Object.values(realiseIntermediateResourceMap(resourcesMap));
-  }
-
   function quickUpdateAll(localUpdate = true) {
     // Object.entries(liveIds).forEach(([id, query]) => query(db).then(result => emitter.emit('liveChange', [id, result])))
-    Object.entries(liveIds).forEach(([id]) =>
-      construct().then((result) => {
+    Object.entries(liveIds).forEach(([id, query]) =>
+      persistence.runQuery(query).then((result) => {
         emitter.emit('liveChange', [id, result]);
 
         if (localUpdate) {
@@ -93,7 +76,7 @@ export async function createUpbeatWorker(schema: Schema) {
     addOperation,
     async createLiveQuery(query: Query, id: string) {
       liveIds[id] = query;
-      const result = await construct();
+      const result = await persistence.runQuery(query);
       emitter.emit('liveChange', [id, result]);
     },
   };

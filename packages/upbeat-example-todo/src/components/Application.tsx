@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Todo } from '../schema.generated';
+import { Todo, TodoTag } from '../schema.generated';
 import { useUpbeat, useUpbeatState } from '../../../upbeat-react/src/react';
 import { create, update } from '@upbeat/client/src/changeset';
 import { createQuery } from '@upbeat/client/src/query';
@@ -16,6 +16,17 @@ export const Application: React.FC = () => {
   const client = useUpbeat();
 
   const [newTodo, setNewTodo] = useState('');
+  const [newTag, setNewTag] = useState('');
+  const handleAddTag = useCallback(() => {
+    client.sendOperation(
+      create<TodoTag>('TodoTag', {
+        name: newTag,
+        color: '#ffffff',
+      }),
+    );
+    setNewTag('');
+  }, [client, newTag, setNewTag]);
+
   const handleAddToDo = useCallback(() => {
     client.sendOperation(
       create<Todo>('Todo', {
@@ -81,11 +92,11 @@ export const Application: React.FC = () => {
           <h2 className="text-xl font-bold mb-4">Create tag</h2>
           <input
             type="text"
-            placeholder="todo name"
-            value={newTodo}
-            onChange={(e) => setNewTodo(e.target.value)}
+            placeholder="tag name"
+            value={newTag}
+            onChange={(e) => setNewTag(e.target.value)}
           />
-          <button onClick={handleAddToDo}>Add Tag</button>
+          <button onClick={handleAddTag}>Add Tag</button>
         </div>
       </div>
     </div>

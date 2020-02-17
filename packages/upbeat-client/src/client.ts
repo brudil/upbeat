@@ -6,7 +6,7 @@ import './query';
 import { Query } from './query';
 
 export interface UpbeatClient {
-  createLiveQuery(query: Query, hook: (cb) => void): () => void;
+  createLiveQuery(query: Query, hook: (cb: any) => void): () => void;
   sendOperation(c: Changeset<unknown>): void;
 }
 

@@ -11,14 +11,16 @@ import { Query } from './query';
 const bc = new BroadcastChannel('UPBEAT');
 
 export async function createUpbeatWorker(schema: Schema) {
-  const db = await createIndexedDBPersistence(schema);
+  const persistence = await createIndexedDBPersistence(schema);
   const clock = createHLCClock(Date.now);
   const emitter = new NanoEvents<any>();
 
-  const liveIds = {};
+  const liveIds: {
+    [id: string]: Query;
+  } = {};
 
   async function construct() {
-    const ops = await db.getAll('UpbeatOperations');
+    const ops = await persistence._UNSAFEDB.getAll('UpbeatOperations');
     const resourcesMap = await constructObjectFromOperations(
       schema.resources.Todo,
       ops,
@@ -29,7 +31,7 @@ export async function createUpbeatWorker(schema: Schema) {
 
   function quickUpdateAll() {
     // Object.entries(liveIds).forEach(([id, query]) => query(db).then(result => emitter.emit('liveChange', [id, result])))
-    Object.entries(liveIds).forEach(([id, query]) =>
+    Object.entries(liveIds).forEach(([id]) =>
       construct().then((result) => {
         emitter.emit('liveChange', [id, result]);
         bc.postMessage('change');
@@ -40,7 +42,7 @@ export async function createUpbeatWorker(schema: Schema) {
   function addOperation(changeset: Changeset<unknown>) {
     const id = changeset.action === 'CREATE' ? uuid() : changeset.id;
     Object.entries(changeset.properties).forEach(([prop, value]) => {
-      db.add('UpbeatOperations', {
+      persistence.add('UpbeatOperations', {
         id: uuid(),
         resourceId: id,
         resource: changeset.resource,

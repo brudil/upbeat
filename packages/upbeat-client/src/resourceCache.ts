@@ -2,7 +2,7 @@ import { ResourceCache, ResourceCacheMap } from './types';
 
 /*
  * ResourceCache
- * We need a intermediate type for quick in-memory comparisions when new
+ * We need a intermediate type for quick in-memory comparision when new
  * operations come in.
  *
  * The ResourceCache of an resource instance is the same shape as the resource,
@@ -11,8 +11,8 @@ import { ResourceCache, ResourceCacheMap } from './types';
  * */
 
 export function normaliseResourceCache<R>(resourceCache: ResourceCache<R>) {
-  return Object.keys(resourceCache).reduce(
-    (obj, key) => ({ ...obj, [key]: resourceCache[key].value }),
+  return Object.entries(resourceCache).reduce(
+    (obj, [key, value]) => ({ ...obj, [key]: value }),
     {},
   );
 }

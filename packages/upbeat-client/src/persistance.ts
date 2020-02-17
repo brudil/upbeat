@@ -5,6 +5,7 @@ const DB_NAME = 'UPBEAT-DEV';
 
 interface UpbeatPersistence {
   runQuery(query: Query): Promise<any>;
+  _UNSAFEDB: IDBPDatabase;
 }
 
 function queryRunner(query: Query, db: IDBPDatabase): Promise<any> {
@@ -19,7 +20,7 @@ export async function createIndexedDBPersistence(
   schema: Schema,
 ): Promise<UpbeatPersistence> {
   const db = await openDB(DB_NAME, 6, {
-    upgrade(db, oldVersion, newVersion, transaction) {
+    upgrade(db) {
       const logDb = db.createObjectStore('UpbeatOperations', { keyPath: 'id' });
       logDb.createIndex('resource', 'resource');
       logDb.createIndex('resourceId', 'resourceId');
@@ -41,7 +42,7 @@ export async function createIndexedDBPersistence(
       });
 
       Object.values(schema.spaces).forEach((space) => {
-        const spaceDb = db.createObjectStore(`${space.identifier}Space`, {
+        db.createObjectStore(`${space.identifier}Space`, {
           keyPath: 'id',
         });
       });
@@ -61,5 +62,6 @@ export async function createIndexedDBPersistence(
     runQuery(query): Promise<any> {
       return queryRunner(query, db);
     },
+    _UNSAFEDB: db,
   };
 }

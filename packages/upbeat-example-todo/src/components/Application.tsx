@@ -2,9 +2,12 @@ import React, { useCallback, useState } from 'react';
 import { Todo } from '../schema.generated';
 import { useUpbeat, useUpbeatState } from '../../../upbeat-react/src/react';
 import { create, update } from '../../../upbeat-client/src/changeset';
+import { createQuery } from '@upbeat/client/src/query';
 
 export const Application = () => {
-  const { loading, data } = useUpbeatState((db) => db.getAll('TodoResource'));
+  const { loading, data } = useUpbeatState(
+    createQuery('TodoResource', ({ where }) => where('*', '*')),
+  );
   const client = useUpbeat();
   // const todos = [{ id: '1', name: 'buy milk', completed: false }, { id: '2', name: 'finish cue', completed: false }, { id: '3', name: 'build todo example', completed: true }];
 

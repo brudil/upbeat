@@ -1,9 +1,6 @@
-import { IDBPDatabase } from 'idb';
 import { Timestamp } from '../../upbeat-core/src/timestamp';
 
 export type Cb = (data: any) => void;
-
-export type Query = (db: IDBPDatabase) => any;
 
 export interface Operation {
   id: string;

@@ -1,5 +1,5 @@
 import { Schema } from '@upbeat/schema-parser/dist/src/types';
-import { startDatabase } from './persistance';
+import { createIndexedDBPersistence } from './persistance';
 import { createHLCClock } from '../../upbeat-core/src/timestamp';
 import NanoEvents from 'nanoevents';
 import uuid from 'uuid/v4';
@@ -11,7 +11,7 @@ import { constructObjectFromOperations } from './materialiser';
 const bc = new BroadcastChannel('UPBEAT');
 
 export async function createUpbeatWorker(schema: Schema) {
-  const db = await startDatabase(schema);
+  const db = await createIndexedDBPersistence(schema);
   const clock = createHLCClock(Date.now);
   const emitter = new NanoEvents<any>();
 

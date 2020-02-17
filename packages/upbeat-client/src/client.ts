@@ -1,7 +1,9 @@
 import { Schema } from '@upbeat/schema-parser/src/types';
 import uuid from 'uuid/v4';
-import { Changeset, Query } from './types';
 import { createUpbeatWorker } from './worker';
+import { Changeset } from './changeset';
+import './query';
+import { Query } from './query';
 
 export interface UpbeatClient {
   createLiveQuery(query: Query, hook: (cb) => void): () => void;

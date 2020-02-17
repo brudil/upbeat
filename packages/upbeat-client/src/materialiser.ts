@@ -4,7 +4,7 @@ import { isLaterTimestamp } from '../../upbeat-core/src/timestamp';
 import { Resource } from '@upbeat/schema-parser/src/types';
 
 export async function constructObjectFromOperations<R extends UpbeatResource>(
-  resourceSchema: Resource,
+  _resourceSchema: Resource,
   operations: TypedOperation<R['_type'], Extract<keyof R, string>>[],
 ): Promise<ResourceCacheMap<R>> {
   const resources: ResourceCacheMap<R> = {};

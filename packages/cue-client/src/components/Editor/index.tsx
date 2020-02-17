@@ -51,13 +51,16 @@ export const Editor: React.FC = () => {
     upbeat.subscribe('edit', (event: any) => {
       setText(event.content);
     });
-  }, []);
+  }, [upbeat]);
 
-  const handleEdit = useCallback((e: any) => {
-    const content = e.target.value;
-    upbeat.operation.edit(content);
-    setText(content);
-  }, []);
+  const handleEdit = useCallback(
+    (e: any) => {
+      const content = e.target.value;
+      upbeat.operation.edit(content);
+      setText(content);
+    },
+    [upbeat.operation],
+  );
 
   return (
     <div

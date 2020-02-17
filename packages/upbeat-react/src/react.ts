@@ -39,7 +39,7 @@ export const useUpbeatState = (query: Query) => {
     return () => {
       unregister();
     };
-  }, [client]);
+  }, [client, query]);
 
   return {
     loading: !data,

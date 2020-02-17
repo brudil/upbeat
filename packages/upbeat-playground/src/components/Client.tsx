@@ -57,18 +57,21 @@ export const Client: React.FC<{ clientContainer: ClientContainer }> = ({
 }) => {
   // const transform = useMemo(() => , [clientContainer.client.text.operationTree]);
 
-  const handleType = useCallback((event) => {
-    const nextText = event.target.value;
-    const change = getInsertAndIndex(
-      clientContainer.client.assembleString(),
-      nextText,
-    );
-    console.log(change);
+  const handleType = useCallback(
+    (event) => {
+      const nextText = event.target.value;
+      const change = getInsertAndIndex(
+        clientContainer.client.assembleString(),
+        nextText,
+      );
+      console.log(change);
 
-    if (change !== null) {
-      clientContainer.client.insertCharAt(change[1], change[0]);
-    }
-  }, []);
+      if (change !== null) {
+        clientContainer.client.insertCharAt(change[1], change[0]);
+      }
+    },
+    [clientContainer.client],
+  );
 
   const online = clientContainer.status === ClientStatus.ONLINE;
   return (

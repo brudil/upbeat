@@ -3,4 +3,4 @@ import { ProjectSidebar } from './index';
 
 export default { title: 'ProjectSidebar' };
 
-export const standard = () => <ProjectSidebar />;
+export const standard: React.FC = () => <ProjectSidebar />;

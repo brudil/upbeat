@@ -35,7 +35,12 @@ export const isEqualTimestamp = (
   return timeA.time === timeB.time && timeA.count === timeB.count;
 };
 
-export const createHLCClock = (clock: Clock) => {
+interface HLCClock {
+  now(): Timestamp;
+  update(incomingTimestamp: Timestamp): void;
+}
+
+export const createHLCClock = (clock: Clock): HLCClock => {
   let timestamp: Timestamp = {
     time: 0,
     count: 0,
@@ -55,7 +60,7 @@ export const createHLCClock = (clock: Clock) => {
 
       return Object.freeze({ ...timestamp });
     },
-    update(incomingTimestamp: Timestamp) {
+    update(incomingTimestamp) {
       const prevTimestamp = { ...timestamp };
 
       timestamp = {

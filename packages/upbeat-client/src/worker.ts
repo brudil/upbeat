@@ -28,7 +28,7 @@ export async function createUpbeatWorker(schema: Schema) {
    * For the time being. NEW == re-query, UPDATE = resourceCache
    * */
 
-  function quickUpdateAll(localUpdate = true) {
+  function quickUpdateAll(localUpdate = true): void {
     // Object.entries(liveIds).forEach(([id, query]) => query(db).then(result => emitter.emit('liveChange', [id, result])))
     Object.entries(liveIds).forEach(([id, query]) =>
       persistence.runQuery(query).then((result) => {
@@ -41,7 +41,7 @@ export async function createUpbeatWorker(schema: Schema) {
     );
   }
 
-  async function addOperation(changeset: Changeset<unknown>) {
+  async function addOperation(changeset: Changeset<unknown>): Promise<void> {
     const id = changeset.action === 'CREATE' ? uuid() : changeset.id;
 
     for (const [prop, value] of Object.entries(changeset.properties)) {

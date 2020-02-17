@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { UpbeatClient } from '@upbeat/client/src/client';
-import { Query } from '../../upbeat-client/src/types';
+import { Query } from '@upbeat/client/src/query';
 
 const UpbeatContext = React.createContext<UpbeatClient | null>(null);
 
@@ -8,7 +8,7 @@ const { Provider: UpbeatProvider, Consumer } = UpbeatContext;
 export { UpbeatProvider, Consumer };
 
 export const useUpbeat = (): UpbeatClient => {
-  const upbeat = useContext(UpbeatContext);
+  const upbeat = useContext<UpbeatClient | null>(UpbeatContext);
 
   if (upbeat === null) {
     throw new Error('No upbeat instance provided');
@@ -30,7 +30,9 @@ export const useUpbeat = (): UpbeatClient => {
 //   };
 // };
 
-export const useUpbeatState = (query: Query) => {
+export const useUpbeatState = <D = unknown>(
+  query: Query,
+): { loading: boolean; data: D | undefined } => {
   const client = useUpbeat();
   const [data, setData] = useState(undefined);
 

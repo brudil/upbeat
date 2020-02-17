@@ -7,7 +7,9 @@ export const RundownEditorHeader: React.FC = ({}) => {
   return (
     <div css={{ display: 'flex' }}>
       {config.displayCols.map((colName) => (
-        <div css={{ width: config.widthCols[colName] }}>{colName}</div>
+        <div key={colName} css={{ width: config.widthCols[colName] }}>
+          {colName}
+        </div>
       ))}
     </div>
   );

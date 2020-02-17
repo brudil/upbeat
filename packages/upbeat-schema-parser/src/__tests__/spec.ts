@@ -28,18 +28,18 @@ res Do_C {
 `;
 
 describe('spec', (): void => {
-  it('does not fail to lex', () => {
+  it('does not fail to lex', (): void => {
     const lexingResult = upbeatLexer.tokenize(SPEC);
     expect(lexingResult.errors.length).toBe(0);
   });
 
-  it('bad formatting to fail', () => {
+  it('bad formatting to fail', (): void => {
     const parseAst = () => parseInput(BAD_SPEC);
 
     expect(parseAst).toThrow();
   });
 
-  it('has found resources and spaces', () => {
+  it('has found resources and spaces', (): void => {
     const ast = parseInput(SPEC);
 
     expect(Object.keys(ast.spaces).length).toBe(1);

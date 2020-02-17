@@ -3,4 +3,4 @@ import { ProjectBreadcrumb } from './index';
 
 export default { title: 'ProjectBreadcrumb' };
 
-export const standard = () => <ProjectBreadcrumb />;
+export const standard: React.FC = () => <ProjectBreadcrumb />;

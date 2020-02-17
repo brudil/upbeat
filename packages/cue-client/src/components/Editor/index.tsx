@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { useEffect, useRef } from 'react';
@@ -8,14 +8,11 @@ import { keymap } from 'prosemirror-keymap';
 import { redo, undo, history } from 'prosemirror-history';
 import { Global } from '@emotion/core';
 import { proseMirrorStyles } from './styles';
-import { useUpbeat } from '@upbeat/client/src/react';
-import { CueApp } from '@withcue/shared/src';
 
 export const Editor: React.FC = () => {
   const ref = useRef<null | HTMLDivElement>(null);
   const stateRef = useRef<null | EditorState>(null);
   const viewRef = useRef<null | EditorView>(null);
-  const upbeat = useUpbeat<CueApp>();
 
   useEffect(() => {
     if (ref.current !== null) {
@@ -45,22 +42,6 @@ export const Editor: React.FC = () => {
       });
     }
   }, [ref]);
-  const [text, setText] = useState('example');
-
-  useEffect(() => {
-    upbeat.subscribe('edit', (event: any) => {
-      setText(event.content);
-    });
-  }, [upbeat]);
-
-  const handleEdit = useCallback(
-    (e: any) => {
-      const content = e.target.value;
-      upbeat.operation.edit(content);
-      setText(content);
-    },
-    [upbeat.operation],
-  );
 
   return (
     <div
@@ -68,7 +49,6 @@ export const Editor: React.FC = () => {
         padding: '0 2rem',
       }}
     >
-      <textarea value={text} onChange={handleEdit} />
       <Global styles={proseMirrorStyles} />
       <div
         ref={ref}

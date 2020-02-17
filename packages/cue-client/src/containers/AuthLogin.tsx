@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { Stonewall } from '../components/Stonewall';
 
-export const AuthLogin = () => {
+export const AuthLogin: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 

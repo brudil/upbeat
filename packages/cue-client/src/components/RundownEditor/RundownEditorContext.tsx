@@ -9,7 +9,7 @@ interface RundownEditorUIState {
 
 export const rundownEditorContext = createContext<[RundownEditorUIState, any]>([
   { displayCols: [], widthCols: {} },
-  () => {},
+  undefined,
 ]);
 
 export const RundownEditorProvider: React.FC = ({ children }) => {

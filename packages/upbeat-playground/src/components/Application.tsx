@@ -27,7 +27,7 @@ setTimeout(() => james.insertCharAt(4, 's'), 10000);
 
 // setInterval(() => james.insertCharAt(0, 'x'), 20)
 
-export const Application = () => {
+export const Application: React.FC = () => {
   const [tick, forceUpdate] = useState(0);
 
   useEffect(() => {

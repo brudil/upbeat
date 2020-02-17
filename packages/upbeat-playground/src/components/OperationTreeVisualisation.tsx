@@ -1,9 +1,9 @@
 import React from 'react';
-import Tree from 'react-d3-tree';
+import Tree, { ReactD3TreeItem } from 'react-d3-tree';
 
-export const OperationTreeVisualisation: React.FC<{ tree: any }> = ({
-  tree,
-}) => {
+export const OperationTreeVisualisation: React.FC<{
+  tree: ReactD3TreeItem[] | ReactD3TreeItem;
+}> = ({ tree }) => {
   return (
     <Tree
       data={tree}

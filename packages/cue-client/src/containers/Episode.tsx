@@ -6,7 +6,7 @@ import { EpisodeScripts } from './EpisodeScripts';
 import { EpisodeObjects } from './EpisodeObjects';
 import { StatusBar } from '../components/StatusBar';
 
-export const Episode = () => {
+export const Episode: React.FC = () => {
   return (
     <div>
       <StatusBar />

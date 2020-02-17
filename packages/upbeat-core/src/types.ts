@@ -24,5 +24,5 @@ export interface Node<A> {
 }
 
 export interface Atom extends Node<Atom> {
-  operation: Operation<any>;
+  operation: Operation<unknown>;
 }

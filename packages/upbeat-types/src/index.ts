@@ -13,6 +13,7 @@ export type UpbeatOrderable = number;
 export type UpbeatSet<S> = S[];
 export interface UpbeatResource {
   _type: string;
+  tombstone?: boolean;
 }
 
 // interface UpbeatType {

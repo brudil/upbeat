@@ -48,6 +48,15 @@ export const Application: React.FC = () => {
     [client],
   );
 
+  const handleDeleteTodo = useCallback(
+    (todo) => {
+      client.sendOperation(
+        update<Todo>('Todo', todo.id, { tombstone: true }),
+      );
+    },
+    [client],
+  );
+
   return (
     <div>
       <h1 className="text-2xl">Upbeat Todo</h1>
@@ -64,6 +73,12 @@ export const Application: React.FC = () => {
                     onChange={() => handleToDoCheck(todo)}
                   />
                   {todo.name}
+                  <button
+                    onClick={() => handleDeleteTodo(todo)}
+                    className="text-sm bg-red-900 text-white font-bold"
+                  >
+                    x
+                  </button>
                 </li>
               ))}
             </ul>

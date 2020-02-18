@@ -50,7 +50,6 @@ export async function createIndexedDBPersistence(
             unique: false,
           });
         });
-        resourceDb.createIndex('tombstone', 'tombstone');
         resourceDb.createIndex('space', 'space');
       });
 

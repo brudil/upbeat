@@ -5,6 +5,7 @@ import {
   applyOperationToIntermediateResource,
   buildIntermediateResourceFromOperations,
 } from './materialiser';
+import { log } from './debug';
 
 /**
  * ResourceCache
@@ -122,10 +123,25 @@ export function createResourceCache(
 
       if (hasChanged) {
         try {
-          await persistence._UNSAFEDB.put(
-            operation.resource + 'Resource',
-            realiseIntermediateResource(nextResource),
-          );
+          if (nextResource.properties.tombstone) {
+            log(
+              'ResourceCache',
+              `Deleting ${operation.resource}#${nextResource.id}`,
+            );
+            await persistence._UNSAFEDB.delete(
+              operation.resource + 'Resource',
+              nextResource.id,
+            );
+          } else {
+            log(
+              'ResourceCache',
+              `Persisting ${operation.resource}#${nextResource.id}`,
+            );
+            await persistence._UNSAFEDB.put(
+              operation.resource + 'Resource',
+              realiseIntermediateResource(nextResource),
+            );
+          }
         } catch (e) {
           console.error(e);
           console.log('failed save of op');

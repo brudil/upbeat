@@ -1,10 +1,11 @@
-<img src="packages/client/src/images/logo@2x.png" width="156" alt="CUE" />
+<p align="center">
+<img src="packages/upbeat-core/images/upbeat-logo.png" width="156" alt="UPBEAT" />
+CRTD-based local-first data and sync for apps.
+</p>
 
-Cue is a show production system, allowing you to collaboratively write scripts, organise sound effects and create rundowns.
+
 
 ## Packages and libraries
-
-### @upbeat
 
 #### @upbeat/core
 
@@ -18,12 +19,8 @@ Cue is a show production system, allowing you to collaboratively write scripts, 
 
 #### @upbeat/playground
 
-### @withcue
-
-#### @withcue/shared
-#### @withcue/client
-#### @withcue/server
-#### @withcue/desktop
+# Cue
+Cue is a show production system, allowing you to collaboratively write scripts, organise sound effects and create rundowns.
 
 
 ## Work on scripts
@@ -36,3 +33,8 @@ Cue is a show production system, allowing you to collaboratively write scripts, 
 
 
 ## Telepropter for performers, producer mode, and more
+### Packages and libraries
+#### @withcue/shared
+#### @withcue/client
+#### @withcue/server
+#### @withcue/desktop

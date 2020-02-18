@@ -1,13 +1,21 @@
-resource Todo {
+resource RundownItem {
   String name;
-  Boolean complete;
+  Int timing;
   Orderable order;
   Set(Reference(TodoTag)) tags;
 }
 
-resource TodoTag {
-  String name;
-  String color;
+resource Script {
+  String title;
+  RAG content;
+}
+
+ephemeral on Script {
+  RAGPos position;
+}
+
+ephemeral on User {
+
 }
 
 space Project {

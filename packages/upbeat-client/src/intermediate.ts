@@ -1,11 +1,11 @@
 import { UpbeatResource } from '@upbeat/types/src';
-import { isLaterTimestamp } from '@upbeat/core/src/timestamp';
 import { Resource } from '@upbeat/schema/src';
 import { UpbeatId } from '../../upbeat-types/src';
 import { ResourceOperation, SetOperations } from './operations';
 import { Operation, TypedOperation } from './operations';
-import { Property, Schema, Type } from '../../upbeat-schema/src';
+import { Property, Schema } from '../../upbeat-schema/src';
 import { UpbeatInvalidApplication } from './errors';
+import { getHandlersForType, OperationApplicationResponse } from './types';
 
 interface StringProperty {
   type: 'String';
@@ -22,81 +22,10 @@ interface SetProperty<T> {
   operations: ResourceOperation<SetOperations<T>>[];
 }
 
-type PropertyWrapper = StringProperty | BooleanProperty | SetProperty<unknown>;
-
-interface RealiseHandler {
-  (property: PropertyWrapper): any;
-}
-
-interface TypeDefinition {
-  application: OperationApplicationHandler;
-  realise: RealiseHandler;
-}
-
-interface TypeDefinitionMap {
-  [typeName: string]: TypeDefinition;
-}
-
-const lWWPropertyApply: OperationApplicationHandler = (resource, operation) => {
-  if (
-    !resource?.properties[operation.property]?.operation ||
-    isLaterTimestamp(
-      operation.timestamp,
-      resource.properties[operation.property].operation.timestamp,
-    )
-  ) {
-    return [
-      true,
-      {
-        ...resource,
-        properties: {
-          ...resource.properties,
-          [operation.property]: {
-            ...resource.properties[operation.property],
-            operation,
-          },
-        },
-      },
-    ];
-  }
-
-  return [false, resource];
-};
-
-const lwwPropertyRealise: RealiseHandler = (property) => {
-  return property?.operation?.value;
-};
-
-const typeDefinitionMap: TypeDefinitionMap = {
-  String: {
-    application: lWWPropertyApply,
-    realise: lwwPropertyRealise,
-  },
-  Boolean: {
-    application: lWWPropertyApply,
-    realise: lwwPropertyRealise,
-  },
-  Orderable: {
-    application: lWWPropertyApply,
-    realise: lwwPropertyRealise,
-  },
-  Set: {
-    application: lWWPropertyApply,
-    realise: lwwPropertyRealise,
-  },
-};
-
-function getHandlersForType(type: Type): TypeDefinition {
-  if (typeDefinitionMap.hasOwnProperty(type.identifier)) {
-    return typeDefinitionMap[type.identifier];
-  }
-
-  throw new UpbeatInvalidApplication(
-    `Handlers for type ${type.identifier} (${JSON.stringify(
-      type.subtype,
-    )}) do not exist.`,
-  );
-}
+export type PropertyWrapper =
+  | StringProperty
+  | BooleanProperty
+  | SetProperty<unknown>;
 
 export interface IntermediateResource {
   id?: UpbeatId;
@@ -106,8 +35,6 @@ export interface IntermediateResource {
   };
 }
 export type IntermediateResourceMap = { [id: string]: IntermediateResource };
-
-type OperationApplicationResponse = [boolean, IntermediateResource];
 
 function getIntermediatePropertyType(prop: Property): PropertyWrapper {
   if (prop.type.identifier === 'Boolean') {
@@ -187,13 +114,6 @@ export async function buildIntermediateResourceFromOperations<
   });
 
   return resources;
-}
-
-interface OperationApplicationHandler {
-  (
-    resource: IntermediateResource,
-    operation: Operation,
-  ): OperationApplicationResponse;
 }
 
 /**

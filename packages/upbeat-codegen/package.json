@@ -7,7 +7,7 @@
     "typescript": "^3.7.5"
   },
   "devDependencies": {
-    "@types/node": "^13.7.0"
+    "@types/node": "^13.7.1"
   },
   "scripts": {
     "build": "tsc"

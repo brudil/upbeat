@@ -12,12 +12,14 @@
     "typescript": "^3.7.5"
   },
   "devDependencies": {
-    "@types/react": "^16.9.19",
+    "@types/react": "^16.9.20",
     "@types/react-dom": "^16.9.5",
     "postcss-import": "^12.0.1"
   },
   "scripts": {
     "gen": "node ../upbeat-codegen/dist/entry.js > src/schema.generated.ts"
   },
-  "browserslist": ["last 1 Chrome versions"]
+  "browserslist": [
+    "last 1 Chrome versions"
+  ]
 }

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { Schema, Property, Type } from '@upbeat/schema-parser/dist/types';
+import { Schema, Property, Type } from '@upbeat/schema/src';
 import { parseInput } from '@upbeat/schema-parser/dist/parser';
 
 const usedTypes = new Set();

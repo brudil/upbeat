@@ -1,5 +1,5 @@
 import { IDBPCursor, IDBPDatabase, openDB } from 'idb';
-import { Schema } from '@upbeat/schema-parser/src/types';
+import { Schema } from '@upbeat/schema/src';
 import { Query } from './query';
 import { Operation } from './types';
 import { UpbeatId } from '../../upbeat-types/src';

@@ -12,7 +12,7 @@ import {
   tokens,
   upbeatLexer,
 } from './lexer';
-import { Property, Resource, Schema, Space, Scope } from './types';
+import { Property, Resource, Schema, Scope, Space } from '@upbeat/schema/src';
 
 class UpbeatSchemaParser extends CstParser {
   constructor() {

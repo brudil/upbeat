@@ -6,7 +6,7 @@ import {
   TypedOperation,
 } from './types';
 import { isLaterTimestamp } from '@upbeat/core/src/timestamp';
-import { Resource } from '@upbeat/schema-parser/src/types';
+import { Resource } from '@upbeat/schema/src';
 
 type OperationApplicationResponse = [boolean, IntermediateResource];
 

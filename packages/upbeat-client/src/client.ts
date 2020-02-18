@@ -1,4 +1,4 @@
-import { Schema } from '@upbeat/schema-parser/src/types';
+import { Schema } from '@upbeat/schema/src';
 import uuid from 'uuid/v4';
 import { createUpbeatWorker } from './worker';
 import { Changeset } from './changeset';

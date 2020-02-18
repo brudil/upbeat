@@ -1,4 +1,4 @@
-import { Schema } from '@upbeat/schema-parser/src/types';
+import { Schema } from '@upbeat/schema/src';
 import { createIndexedDBPersistence } from './persistance';
 import { createHLCClock } from '@upbeat/core/src/timestamp';
 import NanoEvents from 'nanoevents';

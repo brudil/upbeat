@@ -16,6 +16,7 @@ export const Application: React.FC = () => {
   const client = useUpbeat();
 
   const [newTodo, setNewTodo] = useState('');
+  const [newTodoTag, setNewTodoTag] = useState('');
   const [newTag, setNewTag] = useState('');
   const handleAddTag = useCallback(() => {
     client.sendOperation(
@@ -92,6 +93,18 @@ export const Application: React.FC = () => {
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
           />
+          <select
+            value={newTodoTag}
+            onChange={(e) => setNewTodoTag(e.target.value)}
+          >
+            <option value={''}>None</option>
+            {!tagsLoading && tagsData !== undefined
+              ? tagsData.map((tag) => (
+                  <option value={tag.id}>{tag.name}</option>
+                ))
+              : null}
+          </select>
+          <br />
           <button onClick={handleAddToDo}>Add Todo</button>
         </div>
 

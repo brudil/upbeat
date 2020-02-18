@@ -41,7 +41,7 @@ export const useUpbeatState = <D = unknown>(
     return () => {
       unregister();
     };
-  }, [client, query]);
+  }, []);
 
   return {
     loading: !data,

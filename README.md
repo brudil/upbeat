@@ -1,5 +1,5 @@
 <p align="center">
-<img src="packages/upbeat-core/images/upbeat-logo.png" width="156" alt="UPBEAT" />
+<img src="packages/upbeat-core/img/upbeat-logo.png" width="156" alt="UPBEAT" />
 CRTD-based local-first data and sync for apps.
 </p>
 

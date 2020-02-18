@@ -1,14 +1,15 @@
-import { IntermediateResource, Operation } from './types';
 import { UpbeatId } from '../../upbeat-types/src';
 import { UpbeatPersistence } from './persistence';
 import {
   applyOperationToIntermediateResource,
   buildIntermediateResourceFromOperations,
   createIntermediateResourceForResource,
+  IntermediateResource,
   realiseIntermediateResource,
 } from './intermediate';
 import { log } from './debug';
 import { Schema } from '../../upbeat-schema/src';
+import { Operation } from './operations';
 
 /**
  * ResourceCache

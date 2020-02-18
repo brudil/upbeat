@@ -1,4 +1,4 @@
-import { isLaterTimestamp } from '../../upbeat-core/src/timestamp';
+import { isLaterTimestamp } from '@upbeat/core/src/timestamp';
 import { Type } from '../../upbeat-schema/src';
 import { UpbeatInvalidApplication } from './errors';
 import { IntermediateResource, PropertyWrapper } from './intermediate';

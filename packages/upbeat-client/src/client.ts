@@ -4,6 +4,7 @@ import { createUpbeatWorker } from './worker';
 import { Changeset } from './changeset';
 import './query';
 import { Query } from './query';
+import { log } from './debug';
 
 export interface UpbeatClient {
   createLiveQuery(query: Query, hook: (cb: any) => void): () => void;
@@ -50,22 +51,23 @@ export async function createClient(schema: Schema): Promise<UpbeatClient> {
       const id = uuid();
 
       worker.createLiveQuery(query, id);
+      log('LiveQuery', `${id}#REGISTERED ${JSON.stringify(query)}`);
 
       liveQueries[id] = {
         hook,
       };
 
       return () => {
+        log('LiveQuery', `${id}#UNREGISTERED`);
         delete liveQueries[id];
       };
     },
     sendOperation(changeset) {
-      console.log(
-        `%cUpbeatOp%c ${changeset.resource}#${
+      log(
+        'UpbeatOp',
+        `${changeset.resource}#${
           changeset.action === 'UPDATE' ? changeset.id : 'NEW'
         } ${JSON.stringify(changeset.properties)}`,
-        'border-radius: 4px;padding: 1px 2px;font-weight: bold; color: white;background: black;',
-        'font-weight: normal;',
       );
       worker.addOperation(changeset);
     },

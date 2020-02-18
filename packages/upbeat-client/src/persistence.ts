@@ -1,8 +1,8 @@
 import { IDBPCursor, IDBPDatabase, openDB } from 'idb';
 import { Schema } from '@upbeat/schema/src';
 import { Query } from './query';
-import { Operation } from './types';
 import { UpbeatId } from '../../upbeat-types/src';
+import { Operation } from './operations';
 const DB_NAME = 'UPBEAT-DEV';
 
 export interface UpbeatPersistence {

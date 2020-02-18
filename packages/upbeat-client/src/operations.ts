@@ -1,5 +1,4 @@
 import { Timestamp } from '../../upbeat-core/src/timestamp';
-import { UpbeatId } from '../../upbeat-types/src';
 
 export interface ResourceOperation<V> {
   type: 'LWWRO';
@@ -29,14 +28,6 @@ export interface TypedOperation<RN extends string, P extends string>
   property: P;
 }
 
-type SetContainer<T> = ResourceOperation<
+export type SetContainer<T> = ResourceOperation<
   SetAddOperation<T> | SetRemoveOperation<T>
 >;
-
-export interface IntermediateResource {
-  id: UpbeatId;
-  properties: {
-    [property: string]: ResourceOperation<unknown> | SetContainer<unknown>;
-  };
-}
-export type IntermediateResourceMap = { [id: string]: IntermediateResource };

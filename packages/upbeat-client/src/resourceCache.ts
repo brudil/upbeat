@@ -4,7 +4,8 @@ import { UpbeatPersistence } from './persistence';
 import {
   applyOperationToIntermediateResource,
   buildIntermediateResourceFromOperations,
-} from './materialiser';
+  realiseIntermediateResource,
+} from './intermediate';
 import { log } from './debug';
 
 /**
@@ -16,20 +17,6 @@ import { log } from './debug';
  * but each property contains the latest operation, rather than just the value.
  *
  * */
-
-/**
- * Turns a IntermediateResource in to a Resource.
- * */
-export function realiseIntermediateResource(
-  resourceCache: IntermediateResource,
-) {
-  const properties = Object.entries(resourceCache.properties).reduce(
-    (obj, [key, value]) => ({ ...obj, [key]: (value as Operation).value }),
-    {},
-  );
-
-  return { id: resourceCache.id, ...properties };
-}
 
 /**
  * Creates a cache key used within the ResourceCache, combing resourceName and ID

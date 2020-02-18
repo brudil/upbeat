@@ -12,7 +12,7 @@ const bc = new BroadcastChannel('UPBEAT');
 export async function createUpbeatWorker(schema: Schema) {
   const persistence = await createIndexedDBPersistence(schema);
   const clock = createHLCClock(Date.now);
-  const cache = createResourceCache(persistence);
+  const cache = createResourceCache(schema, persistence);
   const emitter = new NanoEvents<any>();
 
   const liveIds: {
@@ -41,16 +41,40 @@ export async function createUpbeatWorker(schema: Schema) {
     );
   }
 
+  const LWW = <T>(value: T): T => value;
+
   async function addOperation(changeset: Changeset<unknown>): Promise<void> {
+    // we get a changeset
+    // we look at the schema
+    // for each prop we defer to the schema given handler for that property (think deep)
+    // this generates operations
+
     const id = changeset.action === 'CREATE' ? uuid() : changeset.id;
 
+    const opTypeMap = {
+      String: LWW,
+      Boolean: LWW,
+    };
+
     for (const [prop, value] of Object.entries(changeset.properties)) {
+      if (
+        !schema.resources[changeset.resource].properties.hasOwnProperty(prop)
+      ) {
+        throw new Error(`given property does not exist in schema: ${prop}`);
+      }
+
+      const type = schema.resources[changeset.resource].properties[prop].type;
+      if (!opTypeMap.hasOwnProperty(type.identifier)) {
+        console.error(type.identifier, 'can not be handled. Used by', prop);
+        continue;
+      }
+
       const operation = {
         id: uuid(),
         resourceId: id,
         resource: changeset.resource,
         property: prop,
-        value: value,
+        value: opTypeMap[type.identifier](value),
         timestamp: clock.now(),
       };
 

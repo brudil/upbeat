@@ -19,6 +19,10 @@ export interface SetRemoveOperation<V> {
   type: 'REMOVE';
   value: V;
 }
+export interface SetSelectOperation<V> {
+  type: 'SELECT';
+  value: V;
+}
 
 export type Operation = ResourceOperation<unknown>;
 
@@ -28,6 +32,7 @@ export interface TypedOperation<RN extends string, P extends string>
   property: P;
 }
 
-export type SetContainer<T> = ResourceOperation<
-  SetAddOperation<T> | SetRemoveOperation<T>
->;
+export type SetOperations<T> =
+  | SetAddOperation<T>
+  | SetRemoveOperation<T>
+  | SetSelectOperation<T>;

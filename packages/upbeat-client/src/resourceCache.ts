@@ -4,9 +4,11 @@ import { UpbeatPersistence } from './persistence';
 import {
   applyOperationToIntermediateResource,
   buildIntermediateResourceFromOperations,
+  createIntermediateResourceForResource,
   realiseIntermediateResource,
 } from './intermediate';
 import { log } from './debug';
+import { Schema } from '../../upbeat-schema/src';
 
 /**
  * ResourceCache
@@ -46,6 +48,7 @@ interface ResourceCache {
 }
 
 export function createResourceCache(
+  schema: Schema,
   persistence: UpbeatPersistence,
 ): ResourceCache {
   const cache = new Map<string, IntermediateResource>();
@@ -80,14 +83,18 @@ export function createResourceCache(
       }
 
       const intermediate = await buildIntermediateResourceFromOperations(
-        {},
+        schema,
         operations,
       );
+
       cache.set(cacheKey(resourceName, id), intermediate[id]);
 
       return intermediate[id];
     } catch (e) {
-      return { id, properties: {} };
+      return createIntermediateResourceForResource(
+        schema.resources[resourceName],
+        id,
+      );
     }
   };
 
@@ -97,6 +104,8 @@ export function createResourceCache(
         operation.resource,
         operation.resourceId,
       );
+
+      console.log(resource);
 
       const [hasChanged, nextResource] = applyOperationToIntermediateResource(
         resource,

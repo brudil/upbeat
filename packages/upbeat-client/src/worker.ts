@@ -1,5 +1,5 @@
 import { Schema } from '@upbeat/schema/src';
-import { createIndexedDBPersistence } from './persistance';
+import { createIndexedDBPersistence } from './persistence';
 import { createHLCClock } from '@upbeat/core/src/timestamp';
 import NanoEvents from 'nanoevents';
 import uuid from 'uuid/v4';

@@ -1,6 +1,6 @@
 import { IntermediateResource, Operation } from './types';
 import { UpbeatId } from '../../upbeat-types/src';
-import { UpbeatPersistence } from './persistance';
+import { UpbeatPersistence } from './persistence';
 import {
   applyOperationToIntermediateResource,
   buildIntermediateResourceFromOperations,

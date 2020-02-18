@@ -7,7 +7,7 @@ const DB_NAME = 'UPBEAT-DEV';
 
 export interface UpbeatPersistence {
   /**
-   * Performs the serialisable query on the backing persistance store.
+   * Performs the serialisable query on the backing persistence store.
    */
   runQuery(query: Query): Promise<any>;
   _UNSAFEDB: IDBPDatabase;

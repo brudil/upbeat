@@ -5,7 +5,7 @@ import { ResourceOperation, SetOperations } from './operations';
 import { Operation, TypedOperation } from './operations';
 import { Property, Schema } from '../../upbeat-schema/src';
 import { UpbeatInvalidApplication } from './errors';
-import { getHandlersForType, OperationApplicationResponse } from './types';
+import { getHandlersForType, OperationApplicationResponse } from './crdt';
 
 interface StringProperty {
   type: 'String';
@@ -63,6 +63,8 @@ function getIntermediatePropertyType(prop: Property): PropertyWrapper {
       operations: [],
     };
   }
+
+  getHandlersForType(prop.type.identifier).cre;
 
   throw new UpbeatInvalidApplication(
     `Property type "${prop.type.identifier}" not defined!`,

@@ -1,5 +1,5 @@
 import { UpbeatId } from '../../upbeat-types/src';
-import { UpbeatPersistence } from './persistence';
+import { UpbeatPersistence } from './persistence/IndexedDbPersistence';
 import {
   applyOperationToIntermediateResource,
   buildIntermediateResourceFromOperations,

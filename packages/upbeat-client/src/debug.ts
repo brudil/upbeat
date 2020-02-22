@@ -1,3 +1,6 @@
+/**
+ * Client Logging method for Upbeat with custom styling for readability.
+ */
 export const log = (name: string, content: string) =>
   console.log(
     `%c${name}%c ${content}`,

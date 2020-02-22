@@ -11,6 +11,6 @@ module.exports = {
     `<rootDir>/packages/${dirName}`,
   ],
   collectCoverageFrom: [
-    'src/**/*.{ts}',
+    'src/**/*.ts',
   ],
 };

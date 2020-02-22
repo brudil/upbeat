@@ -11,6 +11,9 @@ export interface UpbeatClient {
   sendOperation(c: Changeset<unknown>): void;
 }
 
+/**
+ * Creates an UpbeatClient, used by the users app.
+ */
 export async function createClient(schema: Schema): Promise<UpbeatClient> {
   const worker = await createUpbeatWorker(schema);
 

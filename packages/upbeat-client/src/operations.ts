@@ -1,12 +1,9 @@
 import { Timestamp } from '../../upbeat-core/src/timestamp';
 
-export interface ResourceOperation<V> {
-  type: 'LWWRO';
+export interface BaseOperation {
   id: string;
   resourceId: string;
   resource: string;
-  property: string;
-  value: V;
   timestamp: Timestamp;
 }
 

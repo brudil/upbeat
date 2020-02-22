@@ -1,25 +1,9 @@
 import { IDBPCursor, IDBPDatabase, openDB } from 'idb';
 import { Schema } from '@upbeat/schema/src';
-import { Query } from './query';
-import { UpbeatId } from '../../upbeat-types/src';
-import { Operation } from './operations';
+import { Query } from '../query';
+import { Operation } from '../operations';
+import { UpbeatPersistence } from './interfaces';
 const DB_NAME = 'UPBEAT-DEV';
-
-export interface UpbeatPersistence {
-  /**
-   * Performs the serialisable query on the backing persistence store.
-   */
-  runQuery(query: Query): Promise<any>;
-  _UNSAFEDB: IDBPDatabase;
-
-  /**
-   * Fetches all operations for a single resource instance
-   */
-  getOperationsByResourceKey: (
-    resourceName: string,
-    id: UpbeatId,
-  ) => Promise<Operation[]>;
-}
 
 function queryRunner(query: Query, db: IDBPDatabase): Promise<any> {
   return db.getAll(query.resourceName);

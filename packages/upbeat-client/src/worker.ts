@@ -1,5 +1,5 @@
 import { Schema } from '@upbeat/schema/src';
-import { createIndexedDBPersistence } from './persistence';
+import { createIndexedDBPersistence } from './persistence/IndexedDbPersistence';
 import { createHLCClock } from '@upbeat/core/src/timestamp';
 import NanoEvents from 'nanoevents';
 import uuid from 'uuid/v4';
@@ -7,9 +7,16 @@ import { Changeset } from './changeset';
 import { createResourceCache } from './resourceCache';
 import { Query } from './query';
 
-const bc = new BroadcastChannel('UPBEAT');
-
+/**
+ * UpbeatWorker handles most data/compute intensive operations for an
+ * application.
+ *
+ * All communication to UpbeatWorker must be serialisable as we support it
+ * running within a SharedWorker/WebWorker.
+ */
 export async function createUpbeatWorker(schema: Schema) {
+  const bc = new BroadcastChannel('UPBEAT');
+
   const persistence = await createIndexedDBPersistence(schema);
   const clock = createHLCClock(Date.now);
   const cache = createResourceCache(schema, persistence);

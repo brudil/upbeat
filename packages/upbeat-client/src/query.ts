@@ -4,6 +4,9 @@
  * We would use the inner component to perform follow up queries.
  * */
 
+/**
+ * Root of a QueryType
+ */
 export interface Query {
   resourceName: string;
   builder: QueryStructure;
@@ -35,6 +38,9 @@ function findId(id: string) {
   };
 }
 
+/**
+ * Creates a JSON serialisable query.
+ */
 export function createQuery(resourceName: string, builder: Builder): Query {
   return {
     builder: builder({

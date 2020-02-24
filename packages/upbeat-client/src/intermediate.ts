@@ -1,31 +1,10 @@
 import { UpbeatResource } from '@upbeat/types/src';
 import { Resource } from '@upbeat/schema/src';
 import { UpbeatId } from '../../upbeat-types/src';
-import { ResourceOperation, SetOperations } from './operations';
 import { Operation, TypedOperation } from './operations';
 import { Property, Schema } from '../../upbeat-schema/src';
 import { UpbeatInvalidApplication } from './errors';
-import { getHandlersForType, OperationApplicationResponse } from './crdt';
-
-interface StringProperty {
-  type: 'String';
-  operation?: ResourceOperation<string>;
-}
-
-interface BooleanProperty {
-  type: 'Boolean';
-  operation?: ResourceOperation<string>;
-}
-
-interface SetProperty<T> {
-  type: 'Set';
-  operations: ResourceOperation<SetOperations<T>>[];
-}
-
-export type PropertyWrapper =
-  | StringProperty
-  | BooleanProperty
-  | SetProperty<unknown>;
+import { getHandlersForType } from './crdt';
 
 export interface IntermediateResource {
   id?: UpbeatId;

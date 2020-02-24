@@ -13,4 +13,7 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
   ],
+  setupFiles: [
+  "fake-indexeddb/auto"
+  ]
 };

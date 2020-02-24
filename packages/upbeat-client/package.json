@@ -12,7 +12,8 @@
     "xstate": "^4.7.8"
   },
   "devDependencies": {
-    "@types/uuid": "^3.4.7"
+    "@types/uuid": "^3.4.7",
+    "fake-indexeddb": "^3.0.0"
   },
   "peerDependencies": {
     "@types/react": "^16.9.11",

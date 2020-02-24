@@ -1,40 +1,32 @@
 import { isLaterTimestamp } from '@upbeat/core/src/timestamp';
-import { createType } from '../utils';
-import { ResourceOperation } from '../../operations';
+import { createType, OperationWrapper } from '../utils';
 
 /**
  * LastWriteWins type supports LWW updates for primitives. Used within Maps
  */
-const LWWType = createType<
-  string,
-  { type: 'String'; operation: ResourceOperation<any> }
->({
-  application: (resource, operation) => {
+export const LastWriteWinsType = createType<
+  { operation?: OperationWrapper<any> },
+  unknown,
+  { value: unknown },
+  'LWW'
+>('LWW', {
+  apply: (intermediate, operation) => {
     if (
-      !resource?.properties[operation.property]?.operation ||
+      !intermediate.operation ||
       isLaterTimestamp(
-        operation.timestamp,
-        resource.properties[operation.property].operation.timestamp,
+        operation.fullOperation.timestamp,
+        intermediate.operation.fullOperation.timestamp,
       )
     ) {
-      return [
-        true,
-        {
-          ...resource,
-          properties: {
-            ...resource.properties,
-            [operation.property]: {
-              ...resource.properties[operation.property],
-              operation,
-            },
-          },
-        },
-      ];
+      return [true, { operation }];
     }
 
-    return [false, resource];
+    return [false, intermediate];
   },
   realise: (property) => {
-    return property?.operation?.value;
+    return property?.operation?.atomOperation.value ?? null;
+  },
+  create() {
+    return { operation: undefined };
   },
 });

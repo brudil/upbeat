@@ -20,30 +20,16 @@ import { BaseOperation } from '../operations';
 /**
  * An operation often needs the entire operation, along with the
  */
-interface OperationWrapper<O> {
+export interface OperationWrapper<O> {
   atomOperation: O;
   fullOperation: BaseOperation;
 }
 
 /**
- * Applies an operation to the intermediate atom, returning a new intermediate
- * atom
- */
-export interface TypeOperationApplication<I, O> {
-  (resource: I, operation: OperationWrapper<O>): [boolean, I];
-}
-
-/**
- * TypeRealise handles turning a intermediate atom in to a app atom.
- */
-export interface TypeRealise<I, A> {
-  (property: I): A;
-}
-
-/**
  * Holds everything needed for a type: create, realise, apply.
  */
-export interface TypeDefinition<I, A, O> {
+export interface TypeDefinition<N extends string, I, A, O> {
+  name: N;
   /**
    * Create a empty intermediate atom for the type
    */
@@ -52,21 +38,21 @@ export interface TypeDefinition<I, A, O> {
   /**
    * Realise a intermediate atom in to the types app atom
    */
-  realise: TypeRealise<I, A>;
+  realise(property: I, handleType: (...a: any[]) => unknown): A;
 
   /**
-   * Apply a operation of the type of to the intermediate atom
+   * Applies an operation of the type to the intermediate atom,
+   * returning a new intermediate atom
    */
-  apply: TypeOperationApplication<I, O>;
+  apply(intermediate: I, operation: OperationWrapper<O>): [boolean, I];
 }
 
 /**
  * Create a CRDT Type
  */
-export function createType<I, A, O>(config: {
-  apply: TypeOperationApplication<I, O>;
-  realise: TypeRealise<I, A>;
-  create: () => I;
-}): TypeDefinition<I, A, O> {
-  return config;
+export function createType<I, A, O, N extends string>(
+  name: N,
+  config: Omit<TypeDefinition<N, I, A, O>, 'name'>,
+): TypeDefinition<N, I, A, O> {
+  return { name, ...config };
 }

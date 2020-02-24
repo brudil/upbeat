@@ -1,19 +1,21 @@
 import { Type } from '../../../upbeat-schema/src';
 import { UpbeatInvalidApplication } from '../errors';
-import { TypeDefinition, TypeDefinitionMap } from './interfaces';
-import { lastWriteWinsType } from './types/lastWriteWins';
+import { LastWriteWinsType } from './types/lastWriteWins';
+import { MapType } from './types/Map';
 
-const typeDefinitionMap: TypeDefinitionMap = {
-  String: lastWriteWinsType,
-  Boolean: lastWriteWinsType,
-  Orderable: lastWriteWinsType,
-  Set: lastWriteWinsType,
+const typeDefinitionMap: { [key: string]: Types } = {
+  String: LastWriteWinsType,
+  Boolean: LastWriteWinsType,
+  Orderable: LastWriteWinsType,
+  Set: LastWriteWinsType,
 };
+
+type Types = typeof LastWriteWinsType | typeof MapType;
 
 /**
  * Given a type identifier, return a TypeDefinition
  */
-export function getHandlersForType(type: Type): TypeDefinition {
+export function getHandlersForType(type: Type): Types {
   if (typeDefinitionMap.hasOwnProperty(type.identifier)) {
     return typeDefinitionMap[type.identifier];
   }

@@ -2,7 +2,11 @@ import { createType } from '../utils';
 
 interface MapAppAtom {}
 
-interface MapIntermediateAtom {}
+interface MapIntermediateAtom {
+  properties: {
+    [key: string]: unknown;
+  };
+}
 
 type MapOperations = { type: 'SELECTOR'; property: string };
 
@@ -12,11 +16,27 @@ type MapOperations = { type: 'SELECTOR'; property: string };
 export const MapType = createType<
   MapIntermediateAtom,
   MapAppAtom,
-  MapOperations
->({
-  application(atom, operation) {
+  MapOperations,
+  'MAP'
+>('MAP', {
+  apply(atom, operation) {
     if (operation.atomOperation.type === 'SELECTOR') {
       return [true, { ...atom }];
     }
+
+    return [false, atom];
+  },
+  realise(property, handleType) {
+    return Object.fromEntries(
+      Object.entries(property.properties).map(([key, value]) => [
+        key,
+        handleType(value),
+      ]),
+    );
+  },
+  create() {
+    return {
+      properties: {},
+    };
   },
 });

@@ -1,35 +1,13 @@
 import { Timestamp } from '../../upbeat-core/src/timestamp';
+import { UpbeatId } from '../../upbeat-types/src';
+import { OperationsFrom } from './crdt/utils';
+import { MapType } from './crdt/types/Map';
+import { CRDTTypes } from './crdt';
 
-export interface BaseOperation {
+export interface ResourceOperation {
   id: string;
-  resourceId: string;
   resource: string;
+  resourceId: UpbeatId;
   timestamp: Timestamp;
+  operation: [OperationsFrom<typeof MapType>, ...OperationsFrom<CRDTTypes>[]];
 }
-
-export interface SetAddOperation<V> {
-  type: 'ADD';
-  value: V;
-}
-
-export interface SetRemoveOperation<V> {
-  type: 'REMOVE';
-  value: V;
-}
-export interface SetSelectOperation<V> {
-  type: 'SELECT';
-  value: V;
-}
-
-export type Operation = ResourceOperation<unknown>;
-
-export interface TypedOperation<RN extends string, P extends string>
-  extends Operation {
-  resource: RN;
-  property: P;
-}
-
-export type SetOperations<T> =
-  | SetAddOperation<T>
-  | SetRemoveOperation<T>
-  | SetSelectOperation<T>;

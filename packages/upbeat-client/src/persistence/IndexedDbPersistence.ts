@@ -1,8 +1,8 @@
-import { IDBPCursor, IDBPDatabase, openDB } from 'idb';
+import { IDBPCursorWithValue, IDBPDatabase, openDB } from 'idb';
 import { Schema } from '@upbeat/schema/src';
 import { Query } from '../query';
-import { Operation } from '../operations';
 import { UpbeatPersistence } from './interfaces';
+import { ResourceOperation } from '../operations';
 const DB_NAME = 'UPBEAT-DEV';
 
 function queryRunner(query: Query, db: IDBPDatabase): Promise<any> {
@@ -54,9 +54,9 @@ export async function createIndexedDBPersistence(
     },
   });
 
-  const all = async (c: IDBPCursor) => {
-    let cursor = c;
-    const arr: Operation[] = [];
+  const all = async (c: IDBPCursorWithValue<any, any, any>) => {
+    let cursor: IDBPCursorWithValue<any, any, any> | null = c;
+    const arr: ResourceOperation[] = [];
     while (cursor) {
       arr.push(cursor.value);
       cursor = await cursor.continue();
@@ -75,6 +75,9 @@ export async function createIndexedDBPersistence(
       const trx = db.transaction('UpbeatOperations', 'readonly');
       const index = trx.store.index('resourceKey');
       const cursor = await index.openCursor(range);
+      if (cursor === null) {
+        return [];
+      }
       const ops = await all(cursor);
       await trx.done;
       return ops;

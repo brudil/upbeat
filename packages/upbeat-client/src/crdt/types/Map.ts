@@ -1,42 +1,52 @@
-import { createType } from '../utils';
+import { createType, TypeDefinition } from '../utils';
+import { Resource } from '@upbeat/schema/src';
+import { getHandlersForType } from '../index';
 
 interface MapAppAtom {}
 
-interface MapIntermediateAtom {
+export interface MapIntermediateAtom {
   properties: {
     [key: string]: unknown;
   };
 }
 
-type MapOperations = { type: 'SELECTOR'; property: string };
+type MapOperations = { type: 'SELECT'; property: string };
 
 /**
  * MapType for applying operations to a typed map.
  */
-export const MapType = createType<
+export const MapType: TypeDefinition<
+  'MAP',
   MapIntermediateAtom,
   MapAppAtom,
-  MapOperations,
-  'MAP'
->('MAP', {
+  MapOperations
+> = createType('MAP', {
   apply(atom, operation) {
-    if (operation.atomOperation.type === 'SELECTOR') {
+    if (operation.atomOperation.type === 'SELECT') {
       return [true, { ...atom }];
     }
 
     return [false, atom];
   },
-  realise(property, handleType) {
+  realise(property, schema: Resource) {
     return Object.fromEntries(
       Object.entries(property.properties).map(([key, value]) => [
         key,
-        handleType(value),
+        getHandlersForType(schema.properties[key].type).realise(
+          value as any,
+          schema.properties[key],
+        ),
       ]),
     );
   },
-  create() {
+  create(resource: Resource) {
     return {
-      properties: {},
+      properties: Object.fromEntries(
+        Object.entries(resource.properties).map(([prop, value]) => [
+          prop,
+          getHandlersForType(value.type).create(value),
+        ]),
+      ),
     };
   },
 });

@@ -5,10 +5,10 @@ import { createType, OperationWrapper } from '../utils';
  * LastWriteWins type supports LWW updates for primitives. Used within Maps
  */
 export const LastWriteWinsType = createType<
+  'LWW',
   { operation?: OperationWrapper<any> },
   unknown,
-  { value: unknown },
-  'LWW'
+  { value: unknown }
 >('LWW', {
   apply: (intermediate, operation) => {
     if (

@@ -1,7 +1,7 @@
 import { Query } from '../query';
 import { IDBPDatabase } from 'idb';
 import { UpbeatId } from '../../../upbeat-types/src';
-import { Operation } from '../operations';
+import { ResourceOperation } from '../operations';
 
 export interface UpbeatPersistence {
   /**
@@ -16,5 +16,5 @@ export interface UpbeatPersistence {
   getOperationsByResourceKey: (
     resourceName: string,
     id: UpbeatId,
-  ) => Promise<Operation[]>;
+  ) => Promise<ResourceOperation[]>;
 }

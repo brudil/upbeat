@@ -1,13 +1,25 @@
 import { UpbeatResource } from '../../upbeat-types/src';
 
-export interface UpdateChangeset<R> {
+/**
+ * Changesets. Changesets are largely, probably, a Good Idea.
+ *
+ * Operations have specific requirements to meet the meaning within CRDTs.
+ * Where as we would sooner client applications not need to think about these
+ * requirements where not necessary.
+ *
+ * Changesets our our client facing API, operations are internal.
+ *
+ * A one-way transformation is performed. Changeset -> Operation(s)
+ */
+
+interface UpdateChangeset<R> {
   resource: string;
   id: string;
   properties: Partial<R>;
   action: 'UPDATE';
 }
 
-export interface CreateChangeset<R> {
+interface CreateChangeset<R> {
   resource: string;
   properties: Omit<Omit<R, 'id'>, '_type'>;
   action: 'CREATE';

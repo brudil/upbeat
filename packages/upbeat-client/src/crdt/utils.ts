@@ -15,14 +15,14 @@
  *  - realise: given the intermediate atom, return the application state.
  * */
 
-import { BaseOperation } from '../operations';
+import { ResourceOperation } from '../operations';
 
 /**
  * An operation often needs the entire operation, along with the
  */
 export interface OperationWrapper<O> {
   atomOperation: O;
-  fullOperation: BaseOperation;
+  fullOperation: ResourceOperation;
 }
 
 /**
@@ -33,12 +33,12 @@ export interface TypeDefinition<N extends string, I, A, O> {
   /**
    * Create a empty intermediate atom for the type
    */
-  create(): I;
+  create(schema: any): I;
 
   /**
    * Realise a intermediate atom in to the types app atom
    */
-  realise(property: I, handleType: (...a: any[]) => unknown): A;
+  realise(property: I, schema: any): A;
 
   /**
    * Applies an operation of the type to the intermediate atom,
@@ -50,9 +50,34 @@ export interface TypeDefinition<N extends string, I, A, O> {
 /**
  * Create a CRDT Type
  */
-export function createType<I, A, O, N extends string>(
+export function createType<N extends string, I, A, O>(
   name: N,
   config: Omit<TypeDefinition<N, I, A, O>, 'name'>,
 ): TypeDefinition<N, I, A, O> {
   return { name, ...config };
 }
+
+export type OperationsFrom<S> = S extends TypeDefinition<
+  string,
+  unknown,
+  unknown,
+  infer O
+>
+  ? O
+  : never;
+export type AppAtomFrom<S> = S extends TypeDefinition<
+  string,
+  unknown,
+  infer A,
+  unknown
+>
+  ? A
+  : never;
+export type IntermediateFrom<S> = S extends TypeDefinition<
+  string,
+  infer I,
+  unknown,
+  unknown
+>
+  ? I
+  : never;

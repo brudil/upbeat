@@ -3,19 +3,19 @@ import { UpbeatInvalidApplication } from '../errors';
 import { LastWriteWinsType } from './types/lastWriteWins';
 import { MapType } from './types/Map';
 
-const typeDefinitionMap: { [key: string]: Types } = {
+const typeDefinitionMap: { [key: string]: CRDTTypes } = {
   String: LastWriteWinsType,
   Boolean: LastWriteWinsType,
   Orderable: LastWriteWinsType,
   Set: LastWriteWinsType,
 };
 
-type Types = typeof LastWriteWinsType | typeof MapType;
+export type CRDTTypes = typeof LastWriteWinsType | typeof MapType;
 
 /**
  * Given a type identifier, return a TypeDefinition
  */
-export function getHandlersForType(type: Type): Types {
+export function getHandlersForType(type: Type): CRDTTypes {
   if (typeDefinitionMap.hasOwnProperty(type.identifier)) {
     return typeDefinitionMap[type.identifier];
   }

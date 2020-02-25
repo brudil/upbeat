@@ -42,7 +42,7 @@ describe('LastWriteWinsType', () => {
   it('should realise a primitive', () => {
     expect(LastWriteWinsType.realise(type, handleType)).toBeNull();
 
-    const [_, nextLww] = LastWriteWinsType.apply(
+    const [, nextLww] = LastWriteWinsType.apply(
       type,
       createOp(33, {
         time: Date.now(),

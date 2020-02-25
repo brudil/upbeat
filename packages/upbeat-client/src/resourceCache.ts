@@ -1,5 +1,4 @@
 import { UpbeatId } from '../../upbeat-types/src';
-import { UpbeatPersistence } from './persistence/IndexedDbPersistence';
 import {
   applyOperationToIntermediateResource,
   buildIntermediateResourceFromOperations,
@@ -8,8 +7,9 @@ import {
   realiseIntermediateResource,
 } from './intermediate';
 import { log } from './debug';
-import { Schema } from '../../upbeat-schema/src';
-import { Operation } from './operations';
+import { Schema } from '@upbeat/schema/src';
+import { UpbeatPersistence } from './persistence/interfaces';
+import { ResourceOperation } from './operations';
 
 /**
  * ResourceCache
@@ -39,7 +39,7 @@ interface ResourceCache {
   /**
    * Applies operation locally, persisting when possible.
    * */
-  applyOperation(operation: Operation): Promise<void>;
+  applyOperation(operation: ResourceOperation): Promise<void>;
 
   /**
    * Get a resource instance by resource and ID. Uses cache where possible,
@@ -112,6 +112,8 @@ export function createResourceCache(
         resource,
         operation,
       );
+
+      console.log({ hasChanged, nextResource });
 
       cache.set(
         cacheKey(operation.resource, operation.resourceId),

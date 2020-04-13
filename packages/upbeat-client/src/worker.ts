@@ -8,6 +8,15 @@ import { Query } from './query';
 import { Changeset } from './changeset';
 import { ResourceOperation } from './operations';
 
+interface WorkerEmitter {
+  liveChange: [string, any];
+}
+
+interface UpbeatWorker {
+  createLiveQuery(query: Query, id: string): Promise<void>;
+  addOperation(changeset: Changeset<unknown>): Promise<void>;
+  emitter: NanoEvents<WorkerEmitter>;
+}
 /**
  * UpbeatWorker handles most data/compute intensive operations for an
  * application.
@@ -15,13 +24,15 @@ import { ResourceOperation } from './operations';
  * All communication to UpbeatWorker must be serialisable as we support it
  * running within a SharedWorker/WebWorker.
  */
-export async function createUpbeatWorker(schema: Schema) {
+export async function createUpbeatWorker(
+  schema: Schema,
+): Promise<UpbeatWorker> {
   const bc = new BroadcastChannel('UPBEAT');
 
   const persistence = await createIndexedDBPersistence(schema);
   const clock = createHLCClock(Date.now);
   const cache = createResourceCache(schema, persistence);
-  const emitter = new NanoEvents<any>();
+  const emitter = new NanoEvents<WorkerEmitter>();
 
   const liveIds: {
     [id: string]: Query;
@@ -102,7 +113,7 @@ export async function createUpbeatWorker(schema: Schema) {
   return {
     emitter,
     addOperation,
-    async createLiveQuery(query: Query, id: string) {
+    async createLiveQuery(query, id) {
       liveIds[id] = query;
       const result = await persistence.runQuery(query);
       emitter.emit('liveChange', [id, result]);

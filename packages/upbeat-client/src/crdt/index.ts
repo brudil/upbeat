@@ -1,4 +1,4 @@
-import { Type } from '../../../upbeat-schema/src';
+import { Type } from '@upbeat/schema/src';
 import { UpbeatInvalidApplication } from '../errors';
 import { LastWriteWinsType } from './types/lastWriteWins';
 import { MapType } from './types/Map';

@@ -45,7 +45,7 @@ interface ResourceCache {
    * Get a resource instance by resource and ID. Uses cache where possible,
    * constructing and caching otherwise.
    **/
-  getById(resourceName: string, id: UpbeatId): Promise<any>;
+  getById<X>(resourceName: string, id: UpbeatId): Promise<X>;
 }
 
 export function createResourceCache(
@@ -122,7 +122,7 @@ export function createResourceCache(
 
       if (hasChanged) {
         try {
-          if (nextResource.properties.tombstone) {
+          if (nextResource.tombstone) {
             log(
               'ResourceCache',
               `Deleting ${operation.resource}#${nextResource.id}`,

@@ -1,22 +1,27 @@
-import { LastWriteWinsType } from '../types/lastWriteWins';
+import { LastWriteWinsType, LWWSetOp } from '../types/lastWriteWins';
 import { Timestamp } from '../../../../upbeat-core/src/timestamp';
+import { OperationWrapper } from '../utils';
 
-let type = LastWriteWinsType.create();
-const handleType = () => null;
+let type = LastWriteWinsType.create({});
+const handleType = (): null => null;
 
-const createOp = (value: any, timestamp: Timestamp) => ({
+const createOp = (
+  value: number,
+  timestamp: Timestamp,
+): OperationWrapper<LWWSetOp> => ({
   fullOperation: {
     id: '43',
     resource: 'X',
     resourceId: 'X',
     timestamp,
+    operation: [{ value }],
   },
   atomOperation: { value },
 });
 
 describe('LastWriteWinsType', () => {
   beforeEach(() => {
-    type = LastWriteWinsType.create();
+    type = LastWriteWinsType.create({});
   });
 
   it('should ensure the last write wins', () => {

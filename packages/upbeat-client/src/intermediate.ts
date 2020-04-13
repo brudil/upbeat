@@ -1,12 +1,13 @@
 import { Schema, Resource } from '@upbeat/schema/src';
 import { UpbeatId } from '../../upbeat-types/src';
-import { MapIntermediateAtom, MapType } from './crdt/types/Map';
+import { MapIntermediateAtom, MapOperations, MapType } from './crdt/types/Map';
 import { ResourceOperation } from './operations';
 
 export interface IntermediateResource {
   id?: UpbeatId;
   resourceSchema: Resource;
   value: MapIntermediateAtom;
+  tombstone: boolean;
 }
 export type IntermediateResourceMap = { [id: string]: IntermediateResource };
 
@@ -15,10 +16,10 @@ export function createIntermediateResourceForResource(
   id: UpbeatId,
 ): IntermediateResource {
   return {
-    ...resource,
     id,
     resourceSchema: resource,
     value: MapType.create(resource),
+    tombstone: false,
   };
 }
 
@@ -34,7 +35,7 @@ export function createIntermediateResourceForResource(
 export function applyOperationToIntermediateResource(
   resource: IntermediateResource,
   operation: ResourceOperation,
-): [boolean, any] {
+): [boolean, IntermediateResource] {
   // const propertySchema = resource.resourceSchema.properties[operation.property];
   //
   // if (!propertySchema) {
@@ -43,10 +44,17 @@ export function applyOperationToIntermediateResource(
   //   );
   // }
 
-  return MapType.apply(resource.value, {
+  const [changed, mapAtom] = MapType.apply(resource.value, {
     fullOperation: operation,
-    atomOperation: operation.operation[0],
+    atomOperation: operation.operation[0] as MapOperations,
   });
+  return [
+    changed,
+    {
+      ...resource,
+      value: mapAtom,
+    },
+  ];
 }
 
 /**

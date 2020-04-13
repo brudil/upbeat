@@ -1,8 +1,6 @@
-import { createType, TypeDefinition } from '../utils';
+import { createType, CRDTType } from '../utils';
 import { Resource } from '@upbeat/schema/src';
 import { getHandlersForType } from '../index';
-
-interface MapAppAtom {}
 
 export interface MapIntermediateAtom {
   properties: {
@@ -10,20 +8,26 @@ export interface MapIntermediateAtom {
   };
 }
 
-type MapOperations = { type: 'SELECT'; property: string };
+export type MapOperations = { type: 'SELECT'; property: string };
 
 /**
  * MapType for applying operations to a typed map.
  */
-export const MapType: TypeDefinition<
+export const MapType: CRDTType<
   'MAP',
   MapIntermediateAtom,
-  MapAppAtom,
+  {},
   MapOperations
 > = createType('MAP', {
   apply(atom, operation) {
     if (operation.atomOperation.type === 'SELECT') {
-      return [true, { ...atom }];
+      return [
+        true,
+        {
+          ...atom.properties,
+          [operation.atomOperation.property]: next(schema),
+        },
+      ];
     }
 
     return [false, atom];

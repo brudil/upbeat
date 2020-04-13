@@ -28,17 +28,17 @@ export interface OperationWrapper<O> {
 /**
  * Holds everything needed for a type: create, realise, apply.
  */
-export interface TypeDefinition<N extends string, I, A, O> {
+export interface CRDTType<N extends string, I, A, O> {
   name: N;
   /**
    * Create a empty intermediate atom for the type
    */
-  create(schema: any): I;
+  create(schema: unknown): I;
 
   /**
    * Realise a intermediate atom in to the types app atom
    */
-  realise(property: I, schema: any): A;
+  realise(property: I, schema: unknown): A;
 
   /**
    * Applies an operation of the type to the intermediate atom,
@@ -52,12 +52,12 @@ export interface TypeDefinition<N extends string, I, A, O> {
  */
 export function createType<N extends string, I, A, O>(
   name: N,
-  config: Omit<TypeDefinition<N, I, A, O>, 'name'>,
-): TypeDefinition<N, I, A, O> {
+  config: Omit<CRDTType<N, I, A, O>, 'name'>,
+): CRDTType<N, I, A, O> {
   return { name, ...config };
 }
 
-export type OperationsFrom<S> = S extends TypeDefinition<
+export type OperationsFrom<S> = S extends CRDTType<
   string,
   unknown,
   unknown,
@@ -65,7 +65,7 @@ export type OperationsFrom<S> = S extends TypeDefinition<
 >
   ? O
   : never;
-export type AppAtomFrom<S> = S extends TypeDefinition<
+export type AppAtomFrom<S> = S extends CRDTType<
   string,
   unknown,
   infer A,
@@ -73,7 +73,7 @@ export type AppAtomFrom<S> = S extends TypeDefinition<
 >
   ? A
   : never;
-export type IntermediateFrom<S> = S extends TypeDefinition<
+export type IntermediateFrom<S> = S extends CRDTType<
   string,
   infer I,
   unknown,

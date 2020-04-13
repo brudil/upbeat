@@ -1,14 +1,19 @@
 import { isLaterTimestamp } from '@upbeat/core/src/timestamp';
 import { createType, OperationWrapper } from '../utils';
 
+export interface LWWSetOp {
+  value: unknown;
+}
+export type LWWOperations = LWWSetOp;
+
 /**
  * LastWriteWins type supports LWW updates for primitives. Used within Maps
  */
 export const LastWriteWinsType = createType<
   'LWW',
-  { operation?: OperationWrapper<any> },
+  { operation?: OperationWrapper<LWWOperations> },
   unknown,
-  { value: unknown }
+  LWWOperations
 >('LWW', {
   apply: (intermediate, operation) => {
     if (

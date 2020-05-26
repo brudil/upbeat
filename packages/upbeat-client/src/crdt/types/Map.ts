@@ -19,13 +19,17 @@ export const MapType: CRDTType<
   {},
   MapOperations
 > = createType('MAP', {
-  apply(atom, operation) {
+  apply(atom, operation, next) {
     if (operation.atomOperation.type === 'SELECT') {
       return [
         true,
         {
-          ...atom.properties,
-          [operation.atomOperation.property]: next(schema),
+          properties: {
+            ...atom.properties,
+            [operation.atomOperation.property]: next(
+              atom.properties[operation.atomOperation.property],
+            ),
+          },
         },
       ];
     }

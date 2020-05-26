@@ -4,9 +4,15 @@ import { OperationsFrom } from './crdt/utils';
 import { CRDTTypes } from './crdt';
 
 export interface ResourceOperation {
-  id: string;
+  timestamp: Timestamp;
   resource: string;
   resourceId: UpbeatId;
-  timestamp: Timestamp;
+  operation: OperationsFrom<CRDTTypes>[];
+}
+
+export interface SerialisedResourceOperation {
+  timestamp: string;
+  resource: string;
+  resourceId: UpbeatId;
   operation: OperationsFrom<CRDTTypes>[];
 }

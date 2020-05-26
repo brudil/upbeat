@@ -1,4 +1,4 @@
-import { isLaterTimestamp } from '@upbeat/core/src/timestamp';
+import { isLaterSerialisedTimestamp } from '@upbeat/core/src/timestamp';
 import { createType, OperationWrapper } from '../utils';
 
 export interface LWWSetOp {
@@ -18,7 +18,7 @@ export const LastWriteWinsType = createType<
   apply: (intermediate, operation) => {
     if (
       !intermediate.operation ||
-      isLaterTimestamp(
+      isLaterSerialisedTimestamp(
         operation.fullOperation.timestamp,
         intermediate.operation.fullOperation.timestamp,
       )

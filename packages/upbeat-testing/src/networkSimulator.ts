@@ -1,4 +1,4 @@
-import NanoEvents from 'nanoevents';
+import { createNanoEvents } from 'nanoevents';
 import { Peer } from '@upbeat/core/src/peer';
 import { Operation, UUID } from '@upbeat/core/src/types';
 
@@ -16,7 +16,7 @@ export interface ClientContainer {
 export function createNetworkSimulator() {
   const clients = new Map<UUID, ClientContainer>();
   const operationLog: Operation<any>[] = [];
-  const emitter = new NanoEvents<{
+  const emitter = createNanoEvents<{
     tick: number;
   }>();
   let tickCount = 0;

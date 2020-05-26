@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 interface Clock {
   (): number;
 }
@@ -5,6 +7,28 @@ interface Clock {
 export interface Timestamp {
   time: number;
   count: number;
+  peerId: string;
+}
+
+export function serialiseTimestamp(timestamp: Timestamp): string {
+  return [
+    new Date(timestamp.time).toISOString(),
+    ('0000' + timestamp.count.toString(16).toUpperCase()).slice(-4),
+    ('0000000000000000' + timestamp.peerId).slice(-16),
+  ].join('-');
+}
+
+export function parseTimestamp(timestamp: string): Timestamp {
+  if (typeof timestamp === 'string') {
+    const parts = timestamp.split('-');
+    if (parts && parts.length === 5) {
+      const time = Date.parse(parts.slice(0, 3).join('-')).valueOf();
+      const count = parseInt(parts[3], 16);
+      const peerId = parts[4];
+      if (!isNaN(time) && !isNaN(count)) return { time, count, peerId };
+    }
+  }
+  throw new Error('invalid serialised timestamp');
 }
 
 export const max = (...numbers: number[]): number => {
@@ -24,7 +48,18 @@ export const isLaterTimestamp = (
   }
 
   // if we're matched on time, let's see if the counts differ.
-  return timeA.time === timeB.time && timeA.count > timeB.count;
+  if (timeA.count > timeB.count) {
+    return true;
+  }
+
+  return timeA.peerId > timeB.peerId;
+};
+
+export const isLaterSerialisedTimestamp = (
+  timeA: string,
+  timeB: string,
+): boolean => {
+  return isLaterTimestamp(parseTimestamp(timeA), parseTimestamp(timeB));
 };
 
 export const isEqualTimestamp = (
@@ -40,10 +75,15 @@ interface HLCClock {
   update(incomingTimestamp: Timestamp): void;
 }
 
-export const createHLCClock = (clock: Clock): HLCClock => {
+export function createPeerId(): string {
+  return uuidv4().replace(/-/g, '').slice(-16);
+}
+
+export const createHLCClock = (peerId: string, clock: Clock): HLCClock => {
   let timestamp: Timestamp = {
     time: 0,
     count: 0,
+    peerId: ('0000000000000000' + peerId).slice(-16),
   };
 
   return {

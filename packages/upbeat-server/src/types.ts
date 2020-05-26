@@ -1,23 +1,31 @@
-import { UpbeatApp, UpbeatOp } from '@upbeat/types/src';
-import { ClientRequest } from 'http';
+import { Client } from './core/Client';
+import { ChannelConf } from './core/modules';
 
-type ValidateConnection = (request: ClientRequest) => Promise<false | string>;
-
-export interface UpbeatServerConfig {
-  validateConnection: ValidateConnection;
-  app: UpbeatApp;
+export interface TokenInfo {
+  dn: string;
+  userId: number;
 }
 
-type Resolver<O extends UpbeatOp> = (
-  args: Parameters<O>,
-  toolkit: any,
-) => Promise<ReturnType<O>>;
+export interface FanOutSelector {
+  channel: [string, string];
+}
 
-export interface UpbeatOperationResolvers<
-  C extends UpbeatApp,
-  OM extends any = C['operations']
-> {
-  operations: {
-    [P in keyof OM]: Resolver<OM[P]>;
-  };
+export type HandlerOutput<O> = [O, FanOutSelector?];
+
+export interface EgressManger<O> {
+  (message: O, selector?: FanOutSelector): void;
+}
+
+/**
+ * A message handler provides a simple process for a given type.
+ * It takes an client message, and returns a hydrated message and a selector for distribution.
+ * */
+export interface MessageHandler<I, O> {
+  (payload: Omit<I, 'type'>, egress: EgressManger<O>, client: Client): Promise<
+    void
+  >;
+}
+
+export interface Config {
+  modules: ChannelConf<any>[]; //todo
 }

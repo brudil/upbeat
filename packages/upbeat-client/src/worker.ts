@@ -1,12 +1,21 @@
 import { Schema } from '@upbeat/schema/src';
 import { createIndexedDBPersistence } from './persistence/IndexedDbPersistence';
-import { createHLCClock } from '@upbeat/core/src/timestamp';
-import NanoEvents from 'nanoevents';
-import uuid from 'uuid/v4';
+import {
+  createHLCClock,
+  createPeerId,
+  parseTimestamp,
+  serialiseTimestamp,
+} from '@upbeat/core/src/timestamp';
+import { createNanoEvents, Emitter } from 'nanoevents';
+import { v4 as uuid } from 'uuid';
 import { createResourceCache } from './resourceCache';
 import { Query } from './query';
 import { Changeset } from './changeset';
-import { ResourceOperation } from './operations';
+import { ResourceOperation, SerialisedResourceOperation } from './operations';
+import { MerkleTree } from './sync';
+import { log } from './debug';
+import { createUpbeatTransport } from './transport';
+import { build, diff, insert } from './merkle';
 
 interface WorkerEmitter {
   liveChange: [string, any];
@@ -15,7 +24,7 @@ interface WorkerEmitter {
 interface UpbeatWorker {
   createLiveQuery(query: Query, id: string): Promise<void>;
   addOperation(changeset: Changeset<unknown>): Promise<void>;
-  emitter: NanoEvents<WorkerEmitter>;
+  emitter: Emitter<WorkerEmitter>;
 }
 /**
  * UpbeatWorker handles most data/compute intensive operations for an
@@ -30,9 +39,19 @@ export async function createUpbeatWorker(
   const bc = new BroadcastChannel('UPBEAT');
 
   const persistence = await createIndexedDBPersistence(schema);
-  const clock = createHLCClock(Date.now);
+  const clock = createHLCClock(createPeerId(), Date.now);
   const cache = createResourceCache(schema, persistence);
-  const emitter = new NanoEvents<WorkerEmitter>();
+  const emitter = createNanoEvents<WorkerEmitter>();
+  const transport = await createUpbeatTransport();
+  const applicationQueue: SerialisedResourceOperation[] = [];
+
+  // MERKLE EXPERIMENTZ
+  const ops = await persistence.getAllOperations();
+  let tree = build(ops.map((op) => parseTimestamp(op.timestamp)));
+  log('Sync', 'NEW HASH', `${tree.hash}`);
+  console.log(tree);
+  //console.log(JSON.stringify(tree.getHash()));
+  //console.log(tree);
 
   const liveIds: {
     [id: string]: Query;
@@ -60,7 +79,30 @@ export async function createUpbeatWorker(
     );
   }
 
-  async function addOperation(changeset: Changeset<unknown>): Promise<void> {
+  async function applyOperation(operation: SerialisedResourceOperation) {
+    try {
+      await cache.applyOperation(operation);
+      await persistence._UNSAFEDB.add('UpbeatOperations', operation);
+
+      console.log(
+        diff(tree, insert(tree, parseTimestamp(operation.timestamp))),
+      );
+
+      tree = insert(tree, parseTimestamp(operation.timestamp));
+
+      // TRANSPORT OUT
+
+      log('Sync', 'NEW HASH', `${tree.hash}`);
+    } catch (e) {
+      console.error(e);
+    }
+
+    quickUpdateAll();
+  }
+
+  async function createOperationAndApply(
+    changeset: Changeset<unknown>,
+  ): Promise<void> {
     // we get a changeset
     // we look at the schema
     // for each prop we defer to the schema given handler for that property (think deep)
@@ -78,7 +120,6 @@ export async function createUpbeatWorker(
       // const type = schema.resources[changeset.resource].properties[prop].type;
 
       const operation: ResourceOperation = {
-        id: uuid(),
         resourceId: id,
         resource: changeset.resource,
         operation: [
@@ -93,16 +134,29 @@ export async function createUpbeatWorker(
         timestamp: clock.now(),
       };
 
-      try {
-        await cache.applyOperation(operation);
-        await persistence._UNSAFEDB.add('UpbeatOperations', operation);
-      } catch (e) {
-        console.error(e);
-      }
+      transport.send({
+        type: 'OperationSent',
+        operation: {
+          ...operation,
+          timestamp: serialiseTimestamp(operation.timestamp),
+        },
+        roomId: 'TBA',
+      });
+      // await applyOperation(operation);
     }
-
-    quickUpdateAll();
   }
+
+  transport.on('operation', async (operation: any) => {
+    log('Transport', 'RECEIVED', 'applying operation from transport');
+    applicationQueue.push(operation);
+  });
+
+  setInterval(async () => {
+    while (applicationQueue.length > 0) {
+      const op = applicationQueue.shift();
+      await applyOperation(op);
+    }
+  }, 100);
 
   bc.onmessage = () => quickUpdateAll(false);
 
@@ -112,7 +166,7 @@ export async function createUpbeatWorker(
    * */
   return {
     emitter,
-    addOperation,
+    addOperation: createOperationAndApply,
     async createLiveQuery(query, id) {
       liveIds[id] = query;
       const result = await persistence.runQuery(query);

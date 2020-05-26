@@ -6,17 +6,19 @@
   "author": "James Canning <james@jamescanning.com> (http://brudil.com)",
   "license": "ISC",
   "dependencies": {
-    "idb": "^5.0.1",
-    "immer": "^5.3.6",
-    "uuid": "^3.4.0",
-    "xstate": "^4.7.8"
+    "@types/murmurhash": "^0.0.1",
+    "idb": "^5.0.3",
+    "immer": "^6.0.5",
+    "murmurhash": "^1.0.0",
+    "uuid": "^8.0.0",
+    "xstate": "^4.9.1"
   },
   "devDependencies": {
-    "@types/uuid": "^3.4.7",
+    "@types/uuid": "^7.0.3",
     "fake-indexeddb": "^3.0.0"
   },
   "peerDependencies": {
     "@types/react": "^16.9.11",
-    "react": "^16.11.0"
+    "react": "^16.13.1"
   }
 }

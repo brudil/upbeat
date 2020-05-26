@@ -15,14 +15,14 @@
  *  - realise: given the intermediate atom, return the application state.
  * */
 
-import { ResourceOperation } from '../operations';
+import { SerialisedResourceOperation } from '../operations';
 
 /**
  * An operation often needs the entire operation, along with the
  */
 export interface OperationWrapper<O> {
   atomOperation: O;
-  fullOperation: ResourceOperation;
+  fullOperation: SerialisedResourceOperation;
 }
 
 /**
@@ -44,7 +44,11 @@ export interface CRDTType<N extends string, I, A, O> {
    * Applies an operation of the type to the intermediate atom,
    * returning a new intermediate atom
    */
-  apply(intermediate: I, operation: OperationWrapper<O>): [boolean, I];
+  apply(
+    intermediate: I,
+    operation: OperationWrapper<O>,
+    next: any,
+  ): [boolean, I];
 }
 
 /**

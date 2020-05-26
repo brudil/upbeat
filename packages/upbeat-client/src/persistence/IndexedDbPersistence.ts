@@ -2,7 +2,7 @@ import { IDBPCursorWithValue, IDBPDatabase, openDB } from 'idb';
 import { Schema } from '@upbeat/schema/src';
 import { Query } from '../query';
 import { UpbeatPersistence } from './interfaces';
-import { ResourceOperation } from '../operations';
+import { SerialisedResourceOperation } from '../operations';
 const DB_NAME = 'UPBEAT-DEV';
 
 function queryRunner(query: Query, db: IDBPDatabase): Promise<any> {
@@ -17,7 +17,9 @@ export async function createIndexedDBPersistence(
 ): Promise<UpbeatPersistence> {
   const db = await openDB(DB_NAME, 6, {
     upgrade(db) {
-      const logDb = db.createObjectStore('UpbeatOperations', { keyPath: 'id' });
+      const logDb = db.createObjectStore('UpbeatOperations', {
+        keyPath: 'timestamp',
+      });
       logDb.createIndex('resource', 'resource');
       logDb.createIndex('resourceId', 'resourceId');
       logDb.createIndex('property', 'property');
@@ -56,7 +58,7 @@ export async function createIndexedDBPersistence(
 
   const all = async (c: IDBPCursorWithValue<any, any, any>) => {
     let cursor: IDBPCursorWithValue<any, any, any> | null = c;
-    const arr: ResourceOperation[] = [];
+    const arr: SerialisedResourceOperation[] = [];
     while (cursor) {
       arr.push(cursor.value);
       cursor = await cursor.continue();
@@ -81,6 +83,9 @@ export async function createIndexedDBPersistence(
       const ops = await all(cursor);
       await trx.done;
       return ops;
+    },
+    getAllOperations: async () => {
+      return await db.getAllFromIndex('UpbeatOperations', 'timestamp');
     },
   };
 }

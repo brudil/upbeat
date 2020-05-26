@@ -2,5 +2,25 @@
   "name": "@upbeat/server",
   "version": "0.1.0",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "date-fns": "^2.14.0",
+    "debug": "^4.1.1",
+    "ioredis": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "uuid": "^8.0.0",
+    "ws": "^7.3.0"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/ioredis": "^4.16.2",
+    "@types/jsonwebtoken": "^8.5.0",
+    "backpack-core": "^0.8.4",
+    "ts-loader": "^7.0.4"
+  },
+  "scripts": {
+    "dev": "backpack",
+    "build": "backpack build",
+    "start": "ls && node ./build/main.js"
+  }
 }

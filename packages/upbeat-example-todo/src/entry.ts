@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import { Application } from './components/Application';
 import { startClient } from './client';
-import { UpbeatProvider } from '../../upbeat-react/src/react';
+import { UpbeatProvider } from '@upbeat/react/src/react';
 
 async function start(): Promise<void> {
   const client = await startClient();

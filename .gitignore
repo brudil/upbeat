@@ -37,3 +37,4 @@ assets.json
 *.css.d.ts
 .cache
 junit.xml
+yarn-error.log

@@ -1,7 +1,8 @@
 import { Schema, Resource } from '@upbeat/schema/src';
 import { UpbeatId } from '../../upbeat-types/src';
 import { MapIntermediateAtom, MapOperations, MapType } from './crdt/types/Map';
-import { ResourceOperation } from './operations';
+import { SerialisedResourceOperation } from './operations';
+import { getHandlersForType } from './crdt';
 
 export interface IntermediateResource {
   id?: UpbeatId;
@@ -34,7 +35,7 @@ export function createIntermediateResourceForResource(
  */
 export function applyOperationToIntermediateResource(
   resource: IntermediateResource,
-  operation: ResourceOperation,
+  operation: SerialisedResourceOperation,
 ): [boolean, IntermediateResource] {
   // const propertySchema = resource.resourceSchema.properties[operation.property];
   //
@@ -43,11 +44,27 @@ export function applyOperationToIntermediateResource(
   //     `Given property in operation "${operation.property}" does not exist within ${operation.resource} schema`,
   //   );
   // }
-
-  const [changed, mapAtom] = MapType.apply(resource.value, {
-    fullOperation: operation,
-    atomOperation: operation.operation[0] as MapOperations,
-  });
+  const [changed, mapAtom] = MapType.apply(
+    resource.value,
+    {
+      fullOperation: operation,
+      atomOperation: operation.operation[0] as MapOperations,
+    },
+    (res: any) => {
+      return getHandlersForType(
+        resource.resourceSchema.properties[
+          (operation.operation[0] as MapOperations).property
+        ].type,
+      ).apply(
+        res,
+        {
+          fullOperation: operation,
+          atomOperation: operation.operation[1] as any, // todo
+        },
+        null,
+      )[1];
+    },
+  );
   return [
     changed,
     {
@@ -63,7 +80,7 @@ export function applyOperationToIntermediateResource(
  */
 export async function buildIntermediateResourceFromOperations(
   schema: Schema,
-  operations: ResourceOperation[],
+  operations: SerialisedResourceOperation[],
 ): Promise<IntermediateResourceMap> {
   const resources: IntermediateResourceMap = {};
 

@@ -1,5 +1,5 @@
 import { Schema } from '@upbeat/schema/src';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { createUpbeatWorker } from './worker';
 import { Changeset } from './changeset';
 import './query';
@@ -54,14 +54,14 @@ export async function createClient(schema: Schema): Promise<UpbeatClient> {
       const id = uuid();
 
       worker.createLiveQuery(query, id);
-      log('LiveQuery', `${id}#REGISTERED ${JSON.stringify(query)}`);
+      log('LiveQuery', 'REGISTERED', `${id} ${JSON.stringify(query)}`);
 
       liveQueries[id] = {
         hook,
       };
 
       return () => {
-        log('LiveQuery', `${id}#UNREGISTERED`);
+        log('LiveQuery', 'UNREGISTERED', `${id}`);
         delete liveQueries[id];
       };
     },

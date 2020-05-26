@@ -9,7 +9,7 @@ import {
 import { log } from './debug';
 import { Schema } from '@upbeat/schema/src';
 import { UpbeatPersistence } from './persistence/interfaces';
-import { ResourceOperation } from './operations';
+import { SerialisedResourceOperation } from './operations';
 
 /**
  * ResourceCache
@@ -39,7 +39,7 @@ interface ResourceCache {
   /**
    * Applies operation locally, persisting when possible.
    * */
-  applyOperation(operation: ResourceOperation): Promise<void>;
+  applyOperation(operation: SerialisedResourceOperation): Promise<void>;
 
   /**
    * Get a resource instance by resource and ID. Uses cache where possible,
@@ -106,14 +106,10 @@ export function createResourceCache(
         operation.resourceId,
       );
 
-      console.log(resource);
-
       const [hasChanged, nextResource] = applyOperationToIntermediateResource(
         resource,
         operation,
       );
-
-      console.log({ hasChanged, nextResource });
 
       cache.set(
         cacheKey(operation.resource, operation.resourceId),
@@ -134,7 +130,8 @@ export function createResourceCache(
           } else {
             log(
               'ResourceCache',
-              `Persisting ${operation.resource}#${nextResource.id}`,
+              'Persist',
+              `${operation.resource}#${nextResource.id}`,
             );
             await persistence._UNSAFEDB.put(
               operation.resource + 'Resource',

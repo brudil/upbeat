@@ -6,13 +6,13 @@ import {
   DeleteCharOperation,
   InsertCharOperation,
 } from './structures/string';
-import NanoEvents from 'nanoevents';
+import { createNanoEvents, Emitter } from 'nanoevents';
 import uuid from 'uuid';
 
 export interface Peer {
   createId(): GivenId;
   siteId: UUID;
-  on: NanoEvents<any>['on'];
+  on: Emitter<any>['on'];
   receive(operation: Operation<any>): void;
 
   insertCharAt(index: number, char: string): void;
@@ -30,7 +30,7 @@ function assertValidOp(op: Operation<any>) {
 export function createPeer(options: { debugSiteId?: string } = {}): Peer {
   const siteId: UUID = options.debugSiteId || uuid();
   const clock = createHLCClock(Date.now);
-  const emitter = new NanoEvents<{
+  const emitter = createNanoEvents<{
     send: Operation<any>;
   }>();
 

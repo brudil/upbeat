@@ -1,15 +1,15 @@
 import React, { useCallback, useState } from 'react';
 import { Todo, TodoTag } from '../schema.generated';
-import { useUpbeat, useUpbeatState } from '../../../upbeat-react/src/react';
+import { useUpbeat, useUpbeatState } from '@upbeat/react/src/react';
 import { create, update } from '@upbeat/client/src/changeset';
 import { createQuery } from '@upbeat/client/src/query';
 
 export const Application: React.FC = () => {
-  const { loading, data } = useUpbeatState(
+  const { loading, data } = useUpbeatState<Todo[]>(
     createQuery('TodoResource', ({ where }) => where('*', '*')),
   );
 
-  const { loading: tagsLoading, data: tagsData } = useUpbeatState(
+  const { loading: tagsLoading, data: tagsData } = useUpbeatState<TodoTag[]>(
     createQuery('TodoTagResource', ({ where }) => where('*', '*')),
   );
 
@@ -97,10 +97,14 @@ export const Application: React.FC = () => {
             value={newTodoTag}
             onChange={(e) => setNewTodoTag(e.target.value)}
           >
-            <option value={''}>None</option>
+            <option value={''} key={-1}>
+              None
+            </option>
             {!tagsLoading && tagsData !== undefined
               ? tagsData.map((tag) => (
-                  <option value={tag.id}>{tag.name}</option>
+                  <option value={tag.id} key={tag.id}>
+                    {tag.name}
+                  </option>
                 ))
               : null}
           </select>

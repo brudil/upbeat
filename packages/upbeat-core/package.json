@@ -8,7 +8,7 @@
   "dependencies": {
     "nanoevents": "^5.1.7",
     "object-sizeof": "^1.6.0",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.3"
   },
   "devDependencies": {
     "@types/nanoevents": "^1.0.0",

@@ -9,7 +9,7 @@
     "react-d3-tree": "^1.16.1",
     "react-dom": "^16.13.1",
     "tailwindcss": "^1.4.6",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.3"
   },
   "devDependencies": {
     "@types/react": "^16.9.35",

@@ -1,12 +1,93 @@
 import { IDBPCursorWithValue, IDBPDatabase, openDB } from 'idb';
 import { Schema } from '@upbeat/schema/src';
-import { Query } from '../query';
 import { UpbeatPersistence } from './interfaces';
 import { SerialisedResourceOperation } from '../operations';
+import {
+  OrderByConstraint,
+  Query,
+  SerialisedQuery,
+  WhereConstraint,
+} from '../query';
 const DB_NAME = 'UPBEAT-DEV';
 
-function queryRunner(query: Query, db: IDBPDatabase): Promise<any> {
-  return db.getAll(query.resourceName);
+class QueryRunnerError extends Error {}
+
+function meetsFilters(filters: WhereConstraint[], resource: any) {
+  for (const filter of filters) {
+    if (filter.comparator !== Query.Comparator.Equals) {
+      throw new QueryRunnerError(
+        `Comparator ${filter.comparator} not implemented`,
+      );
+    }
+
+    if (resource[filter.property] !== filter.value) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+async function queryRunner(
+  _schema: Schema,
+  [resource, constraints]: SerialisedQuery,
+  db: IDBPDatabase,
+): Promise<any> {
+  const operationNames = constraints.map((c) => c.name);
+  const orderBy = constraints.find(
+    (c) => c.name === 'ORDERBY',
+  ) as OrderByConstraint;
+  const direction = orderBy
+    ? orderBy.direction === Query.Direction.ASC
+      ? 'next'
+      : 'prev'
+    : 'next';
+
+  const filters = constraints.filter(
+    (c) => c.name === 'WHERE',
+  ) as WhereConstraint[];
+
+  const trx = db.transaction([`${resource}Resource`], 'readonly');
+  const store = trx.objectStore(`${resource}Resource`);
+
+  const indexName = orderBy ? orderBy.property : 'id';
+  const index = store.index(indexName);
+
+  // if (filters.length > 0) {
+  //   const hasIndex = schema.resources[resource].keys.hasOwnProperty(`${indexName}_${filters.map(f => f.property).join('_')}`);
+  //
+  //   console.log('has index', hasIndex);
+  //
+  // }
+
+  if (operationNames.includes('ALL')) {
+    let cursorRequest = await index.openCursor(undefined, direction);
+    if (!cursorRequest) {
+      return [];
+    }
+
+    const items = [];
+    while (cursorRequest) {
+      if (meetsFilters(filters, cursorRequest.value)) {
+        items.push(cursorRequest.value);
+      }
+
+      cursorRequest = await cursorRequest.continue();
+    }
+
+    return items;
+  }
+
+  // GET k:v - this is all. Additional filtering done in JS.
+
+  // ALL; with single index.
+
+  // OFFSET/PAGINATION; ? perhaps requires order by?
+
+  // ORDER BY; single index.
+
+  console.warn('Unimplemented query constraint!', constraints);
+  return db.getAll(resource);
 }
 
 /**
@@ -15,7 +96,7 @@ function queryRunner(query: Query, db: IDBPDatabase): Promise<any> {
 export async function createIndexedDBPersistence(
   schema: Schema,
 ): Promise<UpbeatPersistence> {
-  const db = await openDB(DB_NAME, 6, {
+  const db = await openDB(DB_NAME, 7, {
     upgrade(db) {
       const logDb = db.createObjectStore('UpbeatOperations', {
         keyPath: 'timestamp',
@@ -27,16 +108,33 @@ export async function createIndexedDBPersistence(
       logDb.createIndex('resourceKey', ['resource', 'resourceId']);
 
       Object.values(schema.resources).forEach((resource) => {
+        // Create a store for resource
         const resourceDb = db.createObjectStore(
           `${resource.identifier}Resource`,
           { keyPath: 'id' },
         );
+
+        // Index the ID
+        resourceDb.createIndex('id', 'id', {
+          unique: true,
+        });
+
+        // Index the Space
+        resourceDb.createIndex('space', 'space');
+
+        // Index all properties
         Object.values(resource.properties).forEach((prop) => {
           resourceDb.createIndex(prop.identifier, prop.identifier, {
             unique: false,
           });
         });
-        resourceDb.createIndex('space', 'space');
+
+        // Create all manually defined indexes
+        Object.values(resource.keys).forEach((key) => {
+          resourceDb.createIndex(key.identifier, key.identifiers, {
+            unique: false,
+          });
+        });
       });
 
       Object.values(schema.spaces).forEach((space) => {
@@ -69,7 +167,7 @@ export async function createIndexedDBPersistence(
 
   return {
     runQuery(query): Promise<any> {
-      return queryRunner(query, db);
+      return queryRunner(schema, query, db);
     },
     _UNSAFEDB: db,
     getOperationsByResourceKey: async (resourceName, id) => {

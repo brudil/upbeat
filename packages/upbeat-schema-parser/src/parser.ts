@@ -1,9 +1,13 @@
 import { CstParser } from 'chevrotain';
 import {
   CloseBrace,
+  CloseBracket,
   CloseParen,
+  Comma,
+  GreaterThan,
   Identifier,
   OpenBrace,
+  OpenBracket,
   OpenParen,
   QuestionMark,
   ResourceKeyword,
@@ -27,6 +31,18 @@ class UpbeatSchemaParser extends CstParser {
     this.CONSUME1(Semi);
   });
 
+  private keyDef = this.RULE('keyDef', () => {
+    this.CONSUME(GreaterThan);
+    this.CONSUME1(OpenBracket);
+    this.AT_LEAST_ONE_SEP({
+      SEP: Comma,
+      DEF: () => {
+        this.CONSUME(Identifier);
+      },
+    });
+    this.CONSUME2(CloseBracket);
+  });
+
   private typeDef = this.RULE('typeDef', () => {
     this.CONSUME(Identifier);
     this.OPTION(() => {
@@ -45,6 +61,7 @@ class UpbeatSchemaParser extends CstParser {
     this.CONSUME4(Identifier);
     this.CONSUME2(OpenBrace);
     this.AT_LEAST_ONE(() => this.SUBRULE(this.propertyDef));
+    this.MANY(() => this.SUBRULE(this.keyDef));
     this.CONSUME3(CloseBrace);
   });
 
@@ -120,6 +137,13 @@ class AstVisitor extends BaseVisitor {
     };
   }
 
+  keyDef(ctx: any) {
+    return {
+      identifier: ctx.Identifier.map((i: any) => i.image).join('_'),
+      identifiers: ctx.Identifier.map((i: any) => i.image),
+    };
+  }
+
   spaceDef(ctx: any): Space {
     return {
       identifier: ctx.Identifier[0].image,
@@ -137,6 +161,9 @@ class AstVisitor extends BaseVisitor {
       properties: mapToIdentifier(
         ctx.propertyDef.map((prop: any) => this.visit(prop)),
       ),
+      keys: ctx.keyDef
+        ? mapToIdentifier(ctx.keyDef.map((prop: any) => this.visit(prop)))
+        : {},
     };
   }
 

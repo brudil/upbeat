@@ -5,6 +5,8 @@ resource Todo {
   ExternalReference(User) user;
   Set(Reference(Tag)) tags;
   Int order;
+
+  > [AAAAAA, BBBBBB, CCCCCC]
 }
 
 resource Tag {

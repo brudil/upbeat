@@ -5,6 +5,10 @@ export const CloseBrace = createToken({ name: 'CloseBrace', pattern: '}' });
 export const OpenParen = createToken({ name: 'OpenParen', pattern: '(' });
 export const CloseParen = createToken({ name: 'CloseParen', pattern: ')' });
 export const QuestionMark = createToken({ name: 'QuestionMark', pattern: '?' });
+export const GreaterThan = createToken({ name: 'GreaterThan', pattern: '>' });
+export const OpenBracket = createToken({ name: 'OpenBracket', pattern: '[' });
+export const CloseBracket = createToken({ name: 'CloseBracket', pattern: ']' });
+export const Comma = createToken({ name: 'Comma', pattern: ',' });
 export const ResourceKeyword = createToken({
   name: 'ResourceKeyword',
   pattern: 'resource',
@@ -36,6 +40,10 @@ export const tokens = [
   WhiteSpace,
   Identifier,
   Semi,
+  GreaterThan,
+  OpenBracket,
+  CloseBracket,
+  Comma,
 ];
 
 export const upbeatLexer = new Lexer(tokens);

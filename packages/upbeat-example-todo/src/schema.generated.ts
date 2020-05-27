@@ -37,15 +37,27 @@ export const schema = {
       properties: {
         name: {
           identifier: 'name',
-          type: { identifier: 'String', nullable: false, subtype: null },
+          type: {
+            identifier: 'String',
+            nullable: false,
+            subtype: null,
+          },
         },
         complete: {
           identifier: 'complete',
-          type: { identifier: 'Boolean', nullable: false, subtype: null },
+          type: {
+            identifier: 'Boolean',
+            nullable: false,
+            subtype: null,
+          },
         },
         order: {
           identifier: 'order',
-          type: { identifier: 'Orderable', nullable: false, subtype: null },
+          type: {
+            identifier: 'Orderable',
+            nullable: false,
+            subtype: null,
+          },
         },
         tags: {
           identifier: 'tags',
@@ -64,19 +76,34 @@ export const schema = {
           },
         },
       },
+      keys: {
+        order_complete: {
+          identifier: 'order_complete',
+          identifiers: ['order', 'complete'],
+        },
+      },
     },
     TodoTag: {
       identifier: 'TodoTag',
       properties: {
         name: {
           identifier: 'name',
-          type: { identifier: 'String', nullable: false, subtype: null },
+          type: {
+            identifier: 'String',
+            nullable: false,
+            subtype: null,
+          },
         },
         color: {
           identifier: 'color',
-          type: { identifier: 'String', nullable: false, subtype: null },
+          type: {
+            identifier: 'String',
+            nullable: false,
+            subtype: null,
+          },
         },
       },
+      keys: {},
     },
   },
   spaces: {
@@ -88,7 +115,11 @@ export const schema = {
           type: {
             identifier: 'Set',
             nullable: false,
-            subtype: { identifier: 'Todo', nullable: false, subtype: null },
+            subtype: {
+              identifier: 'Todo',
+              nullable: false,
+              subtype: null,
+            },
           },
         },
       },

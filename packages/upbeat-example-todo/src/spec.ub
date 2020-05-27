@@ -3,6 +3,8 @@ resource Todo {
   Boolean complete;
   Orderable order;
   Set(Reference(TodoTag)) tags;
+
+  > [order, complete]
 }
 
 resource TodoTag {

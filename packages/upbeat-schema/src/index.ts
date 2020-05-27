@@ -8,9 +8,17 @@ export interface Property {
   type: Type;
 }
 
+export interface Key {
+  identifier: string;
+  identifiers: string[];
+}
+
 export interface Resource {
   identifier: string;
   properties: { [propName: string]: Property };
+  keys: {
+    [keyName: string]: Key;
+  };
 }
 
 export interface Space {

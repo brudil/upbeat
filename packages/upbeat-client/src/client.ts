@@ -3,19 +3,23 @@ import { v4 as uuid } from 'uuid';
 import { createUpbeatWorker } from './worker';
 import { Changeset } from './changeset';
 import './query';
-import { Query } from './query';
 import { log } from './debug';
+import { UpbeatClientConfig } from './types';
+import { SerialisedQuery } from './query';
 
 export interface UpbeatClient {
-  createLiveQuery(query: Query, hook: (cb: any) => void): () => void;
+  createLiveQuery(query: SerialisedQuery, hook: (cb: any) => void): () => void;
   sendOperation(c: Changeset<unknown>): void;
 }
 
 /**
  * Creates an UpbeatClient, used by the users app.
  */
-export async function createClient(schema: Schema): Promise<UpbeatClient> {
-  const worker = await createUpbeatWorker(schema);
+export async function createClient(
+  schema: Schema,
+  config: UpbeatClientConfig,
+): Promise<UpbeatClient> {
+  const worker = await createUpbeatWorker(schema, config);
 
   const liveQueries: { [id: string]: { hook: any } } = {};
   worker.emitter.on('liveChange', ([id, data]) => {

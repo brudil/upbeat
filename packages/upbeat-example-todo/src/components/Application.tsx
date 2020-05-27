@@ -2,15 +2,18 @@ import React, { useCallback, useState } from 'react';
 import { Todo, TodoTag } from '../schema.generated';
 import { useUpbeat, useUpbeatState } from '@upbeat/react/src/react';
 import { create, update } from '@upbeat/client/src/changeset';
-import { createQuery } from '@upbeat/client/src/query';
+import { Query } from '@upbeat/client/src/query';
 
 export const Application: React.FC = () => {
   const { loading, data } = useUpbeatState<Todo[]>(
-    createQuery('TodoResource', ({ where }) => where('*', '*')),
+    Query.resource<Todo>('Todo')
+      .orderBy('order')
+      .where('complete', false, Query.Comparator.Equals)
+      .all(),
   );
 
   const { loading: tagsLoading, data: tagsData } = useUpbeatState<TodoTag[]>(
-    createQuery('TodoTagResource', ({ where }) => where('*', '*')),
+    Query.resource<TodoTag>('TodoTag').all(),
   );
 
   const client = useUpbeat();

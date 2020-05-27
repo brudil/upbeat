@@ -1,13 +1,13 @@
-import { Query } from '../query';
 import { IDBPDatabase } from 'idb';
 import { UpbeatId } from '../../../upbeat-types/src';
 import { SerialisedResourceOperation } from '../operations';
+import { SerialisedQuery } from '../query';
 
 export interface UpbeatPersistence {
   /**
    * Performs the serialisable query on the backing persistence store.
    */
-  runQuery(query: Query): Promise<any>;
+  runQuery(query: SerialisedQuery): Promise<any>;
   _UNSAFEDB: IDBPDatabase;
 
   /**

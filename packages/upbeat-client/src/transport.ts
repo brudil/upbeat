@@ -1,16 +1,21 @@
 import { createNanoEvents, Emitter } from 'nanoevents';
 import { SerialisedResourceOperation } from './operations';
 import { log } from './debug';
+import { UpbeatTransportConfig, UpbeatTransportWebSocketConfig } from './types';
+
+interface UpbeatTransport {
+  ws: WebSocket;
+  send(message: any): any;
+  on: Emitter<WorkerEmitter>['on'];
+}
 
 interface WorkerEmitter {
   operation: [string, SerialisedResourceOperation];
 }
 
-export async function createUpbeatTransport(): Promise<{
-  ws: WebSocket;
-  send(message: any): any;
-  on: Emitter<WorkerEmitter>['on'];
-}> {
+export const createUpbeatTransportWebSocket = async (
+  config: UpbeatTransportWebSocketConfig,
+): Promise<UpbeatTransport> => {
   let ws: WebSocket | null = null;
   const emitter = createNanoEvents<WorkerEmitter>();
 
@@ -56,4 +61,20 @@ export async function createUpbeatTransport(): Promise<{
     send,
     on: emitter.on.bind(emitter),
   };
-}
+};
+
+export const createTransports = async (
+  config: UpbeatTransportConfig[],
+): Promise<UpbeatTransport[]> => {
+  const transports: UpbeatTransport[] = [];
+  for (const transport of config) {
+    switch (transport.name) {
+      case 'intertab':
+        continue;
+      case 'ws':
+        transports.push(await createUpbeatTransportWebSocket(transport));
+    }
+  }
+
+  return transports;
+};

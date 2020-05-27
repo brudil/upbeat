@@ -9,20 +9,20 @@ import {
 import { createNanoEvents, Emitter } from 'nanoevents';
 import { v4 as uuid } from 'uuid';
 import { createResourceCache } from './resourceCache';
-import { Query } from './query';
+import { SerialisedQuery } from './query';
 import { Changeset } from './changeset';
 import { ResourceOperation, SerialisedResourceOperation } from './operations';
-import { MerkleTree } from './sync';
 import { log } from './debug';
-import { createUpbeatTransport } from './transport';
+import { createTransports } from './transport';
 import { build, diff, insert } from './merkle';
+import { UpbeatClientConfig } from './types';
 
 interface WorkerEmitter {
   liveChange: [string, any];
 }
 
 interface UpbeatWorker {
-  createLiveQuery(query: Query, id: string): Promise<void>;
+  createLiveQuery(query: SerialisedQuery, id: string): Promise<void>;
   addOperation(changeset: Changeset<unknown>): Promise<void>;
   emitter: Emitter<WorkerEmitter>;
 }
@@ -35,6 +35,7 @@ interface UpbeatWorker {
  */
 export async function createUpbeatWorker(
   schema: Schema,
+  config: UpbeatClientConfig,
 ): Promise<UpbeatWorker> {
   const bc = new BroadcastChannel('UPBEAT');
 
@@ -42,19 +43,18 @@ export async function createUpbeatWorker(
   const clock = createHLCClock(createPeerId(), Date.now);
   const cache = createResourceCache(schema, persistence);
   const emitter = createNanoEvents<WorkerEmitter>();
-  const transport = await createUpbeatTransport();
+  const transport = await createTransports(config.transport);
   const applicationQueue: SerialisedResourceOperation[] = [];
 
   // MERKLE EXPERIMENTZ
   const ops = await persistence.getAllOperations();
   let tree = build(ops.map((op) => parseTimestamp(op.timestamp)));
   log('Sync', 'NEW HASH', `${tree.hash}`);
-  console.log(tree);
   //console.log(JSON.stringify(tree.getHash()));
   //console.log(tree);
 
   const liveIds: {
-    [id: string]: Query;
+    [id: string]: SerialisedQuery;
   } = {};
 
   /*
@@ -134,22 +134,26 @@ export async function createUpbeatWorker(
         timestamp: clock.now(),
       };
 
-      transport.send({
-        type: 'OperationSent',
-        operation: {
-          ...operation,
-          timestamp: serialiseTimestamp(operation.timestamp),
-        },
-        roomId: 'TBA',
-      });
+      transport.forEach((t) =>
+        t.send({
+          type: 'OperationSent',
+          operation: {
+            ...operation,
+            timestamp: serialiseTimestamp(operation.timestamp),
+          },
+          roomId: 'TBA',
+        }),
+      );
       // await applyOperation(operation);
     }
   }
 
-  transport.on('operation', async (operation: any) => {
-    log('Transport', 'RECEIVED', 'applying operation from transport');
-    applicationQueue.push(operation);
-  });
+  transport.forEach((t) =>
+    t.on('operation', async (operation: any) => {
+      log('Transport', 'RECEIVED', 'applying operation from transport');
+      applicationQueue.push(operation);
+    }),
+  );
 
   setInterval(async () => {
     while (applicationQueue.length > 0) {

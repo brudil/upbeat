@@ -55,3 +55,8 @@ export function update<R extends UpbeatResource>(
     resource: resourceName,
   };
 }
+
+export const Changeset = {
+  create,
+  update,
+};

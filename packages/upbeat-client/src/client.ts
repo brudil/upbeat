@@ -14,7 +14,7 @@ import { SerialisedQuery } from './query';
 
 export interface UpbeatClient {
   createLiveQuery(query: SerialisedQuery, hook: (cb: any) => void): () => void;
-  sendOperation(c: Changeset<unknown>): void;
+  applyChangeset(c: Changeset<unknown>): void;
 }
 
 /**
@@ -74,7 +74,7 @@ export async function createClient(
         delete liveQueries[id];
       };
     },
-    sendOperation(changeset) {
+    applyChangeset(changeset) {
       log(
         'UpbeatOp',
         `${changeset.resource}#${

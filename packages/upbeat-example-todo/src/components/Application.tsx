@@ -3,67 +3,20 @@
  * @module @upbeat/example-todo
  */
 
-import React, { useCallback, useState } from 'react';
-import { Todo, TodoTag } from '../schema.generated';
-import { useUpbeat, useUpbeatState } from '@upbeat/react/src/react';
-import { create, update } from '@upbeat/client/src/changeset';
-import { Query } from '@upbeat/client/src/query';
+import React from 'react';
+import { Todo as TodoSchema } from '../schema.generated';
+import { useUpbeatQuery } from '@upbeat/react/src/react';
+import { Query } from '@upbeat/client/src';
+import { Todo } from './Todo';
+import { NewTodo } from './NewTodo';
+import { Tags } from './Tags';
 
 export const Application: React.FC = () => {
-  const { loading, data } = useUpbeatState<Todo[]>(
-    Query.resource<Todo>('Todo')
+  const { loading, data } = useUpbeatQuery<TodoSchema[]>(
+    Query.resource<TodoSchema>('Todo')
       .orderBy('order')
       .where('complete', false, Query.Comparator.Equals)
       .all(),
-  );
-
-  const { loading: tagsLoading, data: tagsData } = useUpbeatState<TodoTag[]>(
-    Query.resource<TodoTag>('TodoTag').all(),
-  );
-
-  const client = useUpbeat();
-
-  const [newTodo, setNewTodo] = useState('');
-  const [newTodoTag, setNewTodoTag] = useState('');
-  const [newTag, setNewTag] = useState('');
-  const handleAddTag = useCallback(() => {
-    client.sendOperation(
-      create<TodoTag>('TodoTag', {
-        name: newTag,
-        color: '#ffffff',
-      }),
-    );
-    setNewTag('');
-  }, [client, newTag, setNewTag]);
-
-  const handleAddToDo = useCallback(() => {
-    client.sendOperation(
-      create<Todo>('Todo', {
-        name: newTodo,
-        complete: false,
-        order: 3,
-        tags: [],
-      }),
-    );
-    setNewTodo('');
-  }, [client, newTodo, setNewTodo]);
-
-  const handleToDoCheck = useCallback(
-    (todo) => {
-      client.sendOperation(
-        update<Todo>('Todo', todo.id, { complete: !todo.complete }),
-      );
-    },
-    [client],
-  );
-
-  const handleDeleteTodo = useCallback(
-    (todo) => {
-      client.sendOperation(
-        update<Todo>('Todo', todo.id, { tombstone: true }),
-      );
-    },
-    [client],
   );
 
   return (
@@ -75,68 +28,17 @@ export const Application: React.FC = () => {
           {!loading && data !== undefined && (
             <ul>
               {data.map((todo) => (
-                <li key={todo.id}>
-                  <input
-                    type="checkbox"
-                    checked={todo.complete}
-                    onChange={() => handleToDoCheck(todo)}
-                  />
-                  {todo.name}
-                  <button
-                    onClick={() => handleDeleteTodo(todo)}
-                    className="text-sm bg-red-900 text-white font-bold"
-                  >
-                    x
-                  </button>
-                </li>
+                <Todo key={todo.id} todo={todo} />
               ))}
             </ul>
           )}
         </div>
         <div className="p-2 m-2 bg-gray-100 w-1/6 ">
-          <h2 className="text-xl font-bold mb-4">New todo</h2>
-          <input
-            type="text"
-            placeholder="todo name"
-            value={newTodo}
-            onChange={(e) => setNewTodo(e.target.value)}
-          />
-          <select
-            value={newTodoTag}
-            onChange={(e) => setNewTodoTag(e.target.value)}
-          >
-            <option value={''} key={-1}>
-              None
-            </option>
-            {!tagsLoading && tagsData !== undefined
-              ? tagsData.map((tag) => (
-                  <option value={tag.id} key={tag.id}>
-                    {tag.name}
-                  </option>
-                ))
-              : null}
-          </select>
-          <br />
-          <button onClick={handleAddToDo}>Add Todo</button>
+          <NewTodo />
         </div>
 
         <div className="p-2 m-2 bg-gray-100 w-1/6 ">
-          <h2 className="text-xl font-bold mb-4">Tags</h2>
-          {!tagsLoading && tagsData !== undefined ? (
-            <ul>
-              {tagsData.map((tag) => (
-                <li key={tag.id}>{tag.name}</li>
-              ))}
-            </ul>
-          ) : null}
-          <h2 className="text-xl font-bold mb-4">Create tag</h2>
-          <input
-            type="text"
-            placeholder="tag name"
-            value={newTag}
-            onChange={(e) => setNewTag(e.target.value)}
-          />
-          <button onClick={handleAddTag}>Add Tag</button>
+          <Tags />
         </div>
       </div>
     </div>

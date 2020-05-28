@@ -3,9 +3,10 @@
  * @module @upbeat/react
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { UpbeatClient } from '@upbeat/client/src/client';
 import { QueryBuilder } from '@upbeat/client/src/query';
+import { Changeset } from '@upbeat/client/src';
 
 const UpbeatContext = React.createContext<UpbeatClient | null>(null);
 
@@ -35,7 +36,7 @@ export const useUpbeat = (): UpbeatClient => {
 //   };
 // };
 
-export const useUpbeatState = <D = unknown>(
+export const useUpbeatQuery = <D = unknown>(
   query: QueryBuilder<unknown>,
 ): { loading: boolean; data: D | undefined } => {
   const client = useUpbeat();
@@ -52,4 +53,17 @@ export const useUpbeatState = <D = unknown>(
     loading: !data,
     data,
   };
+};
+
+type ReplaceReturnType<T extends (...a: any) => any, TNewReturn> = (
+  ...a: Parameters<T>
+) => TNewReturn;
+
+export const useUpbeatChangeset = <R, A extends (...a: any) => Changeset<R>>(
+  changesetFn: A,
+): ReplaceReturnType<A, void> => {
+  const client = useUpbeat();
+  return useCallback((...args) => {
+    client.applyChangeset(changesetFn(...(args as any)));
+  }, []);
 };

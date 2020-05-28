@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/persistence
+ */
+
 import { UpbeatId } from '../../../upbeat-types/src';
 import { SerialisedResourceOperation } from '../operations';
 import { SerialisedQuery } from '../query';

@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/core
+ */
+
 import { createPipelineType } from '../pipeline';
 import { Operation, OperationStart } from '../types';
 

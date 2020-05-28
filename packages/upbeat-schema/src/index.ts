@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/schema
+ */
+
 export interface Type {
   identifier: string;
   subtype: Type | null;

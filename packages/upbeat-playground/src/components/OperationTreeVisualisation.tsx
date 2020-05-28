@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/playground
+ */
+
 import React from 'react';
 import Tree, { ReactD3TreeItem } from 'react-d3-tree';
 

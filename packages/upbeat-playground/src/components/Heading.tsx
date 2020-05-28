@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/playground
+ */
+
 import React from 'react';
 
 export const Heading: React.FC = ({ children }) => {

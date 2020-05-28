@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/resourceCache
+ */
+
 import { UpbeatId } from '../../upbeat-types/src';
 import {
   applyOperationToIntermediateResource,

@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/server
+ */
+
 export function parseChannelId(channelId: string) {
   const parts = channelId.split('/');
   return {

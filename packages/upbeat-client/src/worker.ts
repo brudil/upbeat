@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/worker
+ */
+
 import { Schema } from '@upbeat/schema/src';
 import { createIndexedDBPersistence } from './persistence/IndexedDbPersistence';
 import {

@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/persistence/IndexedDbPersistence
+ */
+
 import { IDBPCursorWithValue, IDBPDatabase, openDB } from 'idb';
 import { Schema } from '@upbeat/schema/src';
 import { UpbeatPersistence } from './interfaces';

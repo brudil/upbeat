@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/schema-parser
+ */
+
 import { CstParser } from 'chevrotain';
 import {
   CloseBrace,

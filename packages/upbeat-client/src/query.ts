@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/query
+ */
+
 /*
  * Due to the local-first, quick nature of Upbeat apps, we don't fully support
  * joins etc.

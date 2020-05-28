@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/server
+ */
+
 import WebSocket from 'ws';
 import { TokenInfo } from '../types';
 import { RTServiceServer } from './Server';

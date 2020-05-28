@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/example-todo
+ */
+
 import React, { useCallback, useState } from 'react';
 import { Todo, TodoTag } from '../schema.generated';
 import { useUpbeat, useUpbeatState } from '@upbeat/react/src/react';

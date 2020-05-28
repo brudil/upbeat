@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/sync
+ */
+
 import murmurhash from 'murmurhash';
 
 // interface BinaryTreeNode<A> {

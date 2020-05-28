@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/codegen
+ */
+
 import fs from 'fs';
 import path from 'path';
 import { Schema, Property, Type } from '@upbeat/schema/src';
@@ -43,7 +48,7 @@ export function generateTs(schema: Schema): string {
     ...Object.values(schema.spaces).map((res) =>
       _terfaceTemplate(res.identifier, Object.values(res.properties)),
     ),
-    `export const schema = ${JSON.stringify(schema, undefined, 2)};`,
+    `export const schema: Schema = ${JSON.stringify(schema, undefined, 2)};`,
   ];
 
   file.unshift(
@@ -51,6 +56,7 @@ export function generateTs(schema: Schema): string {
       ', ',
     )}} from '@upbeat/types/src';`,
   );
+  file.unshift(`import { Schema } from '@upbeat/schema/src';`);
 
   return file.join('\n\n');
 }

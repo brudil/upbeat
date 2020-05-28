@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/types/lastWriteWins
+ */
+
 import { isLaterSerialisedTimestamp } from '@upbeat/core/src/timestamp';
 import { createType, OperationWrapper } from '../utils';
 

@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/server
+ */
+
 import { MessageHandler } from '../types';
 import { createModule } from '../core/modules';
 import {

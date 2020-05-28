@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/core
+ */
+
 import sizeof from 'object-sizeof';
 import { Atom, Id, Operation, RootId } from './types';
 import { CharOperationTypes } from './structures/string';

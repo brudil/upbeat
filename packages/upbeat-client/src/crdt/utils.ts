@@ -1,3 +1,7 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/types/utils
+ */
 /*
  * What is a type and what does it do?
  *

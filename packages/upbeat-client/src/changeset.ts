@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/changeset
+ */
+
 import { UpbeatResource } from '../../upbeat-types/src';
 
 /**

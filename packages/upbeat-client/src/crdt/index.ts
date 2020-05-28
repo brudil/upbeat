@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/types
+ */
+
 import { Type } from '@upbeat/schema/src';
 import { UpbeatInvalidApplication } from '../errors';
 import { LastWriteWinsType } from './types/lastWriteWins';

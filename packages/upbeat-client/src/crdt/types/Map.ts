@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/types/Map
+ */
+
 import { createType, CRDTType } from '../utils';
 import { Resource } from '@upbeat/schema/src';
 import { getHandlersForType } from '../index';
@@ -16,7 +21,7 @@ export type MapOperations = { type: 'SELECT'; property: string };
 export const MapType: CRDTType<
   'MAP',
   MapIntermediateAtom,
-  {},
+  Record<string, unknown>,
   MapOperations
 > = createType('MAP', {
   apply(atom, operation, next) {

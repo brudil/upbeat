@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/client
+ */
+
 import { Schema } from '@upbeat/schema/src';
 import { v4 as uuid } from 'uuid';
 import { createUpbeatWorker } from './worker';

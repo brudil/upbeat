@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/operations
+ */
+
 import { Timestamp } from '../../upbeat-core/src/timestamp';
 import { UpbeatId } from '../../upbeat-types/src';
 import { OperationsFrom } from './crdt/utils';

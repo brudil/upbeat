@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/playground
+ */
+
 import React, { useCallback } from 'react';
 import { Atom } from '@upbeat/core/src/types';
 import { OperationTreeVisualisation } from './OperationTreeVisualisation';

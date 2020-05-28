@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/types
+ */
+
 export interface UpbeatTransportInterTabConfig {
   name: 'intertab';
 }

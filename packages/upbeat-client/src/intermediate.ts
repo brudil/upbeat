@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/intermediate
+ */
+
 import { Schema, Resource } from '@upbeat/schema/src';
 import { UpbeatId } from '../../upbeat-types/src';
 import { MapIntermediateAtom, MapOperations, MapType } from './crdt/types/Map';

@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/testing
+ */
+
 import { createNanoEvents } from 'nanoevents';
 import { Peer } from '@upbeat/core/src/peer';
 import { Operation, UUID } from '@upbeat/core/src/types';

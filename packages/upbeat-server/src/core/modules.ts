@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/server
+ */
+
 import { MessageHandler } from '../types';
 
 export interface ChannelConf<CT extends { type: string }> {

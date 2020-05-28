@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/transport
+ */
+
 import { createNanoEvents, Emitter } from 'nanoevents';
 import { SerialisedResourceOperation } from './operations';
 import { log } from './debug';

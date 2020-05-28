@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/server
+ */
+
 import WebSocket from 'ws';
 import d from 'debug';
 import Redis from 'ioredis';

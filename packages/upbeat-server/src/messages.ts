@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/server
+ */
+
 import { SerialisedResourceOperation } from '@upbeat/client/src/operations';
 
 export enum ClientType {

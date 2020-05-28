@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/server
+ */
+
 import { RTServiceServer } from './core/Server';
 import { EphemeralOperationsModule } from './modules/eop';
 

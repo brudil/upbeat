@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/example-todo
+ */
+
 import {
   UpbeatId,
   UpbeatResource,
@@ -7,6 +12,7 @@ import {
   UpbeatSet,
   UpbeatReference,
 } from '@upbeat/types/src';
+import { Schema } from '@upbeat/schema/src';
 
 export interface Todo extends UpbeatResource {
   _type: 'Todo';
@@ -30,7 +36,7 @@ export interface Project extends UpbeatResource {
   todos: UpbeatSet<Todo>;
 }
 
-export const schema = {
+export const schema: Schema = {
   resources: {
     Todo: {
       identifier: 'Todo',

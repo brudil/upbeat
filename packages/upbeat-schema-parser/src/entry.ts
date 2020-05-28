@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/schema-parser
+ */
+
 import fs from 'fs';
 import { promisify } from 'util';
 import { parseInput } from './parser';

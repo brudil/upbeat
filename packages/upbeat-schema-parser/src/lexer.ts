@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/schema-parser
+ */
+
 import { createToken, Lexer } from 'chevrotain';
 
 export const OpenBrace = createToken({ name: 'OpenBrace', pattern: '{' });

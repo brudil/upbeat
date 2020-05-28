@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/core
+ */
+
 import { GivenId, Operation, UUID } from './types';
 import { createHLCClock } from './timestamp';
 import {

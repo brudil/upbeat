@@ -1,6 +1,11 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/react
+ */
+
 import React, { useContext, useEffect, useState } from 'react';
 import { UpbeatClient } from '@upbeat/client/src/client';
-import { QueryBuilder, QueryX } from '@upbeat/client/src/query';
+import { QueryBuilder } from '@upbeat/client/src/query';
 
 const UpbeatContext = React.createContext<UpbeatClient | null>(null);
 

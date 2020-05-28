@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/core
+ */
+
 import { Timestamp } from './timestamp';
 
 export type UUID = string;

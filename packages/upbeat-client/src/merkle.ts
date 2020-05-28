@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/client/merkle
+ */
+
 import { serialiseTimestamp, Timestamp } from '@upbeat/core/src/timestamp';
 import murmurhash from 'murmurhash';
 

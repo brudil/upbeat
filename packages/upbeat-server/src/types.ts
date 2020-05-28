@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @upbeat/server
+ */
+
 import { Client } from './core/Client';
 import { ChannelConf } from './core/modules';
 

@@ -12,5 +12,5 @@ export type UpbeatTransportConfig =
   | UpbeatTransportWebSocketConfig;
 
 export interface UpbeatClientConfig {
-  transport: UpbeatTransportConfig[];
+  transport?: UpbeatTransportConfig[];
 }

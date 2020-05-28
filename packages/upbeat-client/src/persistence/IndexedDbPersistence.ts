@@ -169,7 +169,19 @@ export async function createIndexedDBPersistence(
     runQuery(query): Promise<any> {
       return queryRunner(schema, query, db);
     },
-    _UNSAFEDB: db,
+    putResourceObject: async (resourceName: string, object: unknown) => {
+      await db.put(`${resourceName}Resource`, object);
+    },
+    deleteResourceObject: async (resourceName: string, resourceId) => {
+      await db.delete(`${resourceName}Resource`, resourceId);
+    },
+    appendOperation: async (operation: SerialisedResourceOperation) => {
+      try {
+        await db.add('UpbeatOperations', operation);
+      } catch (e) {
+        console.warn('duplicate operation, not persisting');
+      }
+    },
     getOperationsByResourceKey: async (resourceName, id) => {
       const range = IDBKeyRange.bound([resourceName, id], [resourceName, id]);
       const trx = db.transaction('UpbeatOperations', 'readonly');

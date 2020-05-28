@@ -45,7 +45,7 @@ interface ResourceCache {
    * Get a resource instance by resource and ID. Uses cache where possible,
    * constructing and caching otherwise.
    **/
-  getById<X>(resourceName: string, id: UpbeatId): Promise<X>;
+  // getById<X>(resourceName: string, id: UpbeatId): Promise<X>;
 }
 
 export function createResourceCache(
@@ -123,18 +123,20 @@ export function createResourceCache(
               'ResourceCache',
               `Deleting ${operation.resource}#${nextResource.id}`,
             );
-            await persistence._UNSAFEDB.delete(
-              operation.resource + 'Resource',
-              nextResource.id,
-            );
+            if (nextResource.id) {
+              await persistence.deleteResourceObject(
+                operation.resource,
+                nextResource.id,
+              );
+            }
           } else {
             log(
               'ResourceCache',
               'Persist',
               `${operation.resource}#${nextResource.id}`,
             );
-            await persistence._UNSAFEDB.put(
-              operation.resource + 'Resource',
+            await persistence.putResourceObject(
+              operation.resource,
               realiseIntermediateResource(nextResource),
             );
           }
@@ -144,10 +146,10 @@ export function createResourceCache(
         }
       }
     },
-    async getById(resourceName, id) {
-      return realiseIntermediateResource(
-        await getIntermediateById(resourceName, id),
-      );
-    },
+    // async getById<R>(resourceName, id): Promise<R> {
+    //   return realiseIntermediateResource(
+    //     await getIntermediateById(resourceName, id),
+    //   );
+    // },
   };
 }

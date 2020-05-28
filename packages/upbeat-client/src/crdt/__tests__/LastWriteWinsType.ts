@@ -1,5 +1,9 @@
 import { LastWriteWinsType, LWWSetOp } from '../types/lastWriteWins';
-import { createPeerId, Timestamp } from '../../../../upbeat-core/src/timestamp';
+import {
+  createPeerId,
+  serialiseTimestamp,
+  Timestamp,
+} from '../../../../upbeat-core/src/timestamp';
 import { OperationWrapper } from '../utils';
 
 let type = LastWriteWinsType.create({});
@@ -14,7 +18,7 @@ const createOp = (
   fullOperation: {
     resource: 'X',
     resourceId: 'X',
-    timestamp,
+    timestamp: serialiseTimestamp(timestamp),
     operation: [{ value }],
   },
   atomOperation: { value },

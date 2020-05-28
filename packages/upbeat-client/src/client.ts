@@ -22,7 +22,7 @@ export async function createClient(
   const worker = await createUpbeatWorker(schema, config);
 
   const liveQueries: { [id: string]: { hook: any } } = {};
-  worker.emitter.on('liveChange', ([id, data]) => {
+  worker.emitter.on('liveChange', (id, data) => {
     if (liveQueries.hasOwnProperty(id)) {
       liveQueries[id].hook(data);
     }

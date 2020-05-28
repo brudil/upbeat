@@ -18,7 +18,7 @@ import { build, diff, insert } from './merkle';
 import { UpbeatClientConfig } from './types';
 
 interface WorkerEmitter {
-  liveChange: [string, any];
+  liveChange(id: string, x: unknown): void;
 }
 
 interface UpbeatWorker {
@@ -43,7 +43,7 @@ export async function createUpbeatWorker(
   const clock = createHLCClock(createPeerId(), Date.now);
   const cache = createResourceCache(schema, persistence);
   const emitter = createNanoEvents<WorkerEmitter>();
-  const transport = await createTransports(config.transport);
+  const transport = await createTransports(config.transport ?? []);
   const applicationQueue: SerialisedResourceOperation[] = [];
 
   // MERKLE EXPERIMENTZ
@@ -70,7 +70,7 @@ export async function createUpbeatWorker(
     // Object.entries(liveIds).forEach(([id, query]) => query(db).then(result => emitter.emit('liveChange', [id, result])))
     Object.entries(liveIds).forEach(([id, query]) =>
       persistence.runQuery(query).then((result) => {
-        emitter.emit('liveChange', [id, result]);
+        emitter.emit('liveChange', id, result);
 
         if (localUpdate) {
           bc.postMessage('change');
@@ -82,7 +82,7 @@ export async function createUpbeatWorker(
   async function applyOperation(operation: SerialisedResourceOperation) {
     try {
       await cache.applyOperation(operation);
-      await persistence._UNSAFEDB.add('UpbeatOperations', operation);
+      await persistence.appendOperation(operation);
 
       console.log(
         diff(tree, insert(tree, parseTimestamp(operation.timestamp))),
@@ -144,7 +144,6 @@ export async function createUpbeatWorker(
           roomId: 'TBA',
         }),
       );
-      // await applyOperation(operation);
     }
   }
 
@@ -158,7 +157,9 @@ export async function createUpbeatWorker(
   setInterval(async () => {
     while (applicationQueue.length > 0) {
       const op = applicationQueue.shift();
-      await applyOperation(op);
+      if (op) {
+        await applyOperation(op);
+      }
     }
   }, 100);
 
@@ -174,7 +175,7 @@ export async function createUpbeatWorker(
     async createLiveQuery(query, id) {
       liveIds[id] = query;
       const result = await persistence.runQuery(query);
-      emitter.emit('liveChange', [id, result]);
+      emitter.emit('liveChange', id, result);
     },
   };
 }

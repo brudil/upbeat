@@ -64,8 +64,8 @@ export function diff(treeA: Tree, treeB: Tree) {
     keys.sort();
 
     const diffkey = keys.find((key) => {
-      const next1 = node1[key] || {};
-      const next2 = node2[key] || {};
+      const next1 = (node1 as any)[key] || {};
+      const next2 = (node2 as any)[key] || {};
       return next1.hash !== next2.hash;
     });
 
@@ -74,7 +74,7 @@ export function diff(treeA: Tree, treeB: Tree) {
     }
 
     k += diffkey;
-    node1 = node1[diffkey] || {};
-    node2 = node2[diffkey] || {};
+    node1 = (node1 as any)[diffkey] || {};
+    node2 = (node2 as any)[diffkey] || {};
   }
 }

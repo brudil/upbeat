@@ -3,18 +3,18 @@ import { SerialisedResourceOperation } from './operations';
 import { log } from './debug';
 import { UpbeatTransportConfig, UpbeatTransportWebSocketConfig } from './types';
 
+interface WorkerEmitter {
+  operation(op: SerialisedResourceOperation): void;
+}
+
 interface UpbeatTransport {
   ws: WebSocket;
   send(message: any): any;
   on: Emitter<WorkerEmitter>['on'];
 }
 
-interface WorkerEmitter {
-  operation: [string, SerialisedResourceOperation];
-}
-
 export const createUpbeatTransportWebSocket = async (
-  config: UpbeatTransportWebSocketConfig,
+  _config: UpbeatTransportWebSocketConfig,
 ): Promise<UpbeatTransport> => {
   let ws: WebSocket | null = null;
   const emitter = createNanoEvents<WorkerEmitter>();

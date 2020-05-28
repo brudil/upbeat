@@ -43,7 +43,6 @@ export type ConstraintsIds = Constraints['name'];
 export type SerialisedQuery = [string, Constraints[]];
 
 const SELECTORS = ['ALL', 'GET'];
-const FILTERS = ['WHERE'];
 const ORDER = ['ORDERBY'];
 const PAGINATE = ['LIMIT'];
 

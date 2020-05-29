@@ -1,14 +1,16 @@
 import React from 'react';
 import { Changeset } from '@upbeat/client/src';
 import { useUpbeatChangeset } from '@upbeat/react/src/react';
-import { Todo as TodoSchema } from '../schema.generated';
+import { ResourcesSchema, TodoResource } from '../schema.generated';
 
-export const Todo: React.FC<{ todo: TodoSchema }> = ({ todo }) => {
+export const Todo: React.FC<{ todo: TodoResource }> = ({ todo }) => {
   const deleteTodo = useUpbeatChangeset((id: string) =>
-    Changeset.update<TodoSchema>('Todo', id, { tombstone: true }),
+    Changeset.update<ResourcesSchema, 'Todo'>('Todo', id, { tombstone: true }),
   );
-  const checkTodo = useUpbeatChangeset((todo: TodoSchema) =>
-    Changeset.update<TodoSchema>('Todo', todo.id, { complete: !todo.complete }),
+  const checkTodo = useUpbeatChangeset((todo: TodoResource) =>
+    Changeset.update<ResourcesSchema, 'Todo'>('Todo', todo.id, {
+      complete: !todo.complete,
+    }),
   );
 
   return (
@@ -19,6 +21,9 @@ export const Todo: React.FC<{ todo: TodoSchema }> = ({ todo }) => {
         onChange={() => checkTodo(todo)}
       />
       {todo.name}
+      {todo.tags.map((tag) => (
+        <small>{`tag:${tag}`}</small>
+      ))}
       <button
         onClick={() => deleteTodo(todo.id)}
         className="text-sm bg-red-900 text-white font-bold"

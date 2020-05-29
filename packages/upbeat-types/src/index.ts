@@ -11,15 +11,47 @@ export interface UpbeatApp {
 
 export type UpbeatId = string;
 
-export type UpbeatString = string;
-export type UpbeatBoolean = boolean;
+export type UpbeatString = 'STRING';
+export type UpbeatBoolean = 'BOOL';
 export type UpbeatReference<R> = R;
 export type UpbeatOrderable = number;
-export type UpbeatSet<S> = S[];
+export type UpbeatSet<S> = { v: S[]; name: 'SET' };
 export interface UpbeatResource {
   _type: string;
   tombstone?: boolean;
 }
+
+export type ChangesetType<T> = T extends UpbeatSet<infer X>
+  ? { add?: ChangesetType<X>[]; remove?: ChangesetType<X>[] }
+  : T extends UpbeatBoolean
+  ? boolean
+  : T extends UpbeatString
+  ? string
+  : T extends UpbeatOrderable
+  ? number
+  : T extends UpbeatReference<unknown>
+  ? UpbeatId
+  : T;
+
+export type RealisedType<T> = T extends UpbeatSet<infer X>
+  ? X[]
+  : T extends UpbeatBoolean
+  ? boolean
+  : T extends UpbeatString
+  ? string
+  : T extends UpbeatOrderable
+  ? number
+  : T extends UpbeatReference<infer Y>
+  ? Y
+  : T;
+
+export type ChangesetResource<T> = {
+  [P in keyof T]: ChangesetType<T[P]>;
+};
+
+export type RealisedResource<T> = {
+  [P in keyof T]: RealisedType<T[P]>;
+};
 
 // interface UpbeatType {
 //   _type: "UpbeatType"

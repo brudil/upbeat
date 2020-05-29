@@ -9,14 +9,12 @@ import {
   createHLCClock,
   createPeerId,
   parseTimestamp,
-  serialiseTimestamp,
 } from '@upbeat/core/src/timestamp';
 import { createNanoEvents, Emitter } from 'nanoevents';
-import { v4 as uuid } from 'uuid';
 import { createResourceCache } from './resourceCache';
 import { SerialisedQuery } from './query';
-import { Changeset } from './changeset';
-import { ResourceOperation, SerialisedResourceOperation } from './operations';
+import { Changeset, createOperationsFromChangeset } from './changeset';
+import { SerialisedResourceOperation } from './operations';
 import { log } from './debug';
 import { createTransports } from './transport';
 import { build, diff, insert } from './merkle';
@@ -31,6 +29,7 @@ interface UpbeatWorker {
   addOperation(changeset: Changeset<unknown>): Promise<void>;
   emitter: Emitter<WorkerEmitter>;
 }
+
 /**
  * UpbeatWorker handles most data/compute intensive operations for an
  * application.
@@ -108,56 +107,19 @@ export async function createUpbeatWorker(
   async function createOperationAndApply(
     changeset: Changeset<unknown>,
   ): Promise<void> {
-    // we get a changeset
-    // we look at the schema
-    // for each prop we defer to the schema given handler for that property (think deep)
-    // this generates operations
+    const operations = createOperationsFromChangeset(
+      changeset,
+      schema,
+      clock.now,
+    );
 
-    const id = changeset.action === 'CREATE' ? uuid() : changeset.id;
-
-    for (const [prop, value] of Object.entries(changeset.properties)) {
-      if (
-        !schema.resources[changeset.resource].properties.hasOwnProperty(prop)
-      ) {
-        throw new Error(`given property does not exist in schema: ${prop}`);
-      }
-
-      // const type = schema.resources[changeset.resource].properties[prop].type;
-
-      const operation: ResourceOperation = {
-        resourceId: id,
-        resource: changeset.resource,
-        operation: [
-          {
-            type: 'SELECT',
-            property: prop,
-          },
-          {
-            value: value,
-          },
-        ],
-        timestamp: clock.now(),
-      };
-
-      transport.forEach((t) =>
-        t.send({
-          type: 'OperationSent',
-          operation: {
-            ...operation,
-            timestamp: serialiseTimestamp(operation.timestamp),
-          },
-          roomId: 'TBA',
-        }),
-      );
-    }
+    operations.forEach(transport.send);
   }
 
-  transport.forEach((t) =>
-    t.on('operation', async (operation: any) => {
-      log('Transport', 'RECEIVED', 'applying operation from transport');
-      applicationQueue.push(operation);
-    }),
-  );
+  transport.on('operation', async (operation: any) => {
+    log('Transport', 'RECEIVED', 'applying operation from transport');
+    applicationQueue.push(operation);
+  });
 
   setInterval(async () => {
     while (applicationQueue.length > 0) {

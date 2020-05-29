@@ -1,19 +1,23 @@
 import React, { useCallback, useState } from 'react';
 import { useUpbeat, useUpbeatQuery } from '@upbeat/react/src/react';
-import { TodoTag } from '../schema.generated';
+import {
+  ResourcesSchema,
+  TodoTagResource,
+  TodoTagResourceSchema,
+} from '../schema.generated';
 import { Changeset, Query } from '@upbeat/client/src';
 
 export const Tags: React.FC = () => {
-  const { loading: tagsLoading, data: tagsData } = useUpbeatQuery<TodoTag[]>(
-    Query.resource<TodoTag>('TodoTag').all(),
-  );
+  const { loading: tagsLoading, data: tagsData } = useUpbeatQuery<
+    TodoTagResource[]
+  >(Query.resource<TodoTagResourceSchema>('TodoTag').all());
 
   const client = useUpbeat();
 
   const [newTag, setNewTag] = useState('');
   const handleAddTag = useCallback(() => {
     client.applyChangeset(
-      Changeset.create<TodoTag>('TodoTag', {
+      Changeset.create<ResourcesSchema, 'TodoTag'>('TodoTag', {
         name: newTag,
         color: '#ffffff',
       }),

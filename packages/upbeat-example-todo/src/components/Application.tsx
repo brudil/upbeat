@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Todo as TodoSchema } from '../schema.generated';
+import { TodoResource } from '../schema.generated';
 import { useUpbeatQuery } from '@upbeat/react/src/react';
 import { Query } from '@upbeat/client/src';
 import { Todo } from './Todo';
@@ -12,8 +12,8 @@ import { NewTodo } from './NewTodo';
 import { Tags } from './Tags';
 
 export const Application: React.FC = () => {
-  const { loading, data } = useUpbeatQuery<TodoSchema[]>(
-    Query.resource<TodoSchema>('Todo')
+  const { loading, data } = useUpbeatQuery<TodoResource[]>(
+    Query.resource<TodoResource>('Todo')
       .orderBy('order')
       .where('complete', false, Query.Comparator.Equals)
       .all(),

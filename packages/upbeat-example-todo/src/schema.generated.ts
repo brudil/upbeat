@@ -1,39 +1,44 @@
-/**
- * @packageDocumentation
- * @module @upbeat/example-todo
- */
+import { Schema } from '@upbeat/schema/src';
 
 import {
   UpbeatId,
   UpbeatResource,
+  RealisedResource,
   UpbeatString,
   UpbeatBoolean,
   UpbeatOrderable,
   UpbeatSet,
   UpbeatReference,
 } from '@upbeat/types/src';
-import { Schema } from '@upbeat/schema/src';
 
-export interface Todo extends UpbeatResource {
+export interface TodoResourceSchema extends UpbeatResource {
   _type: 'Todo';
   id: UpbeatId;
   name: UpbeatString;
   complete: UpbeatBoolean;
   order: UpbeatOrderable;
-  tags: UpbeatSet<UpbeatReference<TodoTag>>;
+  tags: UpbeatSet<UpbeatReference<TodoTagResourceSchema>>;
 }
+export type TodoResource = RealisedResource<TodoResourceSchema>;
 
-export interface TodoTag extends UpbeatResource {
+export interface TodoTagResourceSchema extends UpbeatResource {
   _type: 'TodoTag';
   id: UpbeatId;
   name: UpbeatString;
   color: UpbeatString;
 }
+export type TodoTagResource = RealisedResource<TodoTagResourceSchema>;
 
-export interface Project extends UpbeatResource {
+export interface ProjectResourceSchema extends UpbeatResource {
   _type: 'Project';
   id: UpbeatId;
-  todos: UpbeatSet<Todo>;
+  todos: UpbeatSet<TodoResourceSchema>;
+}
+export type ProjectResource = RealisedResource<ProjectResourceSchema>;
+
+export interface ResourcesSchema {
+  Todo: TodoResourceSchema;
+  TodoTag: TodoTagResourceSchema;
 }
 
 export const schema: Schema = {

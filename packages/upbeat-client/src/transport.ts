@@ -3,7 +3,7 @@
  * @module @upbeat/client/transport
  */
 
-import { createNanoEvents, Emitter } from 'nanoevents';
+import { createNanoEvents, Unsubscribe } from 'nanoevents';
 import { SerialisedResourceOperation } from './operations';
 import { log } from './debug';
 import { UpbeatTransportConfig, UpbeatTransportWebSocketConfig } from './types';
@@ -13,9 +13,11 @@ interface WorkerEmitter {
 }
 
 interface UpbeatTransport {
-  ws: WebSocket;
   send(message: any): any;
-  on: Emitter<WorkerEmitter>['on'];
+  on<K extends keyof WorkerEmitter>(
+    event: K,
+    cb: WorkerEmitter[K],
+  ): Unsubscribe;
 }
 
 export const createUpbeatTransportWebSocket = async (
@@ -62,15 +64,17 @@ export const createUpbeatTransportWebSocket = async (
   send({ type: 'SUBSCRIBE', channel: 'live/TBA' });
 
   return {
-    ws,
     send,
-    on: emitter.on.bind(emitter),
+    on(event, cb) {
+      return emitter.on(event, cb);
+    },
   };
 };
 
 export const createTransports = async (
   config: UpbeatTransportConfig[],
-): Promise<UpbeatTransport[]> => {
+): Promise<UpbeatTransport> => {
+  const emitter = createNanoEvents<WorkerEmitter>();
   const transports: UpbeatTransport[] = [];
   for (const transport of config) {
     switch (transport.name) {
@@ -81,5 +85,24 @@ export const createTransports = async (
     }
   }
 
-  return transports;
+  transports.forEach((t) => {
+    t.on('operation', (operation) => {
+      emitter.emit('operation', operation);
+    });
+  });
+
+  return {
+    send(operation) {
+      transports.forEach((t) =>
+        t.send({
+          type: 'OperationSent',
+          operation: operation,
+          roomId: 'TBA',
+        }),
+      );
+    },
+    on(event, cb) {
+      return emitter.on(event, cb);
+    },
+  };
 };

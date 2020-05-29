@@ -6,7 +6,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Schema, Property, Type } from '@upbeat/schema/src';
-import { parseInput } from '@upbeat/schema-parser/src/parser';
+import { parseInput } from '@upbeat/schema-parser/dist/parser';
 
 const usedTypes = new Set();
 
@@ -27,18 +27,21 @@ const typeGen = (type: Type): string => {
   return (
     (builtInTypes.hasOwnProperty(type.identifier)
       ? builtInTypes[type.identifier]
-      : type.identifier) + (type.subtype ? `<${typeGen(type.subtype)}>` : '')
+      : `${type.identifier}ResourceSchema`) +
+    (type.subtype ? `<${typeGen(type.subtype)}>` : '')
   );
 };
 
 const _terfaceTemplate = (name: string, properties: Property[]): string =>
-  `export interface ${name} extends UpbeatResource {
+  `export interface ${name}ResourceSchema extends UpbeatResource {
   _type: '${name}';
   id: UpbeatId;
 ${properties
   .map((prop) => `  ${prop.identifier}: ${typeGen(prop.type)};`)
   .join('\n')}
-}`;
+}
+export type ${name}Resource = RealisedResource<${name}ResourceSchema>;
+`;
 
 export function generateTs(schema: Schema): string {
   const file = [
@@ -48,13 +51,16 @@ export function generateTs(schema: Schema): string {
     ...Object.values(schema.spaces).map((res) =>
       _terfaceTemplate(res.identifier, Object.values(res.properties)),
     ),
+    `export interface ResourcesSchema {\n${Object.values(schema.resources)
+      .map((res) => `  ${res.identifier}: ${res.identifier}ResourceSchema;`)
+      .join('\n')}\n}`,
     `export const schema: Schema = ${JSON.stringify(schema, undefined, 2)};`,
   ];
 
   file.unshift(
-    `import { UpbeatId, UpbeatResource, ${Array.from(usedTypes.values()).join(
-      ', ',
-    )}} from '@upbeat/types/src';`,
+    `import { UpbeatId, UpbeatResource, RealisedResource, ${Array.from(
+      usedTypes.values(),
+    ).join(', ')}} from '@upbeat/types/src';`,
   );
   file.unshift(`import { Schema } from '@upbeat/schema/src';`);
 

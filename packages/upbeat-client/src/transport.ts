@@ -5,7 +5,7 @@
 
 import { createNanoEvents, Unsubscribe } from 'nanoevents';
 import { SerialisedResourceOperation } from './operations';
-import { log } from './debug';
+import { log, UpbeatModule } from './debug';
 import { UpbeatTransportConfig, UpbeatTransportWebSocketConfig } from './types';
 
 interface WorkerEmitter {
@@ -52,7 +52,7 @@ export const createUpbeatTransportWebSocket = async (
 
     w.onclose = () => {
       ws = null;
-      log('Transport', 'lost', 'Retrying in 2000ms');
+      log(UpbeatModule.Transport, 'lost', 'Retrying in 2000ms');
       setTimeout(() => setupWs().then((newWs) => (ws = newWs)), 2000);
     };
 
@@ -64,9 +64,13 @@ export const createUpbeatTransportWebSocket = async (
   const send = (message: any) => {
     if (ws && ws.readyState === ws.OPEN) {
       ws.send(JSON.stringify(message));
-      log('Transport', 'SEND', JSON.stringify(message));
+      log(UpbeatModule.Transport, 'SEND', JSON.stringify(message));
     } else {
-      log('Transport', 'QUEUE', 'Message queued for send until connection.');
+      log(
+        UpbeatModule.Transport,
+        'QUEUE',
+        'Message queued for send until connection.',
+      );
       setTimeout(() => send(message), 50);
     }
   };

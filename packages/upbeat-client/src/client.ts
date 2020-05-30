@@ -8,7 +8,7 @@ import { v4 as uuid } from 'uuid';
 import { createUpbeatWorker } from './worker';
 import { Changeset } from './changeset';
 import './query';
-import { log } from './debug';
+import { log, UpbeatModule } from './debug';
 import { UpbeatClientConfig } from './types';
 import { SerialisedQuery } from './query';
 import { createUpbeatDevtool, UpbeatDevtool } from './devtools';
@@ -69,20 +69,24 @@ export async function createClient(
       const id = uuid();
 
       worker.createLiveQuery(query, id);
-      log('LiveQuery', 'REGISTERED', `${id} ${JSON.stringify(query)}`);
+      log(
+        UpbeatModule.LiveQuery,
+        'REGISTERED',
+        `${id} ${JSON.stringify(query)}`,
+      );
 
       liveQueries[id] = {
         hook,
       };
 
       return () => {
-        log('LiveQuery', 'UNREGISTERED', `${id}`);
+        log(UpbeatModule.LiveQuery, 'UNREGISTERED', `${id}`);
         delete liveQueries[id];
       };
     },
     applyChangeset(changeset) {
       log(
-        'UpbeatOp',
+        UpbeatModule.Worker,
         `${changeset.resource}#${
           changeset.action === 'UPDATE' ? changeset.id : 'NEW'
         } ${JSON.stringify(changeset.properties)}`,

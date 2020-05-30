@@ -35,29 +35,40 @@ export const devToolEmitter = createNanoEvents<{
   log(name: string, subKey: string, content: any): void;
 }>();
 
+export enum UpbeatModule {
+  ResourceCache = 'ResourceCache',
+  Intermediate = 'Intermediate',
+  Persistence = 'Persistence',
+  Worker = 'Worker',
+  Changeset = 'Changeset',
+  LiveQuery = 'LiveQuery',
+  Sync = 'Sync',
+  Transport = 'Transport',
+}
+
 /**
  * Client Logging method for Upbeat with custom styling for readability.
  */
 export const log = (
-  name: string,
+  name: UpbeatModule,
   subKeyOrContent: string,
   content?: string,
 ): void => {
   devToolEmitter.emit('log', name, subKeyOrContent, content);
-  console.log(
-    `%c${name}${content ? '%c' + subKeyOrContent.toUpperCase() : ''}%c${
-      content || subKeyOrContent
-    }`,
-    `border-top-left-radius: 4px;border-bottom-left-radius: 4px;padding: 1px 2px;font-weight: bold; color: white;background: #${color(
-      name,
-    )};margin-right: 8px;z-index:3;position:relative;`,
-    ...(content
-      ? [
-          `border-top-right-radius: 4px;border-bottom-right-radius: 4px;padding: 1px 2px;font-weight: bold; color: #fff;position:relative;background: #${color(
-            name,
-          )}aa; margin-left: -8px; margin-right: 8px;z-index: 2;`,
-        ]
-      : []),
-    'font-weight: normal;',
-  );
+  // console.log(
+  //   `%c${name}${content ? '%c' + subKeyOrContent.toUpperCase() : ''}%c${
+  //     content || subKeyOrContent
+  //   }`,
+  //   `border-top-left-radius: 4px;border-bottom-left-radius: 4px;padding: 1px 2px;font-weight: bold; color: white;background: #${color(
+  //     name,
+  //   )};margin-right: 8px;z-index:3;position:relative;`,
+  //   ...(content
+  //     ? [
+  //         `border-top-right-radius: 4px;border-bottom-right-radius: 4px;padding: 1px 2px;font-weight: bold; color: #fff;position:relative;background: #${color(
+  //           name,
+  //         )}aa; margin-left: -8px; margin-right: 8px;z-index: 2;`,
+  //       ]
+  //     : []),
+  //   'font-weight: normal;',
+  // );
 };

@@ -11,7 +11,7 @@ import {
   IntermediateResource,
   realiseIntermediateResource,
 } from './intermediate';
-import { log } from './debug';
+import { log, UpbeatModule } from './debug';
 import { Schema } from '@upbeat/schema/src';
 import { UpbeatPersistence } from './persistence/interfaces';
 import { SerialisedResourceOperation } from './operations';
@@ -75,10 +75,10 @@ export function createResourceCache(
     const resource = cache.get(cacheKey(resourceName, id));
 
     if (resource) {
-      log('ResourceCache', 'HIT', cacheKey(resourceName, id));
+      log(UpbeatModule.ResourceCache, 'HIT', cacheKey(resourceName, id));
       return resource;
     }
-    log('ResourceCache', 'MISS', cacheKey(resourceName, id));
+    log(UpbeatModule.ResourceCache, 'MISS', cacheKey(resourceName, id));
 
     try {
       const operations = await persistence.getOperationsByResourceKey(
@@ -109,7 +109,7 @@ export function createResourceCache(
   return {
     async applyOperation(operation) {
       log(
-        'ResourceCache',
+        UpbeatModule.ResourceCache,
         'APPLY',
         `Applying operation: ${operation.timestamp}`,
       );
@@ -128,7 +128,7 @@ export function createResourceCache(
         nextResource,
       );
       log(
-        'ResourceCache',
+        UpbeatModule.ResourceCache,
         `set`,
         cacheKey(operation.resource, operation.resourceId),
       );
@@ -137,7 +137,7 @@ export function createResourceCache(
         try {
           if (nextResource.tombstone) {
             log(
-              'ResourceCache',
+              UpbeatModule.ResourceCache,
               `Deleting ${operation.resource}#${nextResource.id}`,
             );
             if (nextResource.id) {
@@ -148,7 +148,7 @@ export function createResourceCache(
             }
           } else {
             log(
-              'Persistence',
+              UpbeatModule.ResourceCache,
               'Put',
               `${operation.resource}#${nextResource.id}`,
             );

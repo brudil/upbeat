@@ -9,7 +9,7 @@ import { serialiseTimestamp, Timestamp } from '@upbeat/core/src/timestamp';
 import { SerialisedResourceOperation } from './operations';
 import { v4 as uuid } from 'uuid';
 import { getHandlersForType } from './crdt';
-import { log } from './debug';
+import { log, UpbeatModule } from './debug';
 
 /**
  * Changesets. Changesets are largely, probably, a Good Idea(TM).
@@ -133,7 +133,7 @@ export function createOperationsFromChangeset(
       timestamp: serialiseTimestamp(now()),
     };
 
-    log('Changeset', 'Operation', JSON.stringify(operation));
+    log(UpbeatModule.Changeset, 'Operation', JSON.stringify(operation));
     operations.push(operation);
   }
 

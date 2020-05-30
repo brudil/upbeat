@@ -15,7 +15,7 @@ import { createResourceCache } from './resourceCache';
 import { SerialisedQuery } from './query';
 import { Changeset, createOperationsFromChangeset } from './changeset';
 import { SerialisedResourceOperation } from './operations';
-import { log } from './debug';
+import { log, UpbeatModule } from './debug';
 import { createTransports } from './transport';
 import { build, insert } from './merkle';
 import { UpbeatClientConfig } from './types';
@@ -58,7 +58,7 @@ export async function createUpbeatWorker(
   // MERKLE EXPERIMENTZ
   const ops = await persistence.getAllOperations();
   let tree = build(ops.map((op) => parseTimestamp(op.timestamp)));
-  log('Sync', 'NEW HASH', `${tree.hash}`);
+  log(UpbeatModule.Sync, 'NEW HASH', `${tree.hash}`);
   //console.log(JSON.stringify(tree.getHash()));
   //console.log(tree);
 
@@ -81,6 +81,7 @@ export async function createUpbeatWorker(
         emitter.emit('liveChange', id, result);
       }),
     );
+    console.timeEnd('x');
   }
 
   async function applyOperation(operation: SerialisedResourceOperation) {
@@ -96,7 +97,7 @@ export async function createUpbeatWorker(
 
       // TRANSPORT OUT
 
-      log('Sync', 'NEW HASH', `${tree.hash}`);
+      log(UpbeatModule.Sync, 'NEW HASH', `${tree.hash}`);
 
       quickUpdateAll();
     }
@@ -105,6 +106,7 @@ export async function createUpbeatWorker(
   async function createOperationAndApply(
     changeset: Changeset<unknown>,
   ): Promise<void> {
+    console.time('x');
     const operations = createOperationsFromChangeset(
       changeset,
       schema,
@@ -119,7 +121,11 @@ export async function createUpbeatWorker(
   }
 
   transport.on('operation', async (operation: any) => {
-    log('Transport', 'RECEIVED', 'applying operation from transport');
+    log(
+      UpbeatModule.Transport,
+      'RECEIVED',
+      'applying operation from transport',
+    );
     applicationQueue.push(operation);
   });
 

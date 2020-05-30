@@ -24,6 +24,13 @@ interface WorkerEmitter {
   liveChange(id: string, x: unknown): void;
 }
 
+/**
+ * UpbeatWorker handles most data/compute intensive operations for an
+ * application.
+ *
+ * All communication to UpbeatWorker must be serialisable as we support it
+ * running within a SharedWorker/WebWorker.
+ */
 interface UpbeatWorker {
   createLiveQuery(query: SerialisedQuery, id: string): Promise<void>;
   addOperation(changeset: Changeset<unknown>): Promise<void>;

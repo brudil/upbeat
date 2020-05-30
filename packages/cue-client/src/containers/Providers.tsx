@@ -1,7 +1,7 @@
 import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { UpbeatProvider } from '../../../upbeat-react/src/react';
+import { UpbeatProvider } from '@upbeat/react/src';
 import { createClient } from '@upbeat/client/src/client';
 
 const upbeat = createClient({});

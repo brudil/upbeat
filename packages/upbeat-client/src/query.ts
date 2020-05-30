@@ -16,21 +16,33 @@ import { UpbeatResource } from '../../upbeat-types/src';
 
 class InvalidQueryError extends Error {}
 
+/**
+ * Enum for ORDERBY querying.
+ */
 enum OrderByDirection {
   ASC,
   DESC,
 }
 
+/**
+ * Enum for Comparators within querying.
+ */
 enum WhereComparator {
   Equals,
 }
 
+/**
+ * ORDERBY. with property and direction support
+ */
 export interface OrderByConstraint {
   name: 'ORDERBY';
   direction: OrderByDirection;
   property: string;
 }
 
+/**
+ * Where constraint supporting a COMPARATOR
+ */
 export interface WhereConstraint {
   name: 'WHERE';
   property: string;
@@ -38,19 +50,34 @@ export interface WhereConstraint {
   comparator: WhereComparator;
 }
 
+/**
+ * Constraint for selecting all matching objects
+ */
 export interface AllConstraint {
   name: 'ALL';
 }
 
 export type Constraints = AllConstraint | OrderByConstraint | WhereConstraint;
+
 export type ConstraintsIds = Constraints['name'];
 
+/**
+ * Serialised query containing multiple constraints and resource name.
+ * Allows for communication with the Upbeat Worker.
+ */
 export type SerialisedQuery = [string, Constraints[]];
 
 const SELECTORS = ['ALL', 'GET'];
 const ORDER = ['ORDERBY'];
 const PAGINATE = ['LIMIT'];
 
+/**
+ * Helper utility class for easily constructing queries.
+ *
+ * Requires passing in a resource schema for type safety.
+ *
+ * Fluent API, easy chaining.
+ */
 export class QueryBuilder<T> {
   private structure: Constraints[] = [];
   private resourceName: string;
@@ -67,6 +94,9 @@ export class QueryBuilder<T> {
     );
   }
 
+  /**
+   * Validates a constructed query for running.
+   */
   private valid(): string[] {
     const issues: string[] = [];
 
@@ -127,6 +157,9 @@ export class QueryBuilder<T> {
     return this;
   }
 
+  /**
+   * Builds with current query to a SerialisedQuery object.
+   */
   build(): SerialisedQuery {
     if (!this.valid()) {
       throw new InvalidQueryError();

@@ -12,8 +12,18 @@ interface WorkerEmitter {
   operation(op: SerialisedResourceOperation): void;
 }
 
+/**
+ * Public API for Upbeat Transport middleware.
+ */
 interface UpbeatTransport {
+  /**
+   * Send a message.
+   */
   send(message: any): any;
+
+  /**
+   * Emitter for receiving messages.
+   */
   on<K extends keyof WorkerEmitter>(
     event: K,
     cb: WorkerEmitter[K],

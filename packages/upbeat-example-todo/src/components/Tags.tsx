@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useUpbeat, useUpbeatQuery } from '@upbeat/react/src/react';
+import { useUpbeat, useUpbeatQuery } from '@upbeat/react';
 import {
   ResourcesSchema,
   TodoTagResource,

@@ -11,10 +11,12 @@ import './query';
 import { log } from './debug';
 import { UpbeatClientConfig } from './types';
 import { SerialisedQuery } from './query';
+import { createUpbeatDevtool, UpbeatDevtool } from './devtools';
 
 export interface UpbeatClient {
   createLiveQuery(query: SerialisedQuery, hook: (cb: any) => void): () => void;
   applyChangeset(c: Changeset<unknown>): void;
+  devtool: UpbeatDevtool | null;
 }
 
 /**
@@ -25,6 +27,9 @@ export async function createClient(
   config: UpbeatClientConfig,
 ): Promise<UpbeatClient> {
   const worker = await createUpbeatWorker(schema, config);
+
+  const devtool =
+    config.devtool ?? false ? createUpbeatDevtool(schema, config) : null;
 
   const liveQueries: { [id: string]: { hook: any } } = {};
   worker.emitter.on('liveChange', (id, data) => {
@@ -59,6 +64,7 @@ export async function createClient(
    * */
 
   return {
+    devtool,
     createLiveQuery(query, hook) {
       const id = uuid();
 

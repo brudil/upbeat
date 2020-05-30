@@ -1,6 +1,6 @@
 import React from 'react';
 import { Changeset } from '@upbeat/client/src';
-import { useUpbeatChangeset } from '@upbeat/react/src/react';
+import { useUpbeatChangeset } from '@upbeat/react';
 import { ResourcesSchema, TodoResource } from '../schema.generated';
 
 export const Todo: React.FC<{ todo: TodoResource }> = ({ todo }) => {

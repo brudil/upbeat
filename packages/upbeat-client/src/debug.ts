@@ -2,7 +2,11 @@
  * @packageDocumentation
  * @module @upbeat/client/debug
  */
+import { createNanoEvents } from 'nanoevents';
 
+/**
+ * Hashes a string to a int.
+ */
 function hashCode(str: string): number {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -11,15 +15,25 @@ function hashCode(str: string): number {
   return hash;
 }
 
+/**
+ * Casts an int to a hex color code.
+ */
 function intToRGB(i: number): string {
   const c = (i & 0x00ffffff).toString(16).toUpperCase();
 
   return '00000'.substring(0, 6 - c.length) + c;
 }
 
-function color(str: string) {
+/**
+ * Deterministically converts a string to a hex color code.
+ */
+function color(str: string): string {
   return intToRGB(hashCode(str));
 }
+
+export const devToolEmitter = createNanoEvents<{
+  log(name: string, subKey: string, content: any): void;
+}>();
 
 /**
  * Client Logging method for Upbeat with custom styling for readability.
@@ -28,7 +42,8 @@ export const log = (
   name: string,
   subKeyOrContent: string,
   content?: string,
-): void =>
+): void => {
+  devToolEmitter.emit('log', name, subKeyOrContent, content);
   console.log(
     `%c${name}${content ? '%c' + subKeyOrContent.toUpperCase() : ''}%c${
       content || subKeyOrContent
@@ -45,3 +60,4 @@ export const log = (
       : []),
     'font-weight: normal;',
   );
+};

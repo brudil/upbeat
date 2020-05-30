@@ -1,4 +1,4 @@
-import React from 'react';
+import React from '@upbeat/react/src';
 import ReactDOM from 'react-dom';
 import { ApplicationContainerComponent } from './containers/ApplicationContainer';
 import { Providers } from './containers/Providers';

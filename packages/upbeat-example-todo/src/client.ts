@@ -11,5 +11,6 @@ import { createClient, UpbeatClient } from '@upbeat/client/src/client';
 export function startClient(): Promise<UpbeatClient> {
   return createClient(schema, {
     transport: [{ name: 'ws', uri: 'loop' }],
+    devtool: true,
   });
 }

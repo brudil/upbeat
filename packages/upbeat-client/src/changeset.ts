@@ -38,6 +38,10 @@ interface CreateChangeset<R> {
 
 export type Changeset<R> = CreateChangeset<R> | UpdateChangeset<R>;
 
+/**
+ * Create changeset helper, takes the ResourceSchema along with the name of the
+ * resource for type safety.
+ */
 export function create<R, N extends keyof R = keyof R>(
   resourceName: N,
   properties: Omit<Omit<ChangesetResource<R[N]>, 'id'>, '_type'>,
@@ -49,6 +53,10 @@ export function create<R, N extends keyof R = keyof R>(
   };
 }
 
+/**
+ * Update changeset helper, takes the ResourceSchema along with the name of the
+ * resource for type safety.
+ */
 export function update<R, N extends keyof R>(
   resourceName: N,
   id: string,
@@ -62,11 +70,20 @@ export function update<R, N extends keyof R>(
   };
 }
 
+/**
+ * Convenience export for importing Changeset helpers.
+ */
 export const Changeset = {
   create,
   update,
 };
 
+/**
+ * Creates a series of operations from a single changeset.
+ *
+ * This works by using the resources' schema to determine the correct operations
+ * for any specific type.
+ */
 export function createOperationsFromChangeset(
   changeset: Changeset<unknown>,
   schema: Schema,

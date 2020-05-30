@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Changeset, Query } from '@upbeat/client/src';
-import { useUpbeat, useUpbeatQuery } from '@upbeat/react/src/react';
+import { useUpbeat, useUpbeatQuery } from '@upbeat/react';
 import { ResourcesSchema, TodoTagResource } from '../schema.generated';
 
 export const NewTodo: React.FC = () => {

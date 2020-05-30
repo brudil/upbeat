@@ -8,6 +8,9 @@ import { UpbeatId } from '../../upbeat-types/src';
 import { OperationsFrom } from './crdt/utils';
 import { CRDTTypes } from './crdt';
 
+/**
+ * Represents any single Operation.
+ */
 export interface ResourceOperation {
   timestamp: Timestamp;
   resource: string;
@@ -15,6 +18,9 @@ export interface ResourceOperation {
   operation: OperationsFrom<CRDTTypes>[];
 }
 
+/**
+ * Represents any single Operation, with serialised timestamp.
+ */
 export interface SerialisedResourceOperation {
   timestamp: string;
   resource: string;

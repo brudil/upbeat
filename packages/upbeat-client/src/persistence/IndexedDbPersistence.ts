@@ -181,11 +181,17 @@ export async function createIndexedDBPersistence(
       await db.delete(`${resourceName}Resource`, resourceId);
     },
     appendOperation: async (operation: SerialisedResourceOperation) => {
-      try {
+      const x = await db.getKeyFromIndex(
+        'UpbeatOperations',
+        'timestamp',
+        operation.timestamp,
+      );
+      if (x === undefined) {
         await db.add('UpbeatOperations', operation);
-      } catch (e) {
-        console.warn('duplicate operation, not persisting');
+        return true;
       }
+
+      return false;
     },
     getOperationsByResourceKey: async (resourceName, id) => {
       const range = IDBKeyRange.bound([resourceName, id], [resourceName, id]);

@@ -8,6 +8,7 @@ import { UpbeatId } from '../../upbeat-types/src';
 import { MapIntermediateAtom, MapOperations, MapType } from './crdt/types/Map';
 import { SerialisedResourceOperation } from './operations';
 import { getHandlersForType } from './crdt';
+import { log } from './debug';
 
 export interface IntermediateResource {
   id?: UpbeatId;
@@ -49,6 +50,7 @@ export function applyOperationToIntermediateResource(
   //     `Given property in operation "${operation.property}" does not exist within ${operation.resource} schema`,
   //   );
   // }
+  log('Intermediate', 'Apply', JSON.stringify(operation.operation));
   const [changed, mapAtom] = MapType.apply(
     resource.value,
     {
@@ -88,6 +90,11 @@ export async function buildIntermediateResourceFromOperations(
   operations: SerialisedResourceOperation[],
 ): Promise<IntermediateResourceMap> {
   const resources: IntermediateResourceMap = {};
+  log(
+    'Intermediate',
+    'build',
+    `Building ${operations[0].resource}#${operations[0].resourceId}`,
+  );
 
   operations.forEach((op) => {
     if (!resources.hasOwnProperty(op.resourceId)) {

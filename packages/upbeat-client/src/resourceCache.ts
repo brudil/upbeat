@@ -75,8 +75,10 @@ export function createResourceCache(
     const resource = cache.get(cacheKey(resourceName, id));
 
     if (resource) {
+      log('ResourceCache', 'HIT', cacheKey(resourceName, id));
       return resource;
     }
+    log('ResourceCache', 'MISS', cacheKey(resourceName, id));
 
     try {
       const operations = await persistence.getOperationsByResourceKey(
@@ -106,6 +108,11 @@ export function createResourceCache(
 
   return {
     async applyOperation(operation) {
+      log(
+        'ResourceCache',
+        'APPLY',
+        `Applying operation: ${operation.timestamp}`,
+      );
       const resource = await getIntermediateById(
         operation.resource,
         operation.resourceId,
@@ -119,6 +126,11 @@ export function createResourceCache(
       cache.set(
         cacheKey(operation.resource, operation.resourceId),
         nextResource,
+      );
+      log(
+        'ResourceCache',
+        `set`,
+        cacheKey(operation.resource, operation.resourceId),
       );
 
       if (hasChanged) {
@@ -136,8 +148,8 @@ export function createResourceCache(
             }
           } else {
             log(
-              'ResourceCache',
-              'Persist',
+              'Persistence',
+              'Put',
               `${operation.resource}#${nextResource.id}`,
             );
             await persistence.putResourceObject(

@@ -1,6 +1,6 @@
 //LWW-Element-Set
 
-import { createType } from '../utils';
+import { createType, OperationWrapper } from '../utils';
 
 export interface SetAddOperation<V> {
   type: 'ADD';
@@ -15,45 +15,54 @@ export interface SetRemoveOperation<V> {
 export type SetOperations<T> = SetAddOperation<T> | SetRemoveOperation<T>;
 
 export interface SetInternalAtom {
-  addOps: SetAddOperation<any>[];
-  removeOps: SetRemoveOperation<any>[];
+  addOps: OperationWrapper<SetAddOperation<unknown>>[];
+  removeOps: OperationWrapper<SetRemoveOperation<unknown>>[];
 }
 
 export const SetType = createType<
   'SET',
   SetInternalAtom,
-  any[],
+  unknown[],
   SetOperations<any>
 >('SET', {
   apply(intermediate, operation) {
-    console.log('SET APPLY', intermediate, operation);
-
     if (operation.atomOperation.type === 'REMOVE') {
       return [
         true,
         {
           ...intermediate,
-          removeOps: [...intermediate.removeOps, operation.atomOperation],
+          removeOps: [
+            ...intermediate.removeOps,
+            operation as OperationWrapper<SetRemoveOperation<unknown>>,
+          ],
         },
       ];
     }
 
-    return [
-      true,
-      {
-        ...intermediate,
-        addOps: [...intermediate.addOps, operation.atomOperation],
-      },
-    ];
+    if (operation.atomOperation.type === 'ADD') {
+      return [
+        true,
+        {
+          ...intermediate,
+          addOps: [
+            ...intermediate.addOps,
+            operation as OperationWrapper<SetAddOperation<unknown>>,
+          ],
+        },
+      ];
+    }
+
+    return [false, intermediate];
   },
   realise(internal) {
-    console.log('SET REALISE', internal);
     return internal.addOps
       .filter(
         (addOp) =>
-          !internal.removeOps.map((rOp) => rOp.value).includes(addOp.value),
+          !internal.removeOps
+            .map((rOp) => rOp.atomOperation.value)
+            .includes(addOp.atomOperation.value),
       )
-      .map((op) => op.value);
+      .map((op) => op.atomOperation.value);
   },
   create() {
     return {

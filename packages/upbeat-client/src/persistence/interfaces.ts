@@ -14,7 +14,7 @@ export interface UpbeatPersistence {
   runQuery(query: SerialisedQuery): Promise<any>;
   deleteResourceObject(resourceName: string, resourceId: string): Promise<void>;
   putResourceObject(resourceName: string, object: unknown): Promise<void>;
-  appendOperation(operation: SerialisedResourceOperation): Promise<void>;
+  appendOperation(operation: SerialisedResourceOperation): Promise<boolean>;
   /**
    * Fetches all operations for a single resource instance
    */

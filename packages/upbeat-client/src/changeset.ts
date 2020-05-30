@@ -77,7 +77,7 @@ export function createOperationsFromChangeset(
   // we look at the schema
   // for each prop we defer to the schema given handler for that property (think deep)
   // this generates operations
-  console.groupCollapsed();
+  console.groupCollapsed('Operations created from Changeset');
   const id = changeset.action === 'CREATE' ? uuid() : changeset.id;
 
   for (const [prop, value] of Object.entries(changeset.properties)) {
@@ -116,7 +116,7 @@ export function createOperationsFromChangeset(
       timestamp: serialiseTimestamp(now()),
     };
 
-    log('Changeset', 'Operation derived', JSON.stringify(operation));
+    log('Changeset', 'Operation', JSON.stringify(operation));
     operations.push(operation);
   }
 

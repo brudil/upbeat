@@ -17,7 +17,7 @@ import { Changeset, createOperationsFromChangeset } from './changeset';
 import { SerialisedResourceOperation } from './operations';
 import { log } from './debug';
 import { createTransports } from './transport';
-import { build, diff, insert } from './merkle';
+import { build, insert } from './merkle';
 import { UpbeatClientConfig } from './types';
 
 interface WorkerEmitter {
@@ -41,8 +41,6 @@ export async function createUpbeatWorker(
   schema: Schema,
   config: UpbeatClientConfig,
 ): Promise<UpbeatWorker> {
-  const bc = new BroadcastChannel('UPBEAT');
-
   const persistence = await createIndexedDBPersistence(schema);
   const clock = createHLCClock(createPeerId(), Date.now);
   const cache = createResourceCache(schema, persistence);
@@ -70,38 +68,31 @@ export async function createUpbeatWorker(
    * For the time being. NEW == re-query, UPDATE = resourceCache
    * */
 
-  function quickUpdateAll(localUpdate = true): void {
-    // Object.entries(liveIds).forEach(([id, query]) => query(db).then(result => emitter.emit('liveChange', [id, result])))
+  function quickUpdateAll(_localUpdate = true): void {
     Object.entries(liveIds).forEach(([id, query]) =>
       persistence.runQuery(query).then((result) => {
         emitter.emit('liveChange', id, result);
-
-        if (localUpdate) {
-          bc.postMessage('change');
-        }
       }),
     );
   }
 
   async function applyOperation(operation: SerialisedResourceOperation) {
-    try {
-      await cache.applyOperation(operation);
-      await persistence.appendOperation(operation);
+    const isNew = await persistence.appendOperation(operation);
 
-      console.log(
-        diff(tree, insert(tree, parseTimestamp(operation.timestamp))),
-      );
+    if (isNew) {
+      await cache.applyOperation(operation);
+      // console.log(
+      //   diff(tree, insert(tree, parseTimestamp(operation.timestamp))),
+      // );
 
       tree = insert(tree, parseTimestamp(operation.timestamp));
 
       // TRANSPORT OUT
 
       log('Sync', 'NEW HASH', `${tree.hash}`);
-    } catch (e) {
-      console.error(e);
-    }
 
-    quickUpdateAll();
+      quickUpdateAll();
+    }
   }
 
   async function createOperationAndApply(
@@ -112,6 +103,10 @@ export async function createUpbeatWorker(
       schema,
       clock.now,
     );
+
+    for (const op of operations) {
+      await applyOperation(op);
+    }
 
     operations.forEach(transport.send);
   }
@@ -129,8 +124,6 @@ export async function createUpbeatWorker(
       }
     }
   }, 100);
-
-  bc.onmessage = () => quickUpdateAll(false);
 
   /*
    * Our client <-> workerAPI.

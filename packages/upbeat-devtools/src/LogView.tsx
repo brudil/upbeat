@@ -1,21 +1,42 @@
 import React, { useLayoutEffect, useRef } from 'react';
-import { UpbeatDevtool } from '@upbeat/client/src/devtools';
 import { Container } from './Container';
 import JSONTree from 'react-json-tree';
-import { UpbeatModule } from '@upbeat/client/src/debug';
+import { ModuleNames, QueryBuilder, UpbeatDevtool } from '@upbeat/client';
+import { monokai } from 'base16';
 
-const moduleMapName: { [key in UpbeatModule]: string } = {
-  ResourceCache: 'RC',
-  Worker: 'W',
-  Intermediate: 'I',
-  Changeset: 'CS',
-  Sync: 'S',
-  Persistence: 'P',
-  LiveQuery: 'LQ',
-  Transport: 'T',
+// const moduleMapName: { [key in ModuleNames]: string } = {
+//   ResourceCache: 'RC',
+//   Worker: 'W',
+//   Intermediate: 'I',
+//   Changeset: 'CS',
+//   Sync: 'S',
+//   Persistence: 'P',
+//   LiveQuery: 'LQ',
+//   Transport: 'T',
+// };
+
+const moduleMapColor: { [key in ModuleNames]: string } = {
+  ResourceCache: '#34b3c4',
+  Worker: '#000000',
+  Intermediate: '#c46634',
+  Changeset: '#77c434',
+  Sync: '#b634c4',
+  Persistence: '#3447c4',
+  LiveQuery: '#34c46e',
+  Transport: '#c43434',
 };
 
-const Content: React.FC<{ content: any }> = ({ content }) => {
+const Content: React.FC<{ content: any; id: string }> = ({ id, content }) => {
+  if (id === 'LiveQuery:Registered') {
+    return <code>{QueryBuilder.fromSerialised(content.query).toString()}</code>;
+  }
+
+  if (typeof content === 'object') {
+    return (
+      <JSONTree data={content} theme={{ ...monokai, base00: 'transparent' }} />
+    );
+  }
+
   try {
     const obj = JSON.parse(content);
     return <JSONTree data={obj} />;
@@ -51,23 +72,40 @@ export const LogView: React.FC<{ devtool: UpbeatDevtool }> = ({ devtool }) => {
               }}
             >
               <Container>
-                <span
-                  title={item.name}
-                  style={{
-                    borderRadius: '2px',
-                    backgroundColor: 'white',
-                    fontWeight: 900,
-                    color: 'black',
-                    padding: '0 2px',
-                    letterSpacing: '-1px',
-                    fontSize: '10px',
-                  }}
-                >
-                  {moduleMapName[item.name]}
-                </span>
-                <span>{item.key}</span>
+                <div>
+                  <span
+                    title={item.name}
+                    style={{
+                      borderTopLeftRadius: '4px',
+                      borderBottomLeftRadius: '4px',
+                      backgroundColor: moduleMapColor[item.name],
+                      fontWeight: 700,
+                      color: 'white',
+                      padding: '0 2px',
+                      fontSize: '12px',
+                    }}
+                  >
+                    {item.name}
+                  </span>
+                  <span
+                    style={{
+                      borderTopRightRadius: '4px',
+                      borderBottomRightRadius: '4px',
+                      backgroundColor: `${moduleMapColor[item.name]}aa`,
+                      fontWeight: 700,
+                      color: 'white',
+                      padding: '0 2px',
+                      fontSize: '12px',
+                    }}
+                  >
+                    {item.key.toUpperCase()}
+                  </span>
+                </div>
                 <span>
-                  <Content content={item.data} />
+                  <Content
+                    content={item.data}
+                    id={`${item.name}:${item.key}`}
+                  />
                 </span>
               </Container>
             </li>

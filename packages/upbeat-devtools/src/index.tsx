@@ -16,7 +16,7 @@ import { Container } from './Container';
 import { useUpdateOn } from './useUpdateOn';
 
 export const UpbeatDevtools: React.FC = ({ children }) => {
-  const [mode, setMode] = useState<Mode>(Mode.Hidden);
+  const [mode, setMode] = useState<Mode>(Mode.Vertical);
   const [view, setView] = useState<View>(View.Log);
   useHotkeys(
     'ctrl+k',
@@ -39,11 +39,12 @@ export const UpbeatDevtools: React.FC = ({ children }) => {
             bottom: '16px',
             borderRadius: '16px',
             width: 360,
-            backgroundColor: '#28282b',
+            backgroundColor: 'rgb(35, 40, 51)',
             color: '#eee',
             boxShadow: 'rgba(30, 30, 60, 0.3) 0px 3px 8px 1px',
             display: 'flex',
             flexDirection: 'column',
+            overflow: 'hidden',
           }}
         >
           {client.devtool === null && (
@@ -72,7 +73,14 @@ export const UpbeatDevtools: React.FC = ({ children }) => {
           )}
           {client.devtool !== null && (
             <React.Fragment>
-              <div style={{}}>
+              <div
+                style={{
+                  paddingBottom: '6px',
+                  boxShadow: 'rgba(30, 30, 30, 0.4) 0px 6px 9px',
+                  zIndex: 1,
+                  backgroundColor: '#28282b',
+                }}
+              >
                 <Container>
                   <h1
                     style={{
@@ -80,6 +88,8 @@ export const UpbeatDevtools: React.FC = ({ children }) => {
                       fontWeight: 700,
                       fontSize: '0.5rem',
                       opacity: 0.5,
+                      textAlign: 'center',
+                      paddingTop: '2px',
                     }}
                   >
                     Upbeat Devtools
@@ -87,7 +97,9 @@ export const UpbeatDevtools: React.FC = ({ children }) => {
                   <TopNav onChange={setView} currentView={view} />
                 </Container>
               </div>
-              <div style={{ overflowY: 'scroll' }}>
+              <div
+                style={{ overflowY: 'scroll', paddingTop: '8px', flex: 'auto' }}
+              >
                 {view === View.Log && <LogView devtool={client.devtool} />}
                 {view === View.Operations && <OperationsView />}
                 {view === View.ResourceCache && <ResourceCacheView />}

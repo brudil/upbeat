@@ -2,17 +2,25 @@
   "name": "@upbeat/core",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.module.js",
   "author": "James Canning <james@jamescanning.com> (http://brudil.com)",
   "license": "ISC",
+  "scripts": {
+    "build": "microbundle --external all",
+    "dev": "microbundle watch --external all"
+  },
   "dependencies": {
     "nanoevents": "^5.1.7",
     "object-sizeof": "^1.6.0",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.3",
+    "uuid": "^8.1.0"
   },
   "devDependencies": {
     "@types/nanoevents": "^1.0.0",
     "@types/react": "^16.9.35",
-    "@types/react-dom": "^16.9.8"
+    "@types/react-dom": "^16.9.8",
+    "microbundle": "^0.12.0"
   }
 }

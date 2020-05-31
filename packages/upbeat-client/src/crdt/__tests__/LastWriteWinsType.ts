@@ -1,9 +1,5 @@
 import { LastWriteWinsType, LWWSetOp } from '../types/lastWriteWins';
-import {
-  createPeerId,
-  serialiseTimestamp,
-  Timestamp,
-} from '../../../../upbeat-core/src/timestamp';
+import { createPeerId, serialiseTimestamp, Timestamp } from '@upbeat/core';
 import { OperationWrapper } from '../utils';
 
 let type = LastWriteWinsType.create({});

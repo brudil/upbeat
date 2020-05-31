@@ -5,7 +5,7 @@ import {
   TodoTagResource,
   TodoTagResourceSchema,
 } from '../schema.generated';
-import { Changeset, Query } from '@upbeat/client/src';
+import { Changeset, Query } from '@upbeat/client';
 
 export const Tags: React.FC = () => {
   const { loading: tagsLoading, data: tagsData } = useUpbeatQuery<

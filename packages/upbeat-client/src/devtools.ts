@@ -1,12 +1,12 @@
 import { Schema } from '@upbeat/schema/src';
-import { devToolEmitter, UpbeatModule } from './debug';
+import { devToolEmitter, ModuleNames } from './debug';
 import { UpbeatClientConfig } from './types';
 import { createNanoEvents, Emitter } from 'nanoevents';
 import { debounce } from 'ts-debounce';
 
 interface LogItem {
   id: number;
-  name: UpbeatModule;
+  name: ModuleNames;
   key: string;
   data: any;
 }

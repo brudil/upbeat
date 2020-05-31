@@ -1,5 +1,5 @@
 import React from 'react';
-import { Changeset } from '@upbeat/client/src';
+import { Changeset } from '@upbeat/client';
 import { useUpbeatChangeset } from '@upbeat/react';
 import { ResourcesSchema, TodoResource } from '../schema.generated';
 

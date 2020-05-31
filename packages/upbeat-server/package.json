@@ -6,7 +6,7 @@
   "dependencies": {
     "date-fns": "^2.14.0",
     "debug": "^4.1.1",
-    "ioredis": "^4.17.1",
+    "ioredis": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "uuid": "^8.1.0",
     "ws": "^7.3.0"

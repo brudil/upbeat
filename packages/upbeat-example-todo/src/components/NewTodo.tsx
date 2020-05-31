@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Changeset, Query } from '@upbeat/client/src';
+import { Changeset, Query } from '@upbeat/client';
 import { useUpbeat, useUpbeatQuery } from '@upbeat/react';
 import { ResourcesSchema, TodoTagResource } from '../schema.generated';
 

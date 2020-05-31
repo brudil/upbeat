@@ -3,7 +3,7 @@
  * @module @upbeat/client/types/lastWriteWins
  */
 
-import { isLaterSerialisedTimestamp } from '@upbeat/core/src/timestamp';
+import { isLaterSerialisedTimestamp } from '@upbeat/core';
 import { createType, OperationWrapper } from '../utils';
 
 export interface LWWSetOp {

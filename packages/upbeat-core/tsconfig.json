@@ -2,16 +2,16 @@
     "compileOnSave": false,
     "compilerOptions": {
       "allowSyntheticDefaultImports": true,
+      "types": ["@emotion/core", "@types/jest"],
       "lib": [
         "dom",
         "es2015",
         "es2016",
-        "es2017",
-        "es2018",
-        "es2019",
+        "es2017"
       ],
+      "jsx": "preserve",
       "target": "es2017",
-      "module": "ES2015",
+      "module": "esnext",
       "moduleResolution": "node",
       "strict": true,
       "noImplicitAny": true,
@@ -25,8 +25,6 @@
       "experimentalDecorators": true,
       "esModuleInterop": true,
       "allowJs": true,
-      "baseUrl": ".",
-      "outDir": "./dist"
-     },
-  "include": ["./src/**/*"]
+      "baseUrl": "."
+     }
   }

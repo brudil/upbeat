@@ -6,7 +6,7 @@
 import React from 'react';
 import { TodoResource } from '../schema.generated';
 import { useUpbeatQuery } from '@upbeat/react';
-import { Query } from '@upbeat/client/src';
+import { Query } from '@upbeat/client';
 import { Todo } from './Todo';
 import { NewTodo } from './NewTodo';
 import { Tags } from './Tags';

@@ -4,55 +4,61 @@
  */
 import { createNanoEvents } from 'nanoevents';
 
-/**
- * Hashes a string to a int.
- */
-function hashCode(str: string): number {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return hash;
-}
-
-/**
- * Casts an int to a hex color code.
- */
-function intToRGB(i: number): string {
-  const c = (i & 0x00ffffff).toString(16).toUpperCase();
-
-  return '00000'.substring(0, 6 - c.length) + c;
-}
-
-/**
- * Deterministically converts a string to a hex color code.
- */
-function color(str: string): string {
-  return intToRGB(hashCode(str));
-}
+// /**
+//  * Hashes a string to a int.
+//  */
+// function hashCode(str: string): number {
+//   let hash = 0;
+//   for (let i = 0; i < str.length; i++) {
+//     hash = str.charCodeAt(i) + ((hash << 5) - hash);
+//   }
+//   return hash;
+// }
+//
+// /**
+//  * Casts an int to a hex color code.
+//  */
+// function intToRGB(i: number): string {
+//   const c = (i & 0x00ffffff).toString(16).toUpperCase();
+//
+//   return '00000'.substring(0, 6 - c.length) + c;
+// }
+//
+// /**
+//  * Deterministically converts a string to a hex color code.
+//  */
+// function color(str: string): string {
+//   return intToRGB(hashCode(str));
+// }
 
 export const devToolEmitter = createNanoEvents<{
-  log(name: string, subKey: string, content: any): void;
+  log(
+    name: keyof UpbeatModule,
+    subKey: UpbeatModule[typeof name],
+    content: any,
+  ): void;
 }>();
 
-export enum UpbeatModule {
-  ResourceCache = 'ResourceCache',
-  Intermediate = 'Intermediate',
-  Persistence = 'Persistence',
-  Worker = 'Worker',
-  Changeset = 'Changeset',
-  LiveQuery = 'LiveQuery',
-  Sync = 'Sync',
-  Transport = 'Transport',
+export interface UpbeatModule {
+  ResourceCache: 'Hit' | 'Miss' | 'Set' | 'Delete' | 'Put';
+  Intermediate: 'Apply' | 'Build';
+  Persistence: 'Persistence';
+  Worker: 'X';
+  Changeset: 'Operation';
+  LiveQuery: 'Registered' | 'Unregistered';
+  Sync: 'NEW HASH';
+  Transport: 'Lost' | 'Send' | 'Queue' | 'Received';
 }
+
+export type ModuleNames = keyof UpbeatModule;
 
 /**
  * Client Logging method for Upbeat with custom styling for readability.
  */
 export const log = (
-  name: UpbeatModule,
-  subKeyOrContent: string,
-  content?: string,
+  name: keyof UpbeatModule,
+  subKeyOrContent: UpbeatModule[typeof name],
+  content?: any,
 ): void => {
   devToolEmitter.emit('log', name, subKeyOrContent, content);
   // console.log(

@@ -20,15 +20,15 @@ class InvalidQueryError extends Error {}
  * Enum for ORDERBY querying.
  */
 enum OrderByDirection {
-  ASC,
-  DESC,
+  ASC = 'ASC',
+  DESC = 'DESC',
 }
 
 /**
  * Enum for Comparators within querying.
  */
 enum WhereComparator {
-  Equals,
+  Equals = '=',
 }
 
 /**
@@ -157,6 +157,23 @@ export class QueryBuilder<T> {
     return this;
   }
 
+  constraintToString(constraint: Constraints) {
+    switch (constraint.name) {
+      case 'ORDERBY':
+        return `ORDER BY ${constraint.property}, ${constraint.direction}`;
+      case 'WHERE':
+        return `WHERE ${constraint.property} ${constraint.comparator} ${constraint.value}`;
+      case 'ALL':
+        return 'SELECT ALL';
+    }
+  }
+
+  toString() {
+    return `FROM ${this.resourceName} ${this.structure
+      .map(this.constraintToString)
+      .join(' ')}`;
+  }
+
   /**
    * Builds with current query to a SerialisedQuery object.
    */
@@ -166,6 +183,13 @@ export class QueryBuilder<T> {
     }
 
     return [this.resourceName, this.structure];
+  }
+
+  static fromSerialised(serialisedQuery: SerialisedQuery) {
+    const q = new QueryBuilder(serialisedQuery[0]);
+    q.structure = serialisedQuery[1];
+
+    return q;
   }
 }
 

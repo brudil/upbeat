@@ -11,7 +11,7 @@ import {
   IntermediateResource,
   realiseIntermediateResource,
 } from './intermediate';
-import { log, UpbeatModule } from './debug';
+import { log } from './debug';
 import { Schema } from '@upbeat/schema/src';
 import { UpbeatPersistence } from './persistence/interfaces';
 import { SerialisedResourceOperation } from './operations';
@@ -75,10 +75,10 @@ export function createResourceCache(
     const resource = cache.get(cacheKey(resourceName, id));
 
     if (resource) {
-      log(UpbeatModule.ResourceCache, 'HIT', cacheKey(resourceName, id));
+      log('ResourceCache', 'Hit', cacheKey(resourceName, id));
       return resource;
     }
-    log(UpbeatModule.ResourceCache, 'MISS', cacheKey(resourceName, id));
+    log('ResourceCache', 'Miss', cacheKey(resourceName, id));
 
     try {
       const operations = await persistence.getOperationsByResourceKey(
@@ -108,11 +108,7 @@ export function createResourceCache(
 
   return {
     async applyOperation(operation) {
-      log(
-        UpbeatModule.ResourceCache,
-        'APPLY',
-        `Applying operation: ${operation.timestamp}`,
-      );
+      log('ResourceCache', 'Apply', operation.timestamp);
       const resource = await getIntermediateById(
         operation.resource,
         operation.resourceId,
@@ -128,18 +124,18 @@ export function createResourceCache(
         nextResource,
       );
       log(
-        UpbeatModule.ResourceCache,
-        `set`,
+        'ResourceCache',
+        `Set`,
         cacheKey(operation.resource, operation.resourceId),
       );
 
       if (hasChanged) {
         try {
           if (nextResource.tombstone) {
-            log(
-              UpbeatModule.ResourceCache,
-              `Deleting ${operation.resource}#${nextResource.id}`,
-            );
+            log('ResourceCache', 'Delete', {
+              resourceName: operation.resource,
+              resourceId: nextResource.id,
+            });
             if (nextResource.id) {
               await persistence.deleteResourceObject(
                 operation.resource,
@@ -147,11 +143,10 @@ export function createResourceCache(
               );
             }
           } else {
-            log(
-              UpbeatModule.ResourceCache,
-              'Put',
-              `${operation.resource}#${nextResource.id}`,
-            );
+            log('ResourceCache', 'Put', {
+              resourceName: operation.resource,
+              resourceId: nextResource.id,
+            });
             await persistence.putResourceObject(
               operation.resource,
               realiseIntermediateResource(nextResource),

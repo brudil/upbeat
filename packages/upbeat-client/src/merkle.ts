@@ -3,7 +3,7 @@
  * @module @upbeat/client/merkle
  */
 
-import { serialiseTimestamp, Timestamp } from '@upbeat/core/src/timestamp';
+import { serialiseTimestamp, Timestamp } from '@upbeat/core';
 import murmurhash from 'murmurhash';
 
 type Tree = {

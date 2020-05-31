@@ -1,6 +1,6 @@
 export enum View {
   Log,
-  Operations,
+  Schema,
   ResourceCache,
   Persistence,
 }

@@ -90,10 +90,11 @@ export async function buildIntermediateResourceFromOperations(
   operations: SerialisedResourceOperation[],
 ): Promise<IntermediateResourceMap> {
   const resources: IntermediateResourceMap = {};
-  log(
+  const endBuild = log(
     'Intermediate',
     'Build',
     `Building ${operations[0].resource}#${operations[0].resourceId}`,
+    true,
   );
 
   operations.forEach((op) => {
@@ -111,6 +112,7 @@ export async function buildIntermediateResourceFromOperations(
     )[1];
   });
 
+  endBuild();
   return resources;
 }
 

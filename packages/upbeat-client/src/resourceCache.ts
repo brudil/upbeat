@@ -40,12 +40,13 @@ const cacheKey = (resourceName: string, id: string): string =>
  * It is an optimisation so that every update and query doesn't rely on the
  * backing data store for getting operations.
  */
-interface ResourceCache {
+export interface ResourceCache {
   /**
    * Applies operation locally, persisting when possible.
    * */
   applyOperation(operation: SerialisedResourceOperation): Promise<void>;
 
+  getCache(): Map<string, IntermediateResource>;
   /**
    * Get a resource instance by resource and ID. Uses cache where possible,
    * constructing and caching otherwise.
@@ -75,10 +76,10 @@ export function createResourceCache(
     const resource = cache.get(cacheKey(resourceName, id));
 
     if (resource) {
-      log('ResourceCache', 'Hit', cacheKey(resourceName, id));
+      log('ResourceCache', 'Hit');
       return resource;
     }
-    log('ResourceCache', 'Miss', cacheKey(resourceName, id));
+    log('ResourceCache', 'Miss');
 
     try {
       const operations = await persistence.getOperationsByResourceKey(
@@ -107,8 +108,11 @@ export function createResourceCache(
   };
 
   return {
+    getCache() {
+      return cache;
+    },
     async applyOperation(operation) {
-      log('ResourceCache', 'Apply', operation.timestamp);
+      const endApply = log('ResourceCache', 'Apply', operation.timestamp, true);
       const resource = await getIntermediateById(
         operation.resource,
         operation.resourceId,
@@ -123,19 +127,12 @@ export function createResourceCache(
         cacheKey(operation.resource, operation.resourceId),
         nextResource,
       );
-      log(
-        'ResourceCache',
-        `Set`,
-        cacheKey(operation.resource, operation.resourceId),
-      );
+      log('ResourceCache', `Set`);
 
       if (hasChanged) {
         try {
           if (nextResource.tombstone) {
-            log('ResourceCache', 'Delete', {
-              resourceName: operation.resource,
-              resourceId: nextResource.id,
-            });
+            log('ResourceCache', 'Delete');
             if (nextResource.id) {
               await persistence.deleteResourceObject(
                 operation.resource,
@@ -143,10 +140,7 @@ export function createResourceCache(
               );
             }
           } else {
-            log('ResourceCache', 'Put', {
-              resourceName: operation.resource,
-              resourceId: nextResource.id,
-            });
+            log('Persistence', 'Put');
             await persistence.putResourceObject(
               operation.resource,
               realiseIntermediateResource(nextResource),
@@ -157,6 +151,8 @@ export function createResourceCache(
           console.log('failed save of op');
         }
       }
+
+      endApply();
     },
     // async getById<R>(resourceName, id): Promise<R> {
     //   return realiseIntermediateResource(

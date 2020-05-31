@@ -3,12 +3,14 @@ import { devToolEmitter, ModuleNames } from './debug';
 import { UpbeatClientConfig } from './types';
 import { createNanoEvents, Emitter } from 'nanoevents';
 import { debounce } from 'ts-debounce';
+import { UpbeatWorker } from './worker';
 
-interface LogItem {
+export interface LogItem {
   id: number;
   name: ModuleNames;
   key: string;
   data: any;
+  withEnd: boolean;
 }
 
 interface ExternalEmitter {
@@ -25,6 +27,7 @@ export interface UpbeatDevtool {
 export const createUpbeatDevtool = (
   schema: Schema,
   _config: UpbeatClientConfig,
+  worker: UpbeatWorker,
 ): UpbeatDevtool => {
   const logItems: any[] = [];
   let logCount = 0;
@@ -32,8 +35,14 @@ export const createUpbeatDevtool = (
   const emitter = createNanoEvents<ExternalEmitter>();
   const update = debounce(() => emitter.emit('update'), 100);
 
-  devToolEmitter.on('log', (name, subKey, content) => {
-    logItems.push({ id: logCount++, name, key: subKey, data: content });
+  devToolEmitter.on('log', (name, subKey, content, withEnd) => {
+    logItems.push({
+      id: logCount++,
+      name,
+      key: subKey,
+      data: content,
+      withEnd,
+    });
     update();
   });
 
@@ -43,7 +52,7 @@ export const createUpbeatDevtool = (
       return logItems;
     },
     getResourceCache() {
-      return 11;
+      return worker.devtool.cache.getCache();
     },
     getSchema() {
       return schema;

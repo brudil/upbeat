@@ -8,7 +8,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { useUpbeat } from '@upbeat/react';
 import { LogView } from './LogView';
 import { Mode, View } from './constants';
-import { OperationsView } from './OperationsView';
+import { SchemaView } from './SchemaView';
 import { ResourceCacheView } from './ResourceCacheView';
 import { PersistenceView } from './PersistenceView';
 import { TopNav } from './TopNav';
@@ -39,7 +39,7 @@ export const UpbeatDevtools: React.FC = ({ children }) => {
             bottom: '16px',
             borderRadius: '16px',
             width: 360,
-            backgroundColor: 'rgb(35, 40, 51)',
+            backgroundColor: 'rgb(35,40,51)',
             color: '#eee',
             boxShadow: 'rgba(30, 30, 60, 0.3) 0px 3px 8px 1px',
             display: 'flex',
@@ -101,8 +101,12 @@ export const UpbeatDevtools: React.FC = ({ children }) => {
                 style={{ overflowY: 'scroll', paddingTop: '8px', flex: 'auto' }}
               >
                 {view === View.Log && <LogView devtool={client.devtool} />}
-                {view === View.Operations && <OperationsView />}
-                {view === View.ResourceCache && <ResourceCacheView />}
+                {view === View.Schema && (
+                  <SchemaView devtool={client.devtool} />
+                )}
+                {view === View.ResourceCache && (
+                  <ResourceCacheView devtool={client.devtool} />
+                )}
                 {view === View.Persistence && <PersistenceView />}
               </div>
             </React.Fragment>

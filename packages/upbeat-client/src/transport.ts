@@ -15,7 +15,7 @@ interface WorkerEmitter {
 /**
  * Public API for Upbeat Transport middleware.
  */
-interface UpbeatTransport {
+export interface UpbeatTransport {
   /**
    * Send a message.
    */

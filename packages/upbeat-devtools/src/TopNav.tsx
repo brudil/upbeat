@@ -50,20 +50,8 @@ export const TopNav: React.FC<{
         currentView={currentView}
       />
       <TopNavItem
-        name="Persistence"
-        view={View.Persistence}
-        onChange={onChange}
-        currentView={currentView}
-      />
-      <TopNavItem
-        name="Operations"
-        view={View.Operations}
-        onChange={onChange}
-        currentView={currentView}
-      />
-      <TopNavItem
-        name="LiveQueries"
-        view={View.Operations}
+        name="Schema"
+        view={View.Schema}
         onChange={onChange}
         currentView={currentView}
       />

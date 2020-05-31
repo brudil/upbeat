@@ -29,7 +29,9 @@ export async function createClient(
   const worker = await createUpbeatWorker(schema, config);
 
   const devtool =
-    config.devtool ?? false ? createUpbeatDevtool(schema, config) : null;
+    config.devtool ?? false
+      ? createUpbeatDevtool(schema, config, worker)
+      : null;
 
   const liveQueries: { [id: string]: { hook: any } } = {};
   worker.emitter.on('liveChange', (id, data) => {

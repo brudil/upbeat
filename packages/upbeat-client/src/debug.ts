@@ -36,21 +36,25 @@ export const devToolEmitter = createNanoEvents<{
     name: keyof UpbeatModule,
     subKey: UpbeatModule[typeof name],
     content: any,
+    withEnd: boolean,
   ): void;
 }>();
 
 export interface UpbeatModule {
   ResourceCache: 'Hit' | 'Miss' | 'Set' | 'Delete' | 'Put';
   Intermediate: 'Apply' | 'Build';
-  Persistence: 'Persistence';
+  Persistence: 'Put';
   Worker: 'X';
   Changeset: 'Operation';
   LiveQuery: 'Registered' | 'Unregistered';
   Sync: 'NEW HASH';
   Transport: 'Lost' | 'Send' | 'Queue' | 'Received';
+  Depth: 'End';
 }
 
 export type ModuleNames = keyof UpbeatModule;
+
+type Noop = () => void;
 
 /**
  * Client Logging method for Upbeat with custom styling for readability.
@@ -59,8 +63,9 @@ export const log = (
   name: keyof UpbeatModule,
   subKeyOrContent: UpbeatModule[typeof name],
   content?: any,
-): void => {
-  devToolEmitter.emit('log', name, subKeyOrContent, content);
+  withEnd = false,
+): Noop => {
+  devToolEmitter.emit('log', name, subKeyOrContent, content, withEnd);
   // console.log(
   //   `%c${name}${content ? '%c' + subKeyOrContent.toUpperCase() : ''}%c${
   //     content || subKeyOrContent
@@ -77,4 +82,8 @@ export const log = (
   //     : []),
   //   'font-weight: normal;',
   // );
+
+  return () => {
+    devToolEmitter.emit('log', 'Depth', 'End', null, false);
+  };
 };

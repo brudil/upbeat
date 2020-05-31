@@ -7,14 +7,15 @@ import { Schema } from '@upbeat/schema/src';
 import { createIndexedDBPersistence } from './persistence/IndexedDbPersistence';
 import { createHLCClock, createPeerId, parseTimestamp } from '@upbeat/core';
 import { createNanoEvents, Emitter } from 'nanoevents';
-import { createResourceCache } from './resourceCache';
+import { createResourceCache, ResourceCache } from './resourceCache';
 import { SerialisedQuery } from './query';
 import { Changeset, createOperationsFromChangeset } from './changeset';
 import { SerialisedResourceOperation } from './operations';
 import { log } from './debug';
-import { createTransports } from './transport';
+import { createTransports, UpbeatTransport } from './transport';
 import { build, insert } from './merkle';
 import { UpbeatClientConfig } from './types';
+import { UpbeatPersistence } from './persistence/interfaces';
 
 interface WorkerEmitter {
   liveChange(id: string, x: unknown): void;
@@ -27,10 +28,15 @@ interface WorkerEmitter {
  * All communication to UpbeatWorker must be serialisable as we support it
  * running within a SharedWorker/WebWorker.
  */
-interface UpbeatWorker {
+export interface UpbeatWorker {
   createLiveQuery(query: SerialisedQuery, id: string): Promise<void>;
   addOperation(changeset: Changeset<unknown>): Promise<void>;
   emitter: Emitter<WorkerEmitter>;
+  devtool: {
+    persistence: UpbeatPersistence;
+    cache: ResourceCache;
+    transport: UpbeatTransport;
+  };
 }
 
 /**
@@ -135,6 +141,7 @@ export async function createUpbeatWorker(
    * ! This COULD run in a web worker, so all messaging
    * */
   return {
+    devtool: { cache, transport, persistence },
     emitter,
     addOperation: createOperationAndApply,
     async createLiveQuery(query, id) {

@@ -23,7 +23,7 @@ import {
 } from './lexer';
 import { Property, Resource, Schema, Scope, Space } from '@upbeat/schema/src';
 
-class UpbeatSchemaParser extends CstParser {
+export class UpbeatSchemaParser extends CstParser {
   constructor() {
     super(tokens);
 
